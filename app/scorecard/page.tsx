@@ -181,17 +181,97 @@ function OptionCard({
   )
 }
 
+// ── Email gate ────────────────────────────────────────────────────────────────
+function EmailGate({ onSubmit }: { onSubmit: (email: string) => void }) {
+  const [email, setEmail] = useState("")
+  const [loading, setLoading] = useState(false)
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!valid) return
+    setLoading(true)
+    await new Promise((r) => setTimeout(r, 800))
+    onSubmit(email)
+  }
+
+  return (
+    <div className="min-h-screen bg-void flex flex-col">
+      <div className="border-b border-void-border px-6 py-4">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <Link href="/" className="font-display text-lg text-gradient-brand">Meridian</Link>
+          <span className="text-xs font-mono text-platinum-faint">Almost there</span>
+        </div>
+      </div>
+      <div className="h-0.5 bg-gradient-to-r from-brand via-data to-gold" />
+      <div className="flex-1 flex items-center justify-center px-6 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full max-w-md text-center"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-brand/15 border border-brand/30 flex items-center justify-center mx-auto mb-6">
+            <span className="text-brand text-xl">✦</span>
+          </div>
+          <h1 className="font-display text-3xl text-platinum mb-3">Your score is ready.</h1>
+          <p className="text-platinum-dim leading-relaxed mb-8">
+            Enter your email to see your Founder Credibility Index™ score and
+            a personalised breakdown of where your case stands.
+          </p>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              className="input-field text-center text-base"
+              autoFocus
+              required
+            />
+            <motion.button
+              type="submit"
+              disabled={!valid || loading}
+              whileHover={valid && !loading ? { scale: 1.02 } : {}}
+              whileTap={valid && !loading ? { scale: 0.98 } : {}}
+              className={`btn-primary w-full py-4 rounded-xl text-white font-medium text-base transition-all ${
+                !valid || loading ? "opacity-40 cursor-not-allowed" : ""
+              }`}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-3">
+                  <motion.span
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                  />
+                  Calculating...
+                </span>
+              ) : (
+                "See my score →"
+              )}
+            </motion.button>
+          </form>
+          <p className="text-xs text-platinum-faint mt-4 leading-relaxed">
+            No spam. Amit may follow up with a short observation based on your answers.
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  )
+}
+
 // ── Main scorecard ────────────────────────────────────────────────────────────
 export default function ScorecardPage() {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Partial<FCIInput>>({})
   const [direction, setDirection] = useState(1)
+  const [showEmailGate, setShowEmailGate] = useState(false)
 
   const q = QUESTIONS[step]
   const total = QUESTIONS.length
-  const progress = ((step) / total) * 100
-  const selected = answers[q.id] as string | undefined
+  const selected = answers[q?.id] as string | undefined
 
   function selectAnswer(value: string) {
     setAnswers((prev) => ({ ...prev, [q.id]: value as never }))
@@ -203,9 +283,7 @@ export default function ScorecardPage() {
       setDirection(1)
       setStep(step + 1)
     } else {
-      const result = computeFCI(answers as FCIInput)
-      const encoded = encodeURIComponent(JSON.stringify(result))
-      router.push(`/scorecard/result?data=${encoded}`)
+      setShowEmailGate(true)
     }
   }
 
@@ -214,6 +292,17 @@ export default function ScorecardPage() {
       setDirection(-1)
       setStep(step - 1)
     }
+  }
+
+  function handleEmailSubmit(email: string) {
+    const result = computeFCI(answers as FCIInput)
+    const encoded = encodeURIComponent(JSON.stringify(result))
+    const encodedEmail = encodeURIComponent(email)
+    router.push(`/scorecard/result?data=${encoded}&email=${encodedEmail}`)
+  }
+
+  if (showEmailGate) {
+    return <EmailGate onSubmit={handleEmailSubmit} />
   }
 
   const variants = {

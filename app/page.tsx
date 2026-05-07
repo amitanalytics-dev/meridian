@@ -109,11 +109,16 @@ function Hero() {
         {/* Amit's credential badge */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-gold/30 bg-gold/8 mb-8">
-          <div className="w-2 h-2 rounded-full bg-gold animate-pulse-slow" />
-          <span className="text-sm text-gold font-medium">
-            Amit Tyagi — UK Global Talent, Exceptional Talent
-          </span>
+          className="inline-flex mb-8">
+          <a href="https://www.linkedin.com/in/amitisb1tyagi/"
+            target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-gold/30 bg-gold/8 hover:bg-gold/15 hover:border-gold/50 transition-all">
+            <div className="w-2 h-2 rounded-full bg-gold" />
+            <span className="text-sm text-gold font-medium">
+              Amit Tyagi — UK Global Talent, Exceptional Talent
+            </span>
+            <span className="w-4 h-4 rounded bg-[#0A66C2] flex items-center justify-center text-white font-bold flex-shrink-0" style={{ fontSize: "9px" }}>in</span>
+          </a>
         </motion.div>
 
         <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
