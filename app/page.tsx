@@ -102,40 +102,37 @@ function Navbar() {
     <motion.nav initial={{ y: -16, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-void/95 backdrop-blur-xl border-b border-void-border" : "bg-transparent"
+        scrolled ? "bg-gradient-to-r from-[#0a0018] via-[#050010] to-[#000d1a] backdrop-blur-xl" : "bg-transparent"
       }`}>
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-brand/50 via-data/70 to-[#E1306C]/50" />
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand to-data flex items-center justify-center">
-            <span className="text-white text-xs font-bold">M</span>
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand via-data to-[#06B6D4] flex items-center justify-center shadow-lg shadow-brand/40">
+            <span className="text-white text-sm font-black">M</span>
           </div>
           <span className="flex flex-col leading-none">
-            <span className="font-display text-base text-platinum leading-none">Meridian</span>
+            <span className="font-display text-lg leading-none" style={{ background: "linear-gradient(90deg, #7C3AED, #06B6D4, #D97706)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Meridian</span>
             <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
           </span>
         </Link>
-        <div className="hidden md:flex items-center gap-7">
+        <div className="hidden md:flex items-center gap-8">
           {[["Services", "#services"], ["About", "#about"], ["Pricing", "#pricing"], ["Blog", "/blog"]].map(([l, h]) => (
-            <a key={l} href={h} className="text-sm text-platinum-dim hover:text-platinum transition-colors">{l}</a>
+            <a key={l} href={h} className="text-sm font-bold text-platinum hover:text-brand transition-colors tracking-wide uppercase" style={{ fontSize: "12px", letterSpacing: "0.08em" }}>{l}</a>
           ))}
         </div>
         <div className="hidden md:flex items-center gap-2.5">
           <a href="https://www.linkedin.com/in/amitisb1tyagi/"
             target="_blank" rel="noopener noreferrer" title="Connect on LinkedIn"
-            className="w-8 h-8 rounded-lg border border-[#0A66C2]/30 bg-[#0A66C2]/8 flex items-center justify-center text-[#0A66C2] hover:bg-[#0A66C2]/20 transition-all">
-            <span className="font-bold" style={{ fontSize: "10px" }}>in</span>
-          </a>
+            className="w-8 h-8 rounded-lg border border-[#0A66C2]/50 bg-[#0A66C2]/15 flex items-center justify-center text-[#0A66C2] hover:bg-[#0A66C2]/30 transition-all font-black" style={{ fontSize: "10px" }}>in</a>
           <a href="https://wa.me/447776842287"
             target="_blank" rel="noopener noreferrer" title="WhatsApp +44 7776 842287"
-            className="w-8 h-8 rounded-lg border border-[#25D366]/30 bg-[#25D366]/8 flex items-center justify-center text-[#25D366] hover:bg-[#25D366]/20 transition-all">
-            <span className="font-bold" style={{ fontSize: "10px" }}>W</span>
-          </a>
+            className="w-8 h-8 rounded-lg border border-[#25D366]/50 bg-[#25D366]/15 flex items-center justify-center text-[#25D366] hover:bg-[#25D366]/30 transition-all font-black" style={{ fontSize: "10px" }}>W</a>
           <a href="https://www.instagram.com/meridianglobaltalent/"
             target="_blank" rel="noopener noreferrer" title="Instagram @meridianglobaltalent"
-            className="w-8 h-8 rounded-lg border border-[#E1306C]/30 bg-[#E1306C]/8 flex items-center justify-center text-[#E1306C] hover:bg-[#E1306C]/20 transition-all">
-            <span className="font-bold" style={{ fontSize: "10px" }}>IG</span>
-          </a>
-          <Link href="/scorecard" className="btn-primary text-sm text-white px-5 py-2.5 rounded-lg font-medium">
+            className="w-8 h-8 rounded-lg border border-[#E1306C]/50 bg-[#E1306C]/15 flex items-center justify-center text-[#E1306C] hover:bg-[#E1306C]/30 transition-all font-black" style={{ fontSize: "10px" }}>IG</a>
+          <Link href="/scorecard"
+            className="text-sm text-white px-5 py-2.5 rounded-lg font-bold shadow-lg shadow-brand/30 hover:shadow-brand/50 transition-all"
+            style={{ background: "linear-gradient(135deg, #7C3AED, #06B6D4)" }}>
             Check my readiness →
           </Link>
         </div>
