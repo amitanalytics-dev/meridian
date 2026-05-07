@@ -284,7 +284,7 @@ function ScorecardCTA() {
                       <stop offset="100%" stopColor="#F59E0B" />
                     </linearGradient>
                   </defs>
-                  <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#1E1E40" strokeWidth="10" />
+                  <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#E2E8F0" strokeWidth="10" />
                   <motion.circle cx={size/2} cy={size/2} r={r} fill="none"
                     stroke="url(#sg)" strokeWidth="10" strokeLinecap="round"
                     strokeDasharray={circ}

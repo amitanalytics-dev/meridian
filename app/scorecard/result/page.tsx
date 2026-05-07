@@ -27,7 +27,7 @@ function ScoreRing({ score, size = 200 }: { score: number; size?: number }) {
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
         </defs>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#1E1E40" strokeWidth="12" />
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#E2E8F0" strokeWidth="12" />
         <motion.circle cx={size/2} cy={size/2} r={r} fill="none"
           stroke="url(#rg2)" strokeWidth="12" strokeLinecap="round"
           strokeDasharray={circ}
