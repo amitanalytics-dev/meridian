@@ -9,13 +9,34 @@ export async function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }))
 }
 
+const SITE_URL = "https://meridian-pi-mauve.vercel.app"
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const post = getPost(slug)
   if (!post) return {}
   return {
-    title: `${post.title} — Meridian`,
+    title: `${post.title}`,
     description: post.excerpt,
+    authors: [{ name: "Amit Tyagi", url: "https://www.linkedin.com/in/amitisb1tyagi/" }],
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: "article",
+      publishedTime: post.date,
+      authors: ["Amit Tyagi"],
+      tags: ["UK Global Talent Visa", post.category, "Tech Nation"],
+      url: `${SITE_URL}/blog/${slug}`,
+      siteName: "Meridian Advisory",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+    },
+    alternates: {
+      canonical: `${SITE_URL}/blog/${slug}`,
+    },
   }
 }
 
@@ -39,8 +60,43 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const allPosts = getAllPosts()
   const related = allPosts.filter((p) => p.slug !== slug && p.category === post.category).slice(0, 3)
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      "@type": "Person",
+      name: "Amit Tyagi",
+      url: `${SITE_URL}/about`,
+      jobTitle: "UK Global Talent Visa Strategic Advisor",
+      sameAs: ["https://www.linkedin.com/in/amitisb1tyagi/"],
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Meridian Advisory",
+      url: SITE_URL,
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${slug}` },
+    keywords: `UK Global Talent Visa, ${post.category}, Tech Nation, Amit Tyagi`,
+  }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Insights", item: `${SITE_URL}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${SITE_URL}/blog/${slug}` },
+    ],
+  }
+
   return (
     <div className="min-h-screen">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {/* Header */}
       <div className="border-b border-void-border bg-white/60 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">

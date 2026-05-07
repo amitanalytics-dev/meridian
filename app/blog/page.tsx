@@ -3,8 +3,26 @@ import { getAllPosts, CATEGORIES } from "@/lib/blog"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Insights — Meridian",
-  description: "Strategic insights for founders, PMs, and engineers building toward UK Global Talent recognition. Evidence strategy, narrative engineering, and career positioning.",
+  title: "UK Global Talent Visa Insights & Strategy — Meridian Blog",
+  description:
+    "Expert insights on UK Global Talent Visa applications. Evidence strategy, narrative engineering, recommendation letters, and case positioning for founders, engineers, and product managers — by Amit Tyagi, Exceptional Talent holder.",
+  keywords: [
+    "UK Global Talent Visa guide",
+    "Tech Nation application strategy",
+    "Exceptional Talent evidence",
+    "Global Talent Visa blog",
+    "UK visa for founders",
+    "UK visa for engineers",
+  ],
+  openGraph: {
+    title: "UK Global Talent Visa Insights — Meridian",
+    description:
+      "Expert strategy and deep-dive analysis on UK Global Talent Visa applications. Written by Amit Tyagi — Exceptional Talent holder.",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://meridian-pi-mauve.vercel.app/blog",
+  },
 }
 
 const CATEGORY_COLORS: Record<string, string> = {

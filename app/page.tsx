@@ -7,6 +7,71 @@ import Link from "next/link"
 const SPOTS_REMAINING = 67
 const SPOTS_TOTAL = 100
 
+const SITE_URL = "https://meridian-pi-mauve.vercel.app"
+
+const homepageFAQSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What is the UK Global Talent Visa?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "The UK Global Talent Visa is a visa route for leaders and specialists in digital technology, arts, research, and academia. In digital technology, it is endorsed by a designated body and available under two categories: Exceptional Talent (established leaders) and Exceptional Promise (emerging leaders). It grants the right to work in the UK without a sponsor.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What is the difference between Exceptional Talent and Exceptional Promise?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Exceptional Talent is for established leaders with a proven track record of innovation in digital technology. Exceptional Promise is for those earlier in their career who demonstrate clear potential. The key difference is not years of experience — it is the type of evidence available. Talent requires evidence of established impact; Promise requires evidence of emerging potential.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Why do strong Global Talent Visa applications get rejected?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Most rejections happen not because the applicant lacks the profile, but because their evidence is generic, their narrative is unclear, or their recommendation letters describe relationships rather than impact. Evaluators follow a specific assessment framework — and applicants who don't present their case in that language fail regardless of their actual credentials.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What does Meridian Advisory do?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Meridian Advisory helps founders, engineers, product managers, and senior operators build strategically structured UK Global Talent Visa cases. This includes evidence architecture, personal statement structuring, and recommendation strategy — led by Amit Tyagi, a UK Global Talent visa holder under the Exceptional Talent category.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Who is Amit Tyagi?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Amit Tyagi is a fintech founder and startup operator who received UK Global Talent recognition under the Exceptional Talent category. He founded Meridian Advisory to help other ambitious builders structure their applications correctly — from an insider's perspective of what evaluators actually look for.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How much does UK Global Talent Visa advisory cost?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Meridian Advisory offers three engagement tiers: a Readiness Diagnostic at £500, Application Advisory at £2,500, and a Full Case Build at £5,500. All are fixed-price with no open-ended retainers. The free 4-minute readiness assessment is the best starting point to understand which tier fits your situation.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I apply for the UK Global Talent Visa without a job offer?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. The UK Global Talent Visa does not require a job offer or employer sponsorship. You apply based on your personal profile, evidence of exceptional work, and endorsement from a designated body. This is one of its main advantages over the Skilled Worker visa route.",
+      },
+    },
+  ],
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function FadeUp({ children, delay = 0, className = "" }: {
   children: React.ReactNode; delay?: number; className?: string
@@ -911,6 +976,10 @@ function Footer() {
 export default function Home() {
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageFAQSchema) }}
+      />
       <Navbar />
       <Hero />
       <TrustBar />
