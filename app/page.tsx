@@ -140,7 +140,6 @@ function Hero() {
           <a href="https://www.linkedin.com/in/amitisb1tyagi/"
             target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-gold/30 bg-gold/8 hover:bg-gold/15 hover:border-gold/50 transition-all">
-            <div className="w-2 h-2 rounded-full bg-gold flex-shrink-0" />
             <span className="text-sm text-gold font-medium">
               Amit Tyagi — UK Global Talent, Exceptional Talent
             </span>
