@@ -55,7 +55,9 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #FFFFFF;
+  background: linear-gradient(160deg, #FAFBFF 0%, #F5F3FF 35%, #EFF6FF 65%, #F0FDFF 100%);
+  background-attachment: fixed;
+  background-color: #FAFBFF;
   color: #0F172A;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -175,6 +177,24 @@ body {
   box-shadow: 0 0 0 3px rgba(124,58,237,.12);
 }
 .input-field::placeholder { color: #94A3B8; }
+
+/* ── Blog prose ─────────────────────────────────────── */
+.prose-meridian { color: #334155; line-height: 1.8; font-size: 1rem; }
+.prose-meridian h2 { font-family: var(--font-display); font-size: 1.6rem; color: #0F172A; margin: 2.5rem 0 1rem; font-weight: 400; line-height: 1.25; }
+.prose-meridian h3 { font-family: var(--font-display); font-size: 1.25rem; color: #0F172A; margin: 2rem 0 0.75rem; font-weight: 400; }
+.prose-meridian p { margin-bottom: 1.4rem; }
+.prose-meridian strong { color: #0F172A; font-weight: 600; }
+.prose-meridian em { color: #475569; }
+.prose-meridian ul { margin: 1rem 0 1.4rem 1.25rem; list-style: none; padding: 0; }
+.prose-meridian ul li { position: relative; padding-left: 1.25rem; margin-bottom: 0.6rem; }
+.prose-meridian ul li::before { content: "✦"; position: absolute; left: 0; color: #7C3AED; font-size: 0.6rem; top: 0.35rem; }
+.prose-meridian ol { margin: 1rem 0 1.4rem 1.5rem; }
+.prose-meridian ol li { margin-bottom: 0.6rem; }
+.prose-meridian blockquote { border-left: 3px solid #7C3AED; padding: 0.75rem 1.25rem; margin: 1.5rem 0; background: rgba(124,58,237,.04); border-radius: 0 8px 8px 0; color: #475569; font-style: italic; }
+.prose-meridian a { color: #7C3AED; text-decoration: underline; text-underline-offset: 3px; }
+.prose-meridian a:hover { color: #5B21B6; }
+.prose-meridian hr { border: none; border-top: 1px solid #E2E8F0; margin: 2.5rem 0; }
+.prose-meridian code { font-family: var(--font-mono); background: #F1F5F9; color: #7C3AED; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.875rem; }
 
 /* ── Shimmer skeleton ────────────────────────────────── */
 .shimmer-skeleton {

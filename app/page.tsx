@@ -44,7 +44,7 @@ function Navbar() {
           <span className="font-display text-lg text-platinum">Meridian</span>
         </Link>
         <div className="hidden md:flex items-center gap-7">
-          {[["Services", "#services"], ["About", "#about"], ["Pricing", "#pricing"]].map(([l, h]) => (
+          {[["Services", "#services"], ["About", "#about"], ["Pricing", "#pricing"], ["Blog", "/blog"]].map(([l, h]) => (
             <a key={l} href={h} className="text-sm text-platinum-dim hover:text-platinum transition-colors">{l}</a>
           ))}
         </div>
@@ -811,7 +811,7 @@ function Footer() {
           <div>
             <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-4">Services</p>
             <ul className="space-y-3">
-              {[["Readiness Assessment", "/scorecard"], ["Apply for Advisory", "/apply"], ["Diagnostic", "/apply"], ["Full Case Build", "/apply"]].map(([l, h]) => (
+              {[["Readiness Assessment", "/scorecard"], ["Apply for Advisory", "/apply"], ["Insights Blog", "/blog"], ["Full Case Build", "/apply"]].map(([l, h]) => (
                 <li key={l}><Link href={h} className="text-sm text-platinum-dim hover:text-platinum transition-colors">{l}</Link></li>
               ))}
             </ul>
