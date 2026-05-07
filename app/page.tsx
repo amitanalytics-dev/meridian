@@ -150,15 +150,19 @@ function Hero() {
         <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="font-display text-5xl md:text-7xl text-platinum leading-[1.08] tracking-tight mb-6">
-          Your Global Talent case needs to be built the way{" "}
-          <span className="text-gradient-brand">evaluators think.</span>
+          You&apos;re probably good enough for{" "}
+          <span className="text-gradient-brand">UK Global Talent.</span>
+          {" "}Your application probably isn&apos;t.
         </motion.h1>
 
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.38 }}
-          className="text-lg md:text-xl text-platinum-dim max-w-xl mx-auto mb-10 leading-relaxed">
-          Most exceptional builders get rejected not because they&apos;re unqualified —
-          but because their case doesn&apos;t speak the language evaluators use.
+          className="text-lg md:text-xl text-platinum-dim max-w-2xl mx-auto mb-10 leading-relaxed">
+          Tech Nation rejects strong applications every month — not because the builder isn&apos;t exceptional,
+          but because their evidence doesn&apos;t speak the evaluator&apos;s language.
+          Amit received UK Global Talent recognition under{" "}
+          <span className="text-platinum font-medium">Exceptional Talent</span>.
+          {" "}He knows exactly what that language sounds like.
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
@@ -166,12 +170,12 @@ function Hero() {
           className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
           <Link href="/scorecard"
             className="btn-primary text-white px-8 py-4 rounded-xl font-semibold text-base inline-flex items-center justify-center gap-2.5 shadow-[0_0_40px_rgba(124,58,237,0.4)]">
-            Take the free readiness assessment
+            Check if my case is ready — free
             <span className="text-data-light text-lg">→</span>
           </Link>
           <a href="#about"
             className="btn-secondary text-platinum px-8 py-4 rounded-xl font-medium text-base inline-flex items-center justify-center gap-2">
-            See Amit's story
+            How Amit got his visa
           </a>
         </motion.div>
 
@@ -183,14 +187,15 @@ function Hero() {
 
         {/* Proof strip */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
-          className="flex flex-wrap items-center justify-center gap-6 text-sm text-platinum-dim">
+          className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-sm text-platinum-dim">
           {[
-            { icon: "✦", text: "Approved: Exceptional Talent" },
-            { icon: "✦", text: "Advisory-only — not immigration law" },
-            { icon: "✦", text: "4-min free readiness check" },
-          ].map(({ icon, text }) => (
+            { icon: "✦", text: "20+ builders advised", col: "#F59E0B" },
+            { icon: "✦", text: "Exceptional Talent & Promise", col: "#7C3AED" },
+            { icon: "✦", text: "India · UAE · Singapore · Europe", col: "#06B6D4" },
+            { icon: "✦", text: "4-min free readiness check", col: "#9F6EF5" },
+          ].map(({ icon, text, col }) => (
             <span key={text} className="flex items-center gap-2">
-              <span className="text-brand text-xs">{icon}</span>{text}
+              <span className="text-xs" style={{ color: col }}>{icon}</span>{text}
             </span>
           ))}
         </motion.div>
