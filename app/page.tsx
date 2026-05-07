@@ -3,8 +3,6 @@
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { useRef, useEffect, useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
-
 // Spots remaining — hardcoded; update manually as needed
 const SPOTS_REMAINING = 67
 const SPOTS_TOTAL = 100
@@ -141,17 +139,8 @@ function Hero() {
           className="inline-flex mb-8">
           <a href="https://www.linkedin.com/in/amitisb1tyagi/"
             target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-gold/30 bg-gold/8 hover:bg-gold/15 hover:border-gold/50 transition-all">
-            <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gold/40 flex-shrink-0 bg-gradient-to-br from-brand to-data flex items-center justify-center">
-              <Image
-                src="/amit.jpg"
-                alt="Amit Tyagi"
-                width={32}
-                height={32}
-                className="w-full h-full object-cover"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
-              />
-            </div>
+            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-gold/30 bg-gold/8 hover:bg-gold/15 hover:border-gold/50 transition-all">
+            <div className="w-2 h-2 rounded-full bg-gold flex-shrink-0" />
             <span className="text-sm text-gold font-medium">
               Amit Tyagi — UK Global Talent, Exceptional Talent
             </span>
@@ -475,25 +464,6 @@ function AboutAmit() {
         <div className="grid md:grid-cols-2 gap-12 items-start">
           <FadeUp>
             <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-6">About Amit</p>
-            {/* Photo */}
-            <div className="flex items-center gap-4 mb-7">
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-brand/30 flex-shrink-0 bg-gradient-to-br from-brand to-data flex items-center justify-center">
-                <Image
-                  src="/amit.jpg"
-                  alt="Amit Tyagi"
-                  width={64}
-                  height={64}
-                  className="w-full h-full object-cover"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
-                />
-              </div>
-              <div>
-                <p className="text-platinum font-semibold text-base">Amit Tyagi</p>
-                <p className="text-xs text-platinum-faint">UK Global Talent — Exceptional Talent · Fintech Founder · LBS Sloan</p>
-                <a href="https://www.linkedin.com/in/amitisb1tyagi/" target="_blank" rel="noopener noreferrer"
-                  className="text-xs text-brand hover:underline">LinkedIn →</a>
-              </div>
-            </div>
             <h2 className="font-display text-4xl text-platinum mb-6 leading-tight">
               He didn&apos;t learn this from a textbook.
               <br />
