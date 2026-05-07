@@ -275,6 +275,72 @@ function Hero() {
   )
 }
 
+// ── Who this is for ───────────────────────────────────────────────────────────
+function WhoThisIsFor() {
+  const professions = [
+    { label: "Startup Founders",         col: "#7C3AED", href: "/blog/how-founders-position-global-talent-visa" },
+    { label: "Product Managers",         col: "#06B6D4", href: "/blog/product-manager-global-talent" },
+    { label: "Software Engineers",       col: "#F59E0B", href: "/blog/scale-up-engineer-global-talent" },
+    { label: "CTOs",                     col: "#9F6EF5", href: "/blog/cto-application-strategy" },
+    { label: "AI / ML Engineers",        col: "#22D3EE", href: "/blog/ai-ml-engineer-application" },
+    { label: "Data Engineers",           col: "#7C3AED", href: "/blog/data-engineering-global-talent" },
+    { label: "Fintech Professionals",    col: "#06B6D4", href: "/blog/fintech-founder-case-study" },
+    { label: "SaaS Founders",            col: "#F59E0B", href: "/blog/b2b-saas-founder-positioning" },
+    { label: "Deep Tech Founders",       col: "#9F6EF5", href: "/blog/deep-tech-founder-positioning" },
+    { label: "Climate Tech Founders",    col: "#22D3EE", href: "/blog/climate-tech-global-talent" },
+    { label: "Healthtech Founders",      col: "#7C3AED", href: "/blog/healthtech-founder-global-talent" },
+    { label: "Engineering Managers",     col: "#06B6D4", href: "/blog/employee-at-big-tech-global-talent" },
+    { label: "Cybersecurity Engineers",  col: "#F59E0B", href: "/blog/cybersecurity-global-talent" },
+    { label: "Startup Operators",        col: "#9F6EF5", href: "/blog/narrative-engineering-for-tech-professionals" },
+    { label: "Angel Investors",          col: "#22D3EE", href: "/blog/angel-investment-as-evidence" },
+    { label: "Open Source Contributors", col: "#7C3AED", href: "/blog/open-source-as-evidence" },
+  ]
+
+  return (
+    <section className="py-16 px-6 border-t border-void-border bg-void-surface">
+      <div className="max-w-5xl mx-auto">
+        <FadeUp className="text-center mb-10">
+          <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-3">Who this is for</p>
+          <h2 className="font-display text-3xl md:text-4xl text-platinum leading-tight mb-3">
+            Built for every kind of exceptional builder.
+          </h2>
+          <p className="text-platinum-dim text-base max-w-2xl mx-auto leading-relaxed">
+            The UK Global Talent Visa is open to any digital technology professional with evidence of
+            exceptional work. Here are the profiles Meridian Advisory has worked with most.
+          </p>
+        </FadeUp>
+        <FadeUp delay={0.1}>
+          <div className="flex flex-wrap gap-3 justify-center">
+            {professions.map((p) => (
+              <a
+                key={p.label}
+                href={p.href}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-all hover:scale-105"
+                style={{
+                  borderColor: `${p.col}35`,
+                  background: `${p.col}0A`,
+                  color: p.col,
+                }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: p.col }} />
+                {p.label}
+              </a>
+            ))}
+          </div>
+        </FadeUp>
+        <FadeUp delay={0.2} className="mt-8 text-center">
+          <p className="text-xs text-platinum-faint">
+            From India, UAE, Singapore, Nigeria, Brazil, the US, and across Europe.{" "}
+            <a href="/scorecard" className="text-brand underline underline-offset-2 hover:opacity-80 transition-opacity">
+              Find out where your profile stands →
+            </a>
+          </p>
+        </FadeUp>
+      </div>
+    </section>
+  )
+}
+
 // ── Pain section ──────────────────────────────────────────────────────────────
 function Pain() {
   const pains = [
@@ -774,6 +840,115 @@ function Testimonial() {
   )
 }
 
+// ── Visa Explainer (SEO content anchor) ──────────────────────────────────────
+function VisaExplainer() {
+  return (
+    <section className="py-24 px-6 border-t border-void-border bg-void-surface" aria-label="What is the UK Global Talent Visa">
+      <div className="max-w-4xl mx-auto">
+        <FadeUp className="mb-10">
+          <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-4">The Visa, Explained</p>
+          <h2 className="font-display text-4xl md:text-5xl text-platinum leading-tight mb-2">
+            What is the UK Global Talent Visa?
+          </h2>
+        </FadeUp>
+
+        <div className="grid md:grid-cols-3 gap-8 mb-12">
+          {[
+            {
+              label: "Who it is for",
+              col: "#7C3AED",
+              body: "Leaders and exceptional practitioners in digital technology, arts, research, and academia. In tech, it covers founders, engineers, product leaders, data scientists, AI researchers, and operators who have demonstrably shaped their sector.",
+            },
+            {
+              label: "How it works",
+              col: "#06B6D4",
+              body: "You apply to an endorsement body, which assesses your profile against a published criteria framework. Endorsement unlocks the visa application itself. Unlike Skilled Worker, no employer sponsor is required — you are endorsed on personal merit alone.",
+            },
+            {
+              label: "Why it matters",
+              col: "#F59E0B",
+              body: "Global Talent holders can work for any employer, switch freely between roles, work freelance or found a company, and fast-track to Indefinite Leave to Remain (ILR) in 3 years. It is the most flexible UK visa route for senior tech professionals.",
+            },
+          ].map((card, i) => (
+            <motion.div key={card.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+              className="card-border p-7">
+              <div className="w-8 h-1 rounded-full mb-4" style={{ background: card.col }} />
+              <h3 className="text-platinum font-semibold text-sm mb-3">{card.label}</h3>
+              <p className="text-platinum-dim text-sm leading-relaxed">{card.body}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-10">
+          <FadeUp>
+            <h3 className="text-platinum font-semibold text-lg mb-4 font-display">
+              Exceptional Talent vs Exceptional Promise
+            </h3>
+            <p className="text-platinum-dim text-sm leading-relaxed mb-4">
+              The digital technology route has two sub-categories. <strong className="text-platinum">Exceptional Talent</strong> is
+              for established leaders — professionals with a proven, externally-recognised track record of innovation
+              in the digital technology sector. <strong className="text-platinum">Exceptional Promise</strong> is for
+              those earlier in their career who show clear, demonstrable potential for future leadership.
+            </p>
+            <p className="text-platinum-dim text-sm leading-relaxed mb-4">
+              The distinction is widely misunderstood. It is not about years of experience.
+              It is about the type of evidence available to you. Talent requires evidence of established
+              sector-level impact. Promise requires evidence of rising trajectory.{" "}
+              <a href="/blog/exceptional-talent-vs-exceptional-promise" className="text-brand underline underline-offset-2 hover:opacity-80 transition-opacity">
+                Read the full breakdown →
+              </a>
+            </p>
+          </FadeUp>
+
+          <FadeUp delay={0.1}>
+            <h3 className="text-platinum font-semibold text-lg mb-4 font-display">
+              What makes applications fail
+            </h3>
+            <p className="text-platinum-dim text-sm leading-relaxed mb-4">
+              Most rejections are not caused by an under-qualified profile. They are caused by
+              evidence that is generic rather than specific, a personal statement that describes
+              a career instead of arguing a case, and recommendation letters that talk about a
+              working relationship instead of demonstrating sector-level impact.
+            </p>
+            <p className="text-platinum-dim text-sm leading-relaxed mb-4">
+              The assessment framework is structured and consistent. Evaluators are looking for
+              specific signals — scope of influence, independence of contribution, recognition
+              by peers — presented in a defined order. Applicants who don't know that structure
+              fail regardless of how strong their underlying work is.{" "}
+              <a href="/blog/why-tech-nation-applications-fail" className="text-brand underline underline-offset-2 hover:opacity-80 transition-opacity">
+                Why most applications fail →
+              </a>
+            </p>
+          </FadeUp>
+        </div>
+
+        <FadeUp delay={0.2} className="mt-10 card-border p-8 bg-brand/4">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+            <div className="flex-1">
+              <h3 className="text-platinum font-semibold text-base mb-2">
+                Global Talent vs Skilled Worker: which should you apply for?
+              </h3>
+              <p className="text-platinum-dim text-sm leading-relaxed">
+                If you can qualify for Global Talent, applying for Skilled Worker is one of the most costly decisions you can make.
+                Global Talent gives you full work freedom, no employer tie, and a faster ILR path.
+                Skilled Worker ties you to a sponsor and limits what you can do.{" "}
+                <a href="/blog/why-uk-global-talent-beats-skilled-worker" className="text-brand underline underline-offset-2 hover:opacity-80 transition-opacity">
+                  Read the comparison →
+                </a>
+              </p>
+            </div>
+            <a href="/scorecard"
+              className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm whitespace-nowrap flex-shrink-0">
+              Check my eligibility →
+            </a>
+          </div>
+        </FadeUp>
+      </div>
+    </section>
+  )
+}
+
 // ── FAQ ───────────────────────────────────────────────────────────────────────
 function FAQ() {
   const [open, setOpen] = useState<number | null>(null)
@@ -983,6 +1158,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <TrustBar />
+      <WhoThisIsFor />
       <Pain />
       <ScorecardCTA />
       <Services />
@@ -990,6 +1166,7 @@ export default function Home() {
       <AboutAmit />
       <Testimonial />
       <Pricing />
+      <VisaExplainer />
       <FAQ />
       <FinalCTA />
       <Footer />
