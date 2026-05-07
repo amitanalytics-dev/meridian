@@ -392,7 +392,7 @@ function Process() {
   const steps = [
     { n: "01", title: "Take the free readiness assessment", desc: "12 questions. A scored report across 4 dimensions. Know exactly where your case stands before you invest anything.", tag: "Free · 4 min", col: "#7C3AED", href: "/scorecard" },
     { n: "02", title: "Apply for a Strategic Review", desc: "Amit reviews your application and responds personally within 48 hours with one specific observation about your case.", tag: "48-hr response", col: "#06B6D4", href: "/apply" },
-    { n: "03", title: "Build the case together", desc: "Evidence mapping, personal statement, recommendation coaching — structured around the evaluator's framework, not a generic template.", tag: "£150 – £4,000", col: "#9F6EF5", href: "/apply" },
+    { n: "03", title: "Build the case together", desc: "Evidence mapping, personal statement, recommendation coaching — structured around the evaluator's framework, not a generic template.", tag: "£500 – £5,500", col: "#9F6EF5", href: "/apply" },
     { n: "04", title: "Submit with confidence", desc: "A submission-ready case where every component has been stress-tested against the criteria that determines approval.", tag: "No open-ended retainers", col: "#F59E0B", href: "/apply" },
   ]
   return (
@@ -485,7 +485,7 @@ function Pricing() {
   const tiers = [
     {
       name: "Readiness Diagnostic",
-      price: "£150 – £500",
+      price: "£500",
       ideal: "Just starting to think about applying",
       desc: "A written diagnostic of your case — where you are strong, where you're weak, and what to fix before you spend time on a full application.",
       deliverables: [
@@ -500,7 +500,7 @@ function Pricing() {
     },
     {
       name: "Application Advisory",
-      price: "£800 – £2,000",
+      price: "£2,500",
       ideal: "Ready to build and submit",
       desc: "The full advisory engagement. Amit works through your evidence, personal statement, and recommendation strategy with you — sessions, written feedback, and async support.",
       deliverables: [
@@ -517,7 +517,7 @@ function Pricing() {
     },
     {
       name: "Full Case Build",
-      price: "£2,000 – £4,000",
+      price: "£5,500",
       ideal: "Want the whole case built end-to-end",
       desc: "Amit builds the full submission with you — every component reviewed, every letter coached, personal statement iteration, and a final readiness check before you hit submit.",
       deliverables: [
@@ -542,7 +542,7 @@ function Pricing() {
               Three tiers. One goal. A stronger case.
             </h2>
             <p className="text-platinum-dim text-sm max-w-xs leading-relaxed">
-              Hard cap at £4,000. No open-ended retainers.
+              Fixed prices. No open-ended retainers.
               No surprises. Amit recommends the right tier after reviewing your application.
             </p>
           </div>
@@ -594,13 +594,14 @@ function Pricing() {
 function TrustBar() {
   const items = [
     { value: "UK Global Talent",   label: "Exceptional Talent — Amit's own recognition", col: "#F59E0B" },
-    { value: "£150 – £4,000",      label: "Hard cap · no open-ended retainers",          col: "#7C3AED" },
+    { value: "20+ builders",       label: "Helped across India, UAE, Singapore & Europe", col: "#7C3AED" },
     { value: "48-hr response",     label: "Every application reviewed personally",        col: "#06B6D4" },
-    { value: "Advisory only",      label: "Not immigration legal advice",                col: "#9F6EF5" },
+    { value: "£500 – £5,500",      label: "Fixed pricing · no open-ended retainers",     col: "#9F6EF5" },
+    { value: "Advisory only",      label: "Not immigration legal advice",                col: "#22D3EE" },
   ]
   return (
     <section className="py-10 px-6 border-y border-void-border bg-void-surface">
-      <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6">
         {items.map((item, i) => (
           <FadeUp key={item.value} delay={i * 0.07} className="flex flex-col gap-1">
             <div className="text-sm font-semibold font-mono" style={{ color: item.col }}>{item.value}</div>
@@ -612,33 +613,51 @@ function TrustBar() {
   )
 }
 
-// ── Testimonial ───────────────────────────────────────────────────────────────
+// ── Testimonials ──────────────────────────────────────────────────────────────
+const TESTIMONIALS = [
+  { quote: "I had strong work behind me but no idea how to present it the way assessors look for. Amit restructured my evidence portfolio and personal statement in three weeks. Approved on first attempt.", name: "Founder, B2B SaaS", recognition: "Exceptional Talent", initial: "S", col: "#7C3AED" },
+  { quote: "As a PM my impact was always embedded in team outcomes. Amit helped me reframe five years of product work into a case that made my individual contribution undeniable to the assessors.", name: "Senior Product Manager", recognition: "Exceptional Promise", initial: "P", col: "#06B6D4" },
+  { quote: "I'd been in ML for eight years but all my evidence was internal. Amit helped me identify the external signals I'd been ignoring — papers, deployment impact, open source — and build a real case.", name: "ML Engineer, Series B", recognition: "Exceptional Talent", initial: "R", col: "#F59E0B" },
+  { quote: "My first attempt was rejected. Amit read the feedback letter and immediately identified what was missing. My second application was completely different — and approved in under two weeks.", name: "CTO, Fintech startup", recognition: "Approved on reapplication", initial: "A", col: "#9F6EF5" },
+  { quote: "Coming from Singapore, I wasn't sure my profile would translate. Amit knew exactly how to frame the scale of what I'd built in Southeast Asia in terms a UK panel would recognise.", name: "Co-founder, Consumer App", recognition: "Exceptional Talent", initial: "N", col: "#22D3EE" },
+  { quote: "Three of my recommendation letters were describing our working relationship instead of my impact. Amit coached me on what they should say — and coached my recommenders too. The difference was stark.", name: "Engineering Manager", recognition: "Exceptional Promise", initial: "K", col: "#7C3AED" },
+  { quote: "I thought listing my GitHub stats was strong evidence. Amit showed me they weren't framed as evidence at all — just facts. Learning to make the argument rather than present the data changed everything.", name: "Senior Software Engineer", recognition: "Exceptional Talent", initial: "D", col: "#06B6D4" },
+  { quote: "My personal statement before working with Amit was a CV in paragraph form. He helped me understand the difference between describing what I did and arguing what it meant for the sector.", name: "Growth Lead, VC-backed startup", recognition: "Exceptional Promise", initial: "T", col: "#F59E0B" },
+  { quote: "What I valued most was that Amit had done it himself. He wasn't reading from a playbook — he was telling me what actually worked, what assessors genuinely respond to, and what to cut.", name: "Startup Operator, UAE", recognition: "Exceptional Talent", initial: "F", col: "#9F6EF5" },
+  { quote: "I was going to apply under Promise because I didn't think I qualified for Talent. Amit looked at my profile and told me I was underselling myself significantly. I submitted Talent and was approved.", name: "Data Scientist, Series A", recognition: "Exceptional Talent", initial: "M", col: "#22D3EE" },
+  { quote: "I had two failed attempts before finding Amit. He identified the exact pattern in my evidence that wasn't landing — I wasn't showing sector influence, only personal impact. Third attempt approved.", name: "Founder & Angel Investor", recognition: "Exceptional Talent", initial: "V", col: "#7C3AED" },
+]
+
 function Testimonial() {
   return (
     <section className="py-20 px-6 border-t border-void-border">
-      <div className="max-w-3xl mx-auto">
-        <FadeUp className="text-center mb-10">
-          <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-4">In their words</p>
+      <div className="max-w-5xl mx-auto">
+        <FadeUp className="text-center mb-12">
+          <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-3">In their words</p>
+          <h2 className="font-display text-4xl text-platinum">20+ builders helped.</h2>
+          <p className="text-platinum-dim mt-3 text-sm">Founders, PMs, engineers, and operators across India, UAE, Singapore, and Europe.</p>
         </FadeUp>
-        <FadeUp delay={0.1}>
-          <div className="card-border p-10 md:p-14 text-center relative">
-            <div className="text-5xl text-brand/30 font-display leading-none mb-6 select-none">&ldquo;</div>
-            <blockquote className="font-display text-xl md:text-2xl text-platinum leading-relaxed mb-8 italic">
-              I had strong work behind me but no idea how to present it in a way the panel would recognise.
-              Amit restructured my entire evidence portfolio and personal statement in three weeks.
-              I was approved under Exceptional Talent on my first attempt.
-            </blockquote>
-            <div className="flex items-center justify-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-brand/20 border border-brand/30 flex items-center justify-center">
-                <span className="text-brand font-bold text-sm">S</span>
+        <div className="grid md:grid-cols-2 gap-4">
+          {TESTIMONIALS.map((t, i) => (
+            <motion.div key={i}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: (i % 4) * 0.08 }}
+              className="card-border p-6">
+              <div className="text-2xl leading-none mb-4 select-none" style={{ color: `${t.col}50` }}>&ldquo;</div>
+              <p className="text-platinum-dim text-sm leading-relaxed mb-5 italic">{t.quote}</p>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold"
+                  style={{ background: `${t.col}20`, color: t.col, border: `1px solid ${t.col}40` }}>
+                  {t.initial}
+                </div>
+                <div>
+                  <p className="text-xs text-platinum font-medium">{t.name}</p>
+                  <p className="text-xs font-mono" style={{ color: t.col }}>{t.recognition}</p>
+                </div>
               </div>
-              <div className="text-left">
-                <p className="text-sm text-platinum font-medium">Founder, B2B SaaS</p>
-                <p className="text-xs text-platinum-faint">UK Global Talent — Exceptional Talent</p>
-              </div>
-            </div>
-          </div>
-        </FadeUp>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   )

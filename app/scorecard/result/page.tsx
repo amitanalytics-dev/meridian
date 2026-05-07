@@ -62,9 +62,9 @@ const SUB_META: Record<keyof SubScores, { label: string; col: string }> = {
 const TIER_COLORS = { 1: "#F59E0B", 2: "#06B6D4", 3: "#7C3AED" } as const
 
 const ADVISORY_LABELS = {
-  diagnostic:         "Credibility Diagnostic · £150–£500",
-  signal_architecture:"Signal Architecture · £800–£2,000",
-  builder_system:     "Builder Credibility System · £2,000–£4,000",
+  diagnostic:         "Readiness Diagnostic · £500",
+  signal_architecture:"Application Advisory · £2,500",
+  builder_system:     "Full Case Build · £5,500",
 }
 
 // ── Result inner ──────────────────────────────────────────────────────────────

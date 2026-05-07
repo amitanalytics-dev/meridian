@@ -12,9 +12,9 @@ const BANK = {
 }
 
 const TIERS = [
-  { name: "Readiness Diagnostic",  range: "£150 – £500",   col: "#7C3AED" },
-  { name: "Application Advisory",  range: "£800 – £2,000", col: "#06B6D4" },
-  { name: "Full Case Build",       range: "£2,000 – £4,000", col: "#F59E0B" },
+  { name: "Readiness Diagnostic",  range: "£500",   col: "#7C3AED" },
+  { name: "Application Advisory",  range: "£2,500", col: "#06B6D4" },
+  { name: "Full Case Build",       range: "£5,500", col: "#F59E0B" },
 ]
 
 function CopyButton({ text }: { text: string }) {

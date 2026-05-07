@@ -2,9 +2,9 @@
 
 @theme {
   /* ── 5 brand colors ─────────────────────── */
-  --color-void:           #06061A;
-  --color-void-surface:   #0E0E28;
-  --color-void-border:    #232348;
+  --color-void:           #0F172A;
+  --color-void-surface:   #1E293B;
+  --color-void-border:    #2D3D55;
   --color-brand:          #7C3AED;
   --color-brand-light:    #9F6EF5;
   --color-brand-dark:     #5B21B6;
@@ -55,7 +55,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #06061A;
+  background-color: #0F172A;
   color: #E8E8F4;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -66,7 +66,7 @@ body {
 
 /* ── Scrollbar ───────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 3px; }
-::-webkit-scrollbar-track { background: #0E0E28; }
+::-webkit-scrollbar-track { background: #1E293B; }
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg,#7C3AED,#06B6D4);
   border-radius: 2px;
@@ -95,7 +95,7 @@ body {
 /* ── Card with gradient border ───────────────────────── */
 .card-border {
   position: relative;
-  background: #0E0E28;
+  background: #1E293B;
   border-radius: 16px;
   border: 1px solid #232348;
   transition: border-color .3s ease, box-shadow .3s ease;
@@ -154,8 +154,8 @@ body {
 
 /* ── Input ───────────────────────────────────────────── */
 .input-field {
-  background: #0E0E28;
-  border: 1px solid #2A2A52;
+  background: #1E293B;
+  border: 1px solid #2D3D55;
   border-radius: 10px;
   color: #E8E8F4;
   padding: 14px 16px;
@@ -166,19 +166,19 @@ body {
   outline: none;
 }
 .input-field:hover {
-  border-color: #3A3A6A;
-  background: #11112E;
+  border-color: #3D5068;
+  background: #243447;
 }
 .input-field:focus {
   border-color: #7C3AED;
-  background: #11112E;
+  background: #243447;
   box-shadow: 0 0 0 3px rgba(124,58,237,.18);
 }
 .input-field::placeholder { color: #6868A0; }
 
 /* ── Shimmer skeleton ────────────────────────────────── */
 .shimmer-skeleton {
-  background: linear-gradient(90deg,#0E0E28 25%,#232348 50%,#0E0E28 75%);
+  background: linear-gradient(90deg,#1E293B 25%,#2D3D55 50%,#1E293B 75%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
