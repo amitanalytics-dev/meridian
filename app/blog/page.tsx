@@ -2,6 +2,8 @@ import Link from "next/link"
 import { getAllPosts, CATEGORIES } from "@/lib/blog"
 import type { Metadata } from "next"
 
+type Props = { searchParams: Promise<{ category?: string }> }
+
 export const metadata: Metadata = {
   title: "UK Global Talent Visa Insights & Strategy — Meridian Blog",
   description:
@@ -36,10 +38,12 @@ const CATEGORY_COLORS: Record<string, string> = {
   "Premium Insights":       "#7C3AED",
 }
 
-export default function BlogPage() {
+export default async function BlogPage({ searchParams }: Props) {
+  const { category: activeCategory } = await searchParams
   const posts = getAllPosts()
-  const featured = posts.filter((p) => p.featured).slice(0, 2)
-  const rest = posts.filter((p) => !p.featured)
+  const filtered = activeCategory ? posts.filter((p) => p.category === activeCategory) : posts
+  const featured = activeCategory ? [] : posts.filter((p) => p.featured).slice(0, 2)
+  const rest = activeCategory ? filtered : posts.filter((p) => !p.featured)
 
   return (
     <div className="min-h-screen">
@@ -102,15 +106,31 @@ export default function BlogPage() {
 
         {/* Category nav */}
         <div className="flex flex-wrap gap-2 mb-10">
+          <Link href="/blog"
+            className="text-xs font-mono px-3 py-1.5 rounded-full border transition-all"
+            style={{
+              borderColor: activeCategory ? "#ffffff20" : "#7C3AED",
+              color: activeCategory ? "#888" : "#7C3AED",
+              background: activeCategory ? "transparent" : "#7C3AED18",
+            }}>
+            All · {posts.length}
+          </Link>
           {CATEGORIES.map((cat) => {
             const col = CATEGORY_COLORS[cat] ?? "#7C3AED"
             const count = posts.filter((p) => p.category === cat).length
+            const isActive = activeCategory === cat
             return (
-              <span key={cat}
-                className="text-xs font-mono px-3 py-1.5 rounded-full border cursor-default"
-                style={{ borderColor: `${col}30`, color: col, background: `${col}08` }}>
+              <Link key={cat}
+                href={isActive ? "/blog" : `/blog?category=${encodeURIComponent(cat)}`}
+                className="text-xs font-mono px-3 py-1.5 rounded-full border transition-all"
+                style={{
+                  borderColor: isActive ? col : `${col}30`,
+                  color: col,
+                  background: isActive ? `${col}22` : `${col}08`,
+                  fontWeight: isActive ? 600 : 400,
+                }}>
                 {cat} · {count}
-              </span>
+              </Link>
             )
           })}
         </div>
