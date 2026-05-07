@@ -3,6 +3,11 @@
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { useRef, useEffect, useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
+
+// Spots remaining — hardcoded; update manually as needed
+const SPOTS_REMAINING = 67
+const SPOTS_TOTAL = 100
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function FadeUp({ children, delay = 0, className = "" }: {
@@ -116,14 +121,37 @@ function Hero() {
       <div className="orb-cyan absolute right-0 bottom-1/4 w-96 h-96 opacity-30" />
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-        {/* Amit's credential badge */}
+
+        {/* Urgency banner */}
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.05 }}
+          className="inline-flex mb-6">
+          <span className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-[#EF4444]/40 bg-[#EF4444]/8 text-sm font-medium text-[#EF4444]">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EF4444] opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#EF4444]" />
+            </span>
+            Only {SPOTS_REMAINING} of {SPOTS_TOTAL} free assessments remaining
+          </span>
+        </motion.div>
+
+        {/* Amit's credential badge with photo */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
           className="inline-flex mb-8">
           <a href="https://www.linkedin.com/in/amitisb1tyagi/"
             target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-gold/30 bg-gold/8 hover:bg-gold/15 hover:border-gold/50 transition-all">
-            <div className="w-2 h-2 rounded-full bg-gold" />
+            className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-gold/30 bg-gold/8 hover:bg-gold/15 hover:border-gold/50 transition-all">
+            <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gold/40 flex-shrink-0 bg-gradient-to-br from-brand to-data flex items-center justify-center">
+              <Image
+                src="/amit.jpg"
+                alt="Amit Tyagi"
+                width={32}
+                height={32}
+                className="w-full h-full object-cover"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
+              />
+            </div>
             <span className="text-sm text-gold font-medium">
               Amit Tyagi — UK Global Talent, Exceptional Talent
             </span>
@@ -147,7 +175,7 @@ function Hero() {
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.5 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
           <Link href="/scorecard"
             className="btn-primary text-white px-8 py-4 rounded-xl font-semibold text-base inline-flex items-center justify-center gap-2.5 shadow-[0_0_40px_rgba(124,58,237,0.4)]">
             Take the free readiness assessment
@@ -158,6 +186,12 @@ function Hero() {
             See Amit's story
           </a>
         </motion.div>
+
+        {/* Scarcity nudge under CTA */}
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}
+          className="text-xs text-[#EF4444] font-medium mb-10">
+          ⚡ Free · Takes 4 minutes · {SPOTS_REMAINING} spots left before this closes
+        </motion.p>
 
         {/* Proof strip */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
@@ -441,6 +475,25 @@ function AboutAmit() {
         <div className="grid md:grid-cols-2 gap-12 items-start">
           <FadeUp>
             <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-6">About Amit</p>
+            {/* Photo */}
+            <div className="flex items-center gap-4 mb-7">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-brand/30 flex-shrink-0 bg-gradient-to-br from-brand to-data flex items-center justify-center">
+                <Image
+                  src="/amit.jpg"
+                  alt="Amit Tyagi"
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-cover"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
+                />
+              </div>
+              <div>
+                <p className="text-platinum font-semibold text-base">Amit Tyagi</p>
+                <p className="text-xs text-platinum-faint">UK Global Talent — Exceptional Talent · Fintech Founder · LBS Sloan</p>
+                <a href="https://www.linkedin.com/in/amitisb1tyagi/" target="_blank" rel="noopener noreferrer"
+                  className="text-xs text-brand hover:underline">LinkedIn →</a>
+              </div>
+            </div>
             <h2 className="font-display text-4xl text-platinum mb-6 leading-tight">
               He didn&apos;t learn this from a textbook.
               <br />
@@ -548,9 +601,18 @@ function Pricing() {
         <FadeUp className="mb-14">
           <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-4">Pricing</p>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <h2 className="font-display text-4xl md:text-5xl text-platinum leading-tight max-w-xl">
-              Three tiers. One goal. A stronger case.
-            </h2>
+            <div>
+              <h2 className="font-display text-4xl md:text-5xl text-platinum leading-tight max-w-xl mb-3">
+                Three tiers. One goal. A stronger case.
+              </h2>
+              <span className="inline-flex items-center gap-2 text-xs font-medium text-[#EF4444] border border-[#EF4444]/30 bg-[#EF4444]/6 px-3 py-1.5 rounded-full">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EF4444] opacity-60" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#EF4444]" />
+                </span>
+                Amit takes {SPOTS_REMAINING} new clients per quarter — {SPOTS_REMAINING} spots open now
+              </span>
+            </div>
             <p className="text-platinum-dim text-sm max-w-xs leading-relaxed">
               Fixed prices. No open-ended retainers.
               No surprises. Amit recommends the right tier after reviewing your application.
