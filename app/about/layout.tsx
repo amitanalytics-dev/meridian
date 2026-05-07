@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     type: "profile",
   },
   alternates: {
-    canonical: "https://meridian-pi-mauve.vercel.app/about",
+    canonical: "https://meridiangtv.co.uk/about",
   },
 }
 

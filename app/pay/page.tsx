@@ -40,7 +40,10 @@ export default function PayPage() {
       {/* Header */}
       <div className="border-b border-void-border px-6 py-4">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <Link href="/" className="font-display text-lg text-gradient-brand">Meridian</Link>
+          <Link href="/" className="flex flex-col leading-none">
+            <span className="font-display text-base text-gradient-brand leading-none">Meridian</span>
+            <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
+          </Link>
           <span className="text-xs font-mono text-platinum-faint">Payment</span>
         </div>
       </div>

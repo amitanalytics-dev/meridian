@@ -109,7 +109,10 @@ function Navbar() {
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand to-data flex items-center justify-center">
             <span className="text-white text-xs font-bold">M</span>
           </div>
-          <span className="font-display text-lg text-platinum">Meridian</span>
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-base text-platinum leading-none">Meridian</span>
+            <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
+          </span>
         </Link>
         <div className="hidden md:flex items-center gap-7">
           {[["Services", "#services"], ["About", "#about"], ["Pricing", "#pricing"], ["Blog", "/blog"]].map(([l, h]) => (
@@ -1072,7 +1075,10 @@ function Footer() {
               <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand to-data flex items-center justify-center">
                 <span className="text-white text-xs font-bold">M</span>
               </div>
-              <span className="font-display text-lg text-platinum">Meridian</span>
+              <span className="flex flex-col leading-none">
+            <span className="font-display text-base text-platinum leading-none">Meridian</span>
+            <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
+          </span>
             </div>
             <p className="text-platinum-dim text-sm leading-relaxed max-w-xs mb-5">
               Strategic advisory for builders applying for UK Global Talent recognition.

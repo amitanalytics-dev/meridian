@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Inter, DM_Serif_Display, Geist_Mono } from "next/font/google"
 import "./globals.css"
 
-const SITE_URL = "https://meridian-pi-mauve.vercel.app"
+const SITE_URL = "https://meridiangtv.co.uk"
 
 const inter = Inter({
   variable: "--font-inter",
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
       "Strategic advisory for founders, engineers, and PMs applying for the UK Global Talent Visa. Evidence architecture and case strategy from an Exceptional Talent holder.",
     type: "website",
     locale: "en_GB",
-    siteName: "Meridian Advisory",
+    siteName: "Meridian Global Talent Visa",
     url: SITE_URL,
   },
   twitter: {
@@ -86,7 +86,7 @@ export const metadata: Metadata = {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "Meridian Advisory",
+  name: "Meridian Global Talent Visa",
   url: SITE_URL,
   description:
     "Strategic advisory for UK Global Talent Visa applicants. Evidence architecture, narrative engineering, and case strategy from Amit Tyagi — UK Exceptional Talent visa holder.",
@@ -123,13 +123,13 @@ const personSchema = {
     "Startups",
     "Founder credibility",
   ],
-  worksFor: { "@type": "Organization", name: "Meridian Advisory" },
+  worksFor: { "@type": "Organization", name: "Meridian Global Talent Visa" },
 }
 
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Meridian Advisory",
+  name: "Meridian Global Talent Visa",
   url: SITE_URL,
   description:
     "UK Global Talent Visa strategic advisory — evidence architecture, narrative engineering, and case strategy.",

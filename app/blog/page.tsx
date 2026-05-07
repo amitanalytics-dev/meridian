@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   alternates: {
-    canonical: "https://meridian-pi-mauve.vercel.app/blog",
+    canonical: "https://meridiangtv.co.uk/blog",
   },
 }
 
@@ -50,7 +50,10 @@ export default async function BlogPage({ searchParams }: Props) {
       {/* Header */}
       <div className="border-b border-void-border bg-white/60 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="font-display text-lg text-gradient-brand">Meridian</Link>
+          <Link href="/" className="flex flex-col leading-none">
+            <span className="font-display text-base text-gradient-brand leading-none">Meridian</span>
+            <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
+          </Link>
           <Link href="/scorecard" className="btn-primary text-xs text-white px-4 py-2 rounded-lg font-medium">
             Free assessment →
           </Link>

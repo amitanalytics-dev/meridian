@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   alternates: {
-    canonical: "https://meridian-pi-mauve.vercel.app/apply",
+    canonical: "https://meridiangtv.co.uk/apply",
   },
 }
 

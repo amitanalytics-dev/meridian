@@ -1,7 +1,7 @@
 import { getAllPosts } from "@/lib/blog"
 import type { MetadataRoute } from "next"
 
-const SITE_URL = "https://meridian-pi-mauve.vercel.app"
+const SITE_URL = "https://meridiangtv.co.uk"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = getAllPosts()
