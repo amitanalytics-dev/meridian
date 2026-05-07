@@ -179,7 +179,7 @@ Write a Reddit reply in Amit's first-person voice. Rules:
 - Reference something specific from their post to show you read it
 - Share one genuine, specific insight about what they described (evidence quality, narrative framing, category choice, etc.)
 - Mention that you went through this yourself and got Exceptional Talent
-- Softly mention you offer a free readiness assessment at https://meridian-pi-mauve.vercel.app/ — one natural sentence, not a pitch
+- Softly mention you offer a free readiness assessment at https://meridiangtv.co.uk/ — one natural sentence, not a pitch
 - DO NOT: use bullet points, headers, immigration jargon, hype language, salesy phrases, or guarantee any outcome
 - Length: 3–5 short paragraphs, conversational, no corporate polish
 - End naturally — no forced CTA

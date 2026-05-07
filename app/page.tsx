@@ -7,7 +7,7 @@ import Link from "next/link"
 const SPOTS_REMAINING = 67
 const SPOTS_TOTAL = 100
 
-const SITE_URL = "https://meridian-pi-mauve.vercel.app"
+const SITE_URL = "https://meridiangtv.co.uk"
 
 const homepageFAQSchema = {
   "@context": "https://schema.org",
