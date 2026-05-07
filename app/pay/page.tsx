@@ -150,6 +150,12 @@ export default function PayPage() {
                 <span className="w-5 h-5 rounded bg-[#25D366] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">W</span>
                 WhatsApp +44 7776 842287
               </a>
+              <a href="https://www.instagram.com/meridianglobaltalent/"
+                target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-[#E1306C]/30 bg-[#E1306C]/8 text-sm text-platinum hover:bg-[#E1306C]/15 transition-all">
+                <span className="w-5 h-5 rounded bg-[#E1306C] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">IG</span>
+                @meridianglobaltalent
+              </a>
             </div>
             <p className="text-sm text-platinum-dim leading-relaxed mb-4">
               Send a short email or message with:

@@ -59,6 +59,11 @@ function Navbar() {
             className="w-8 h-8 rounded-lg border border-[#25D366]/30 bg-[#25D366]/8 flex items-center justify-center text-[#25D366] hover:bg-[#25D366]/20 transition-all">
             <span className="font-bold" style={{ fontSize: "10px" }}>W</span>
           </a>
+          <a href="https://www.instagram.com/meridianglobaltalent/"
+            target="_blank" rel="noopener noreferrer" title="Instagram @meridianglobaltalent"
+            className="w-8 h-8 rounded-lg border border-[#E1306C]/30 bg-[#E1306C]/8 flex items-center justify-center text-[#E1306C] hover:bg-[#E1306C]/20 transition-all">
+            <span className="font-bold" style={{ fontSize: "10px" }}>IG</span>
+          </a>
           <Link href="/scorecard" className="btn-primary text-sm text-white px-5 py-2.5 rounded-lg font-medium">
             Check my readiness →
           </Link>
@@ -88,6 +93,11 @@ function Navbar() {
                 className="inline-flex items-center gap-2 text-sm text-platinum-dim hover:text-platinum transition-colors">
                 <span className="w-5 h-5 rounded bg-[#25D366] flex items-center justify-center text-white font-bold" style={{ fontSize: "9px" }}>W</span>
                 WhatsApp
+              </a>
+              <a href="https://www.instagram.com/meridianglobaltalent/" target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-platinum-dim hover:text-platinum transition-colors">
+                <span className="w-5 h-5 rounded bg-[#E1306C] flex items-center justify-center text-white font-bold" style={{ fontSize: "9px" }}>IG</span>
+                Instagram
               </a>
             </div>
           </motion.div>
@@ -805,6 +815,12 @@ function Footer() {
                 className="inline-flex items-center gap-2.5 text-sm text-platinum-dim hover:text-platinum transition-colors group">
                 <span className="w-7 h-7 rounded-lg bg-[#25D366]/15 border border-[#25D366]/30 flex items-center justify-center text-[#25D366] text-xs group-hover:bg-[#25D366]/25 transition-colors">W</span>
                 WhatsApp +44 7776 842287
+              </a>
+              <a href="https://www.instagram.com/meridianglobaltalent/"
+                target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 text-sm text-platinum-dim hover:text-platinum transition-colors group">
+                <span className="w-7 h-7 rounded-lg bg-[#E1306C]/15 border border-[#E1306C]/30 flex items-center justify-center text-[#E1306C] text-xs group-hover:bg-[#E1306C]/25 transition-colors">IG</span>
+                Instagram @meridianglobaltalent
               </a>
             </div>
           </div>
