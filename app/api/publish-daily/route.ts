@@ -30,6 +30,20 @@ export async function GET(req: NextRequest) {
   }
   const convex = new ConvexHttpClient(convexUrl)
 
+  // First: if there's a pending Anthropic batch, try to collect it.
+  // This is a best-effort fallback — the dedicated /api/collect-batch endpoint
+  // can also be hit manually to speed things up after the batch ends.
+  let collected: { succeeded?: number } = {}
+  if (process.env.BATCH_ID) {
+    try {
+      const url = `https://${req.headers.get("host")}/api/collect-batch`
+      const res = await fetch(url, { headers: { authorization: `Bearer ${process.env.CRON_SECRET}` } })
+      if (res.ok) collected = await res.json()
+    } catch {
+      // non-fatal — proceed to publish step
+    }
+  }
+
   let claimed
   try {
     claimed = await convex.mutation(api.scheduledBlogs.claimNextDue, { now: Date.now() })
@@ -38,7 +52,7 @@ export async function GET(req: NextRequest) {
   }
 
   if (!claimed) {
-    return NextResponse.json({ message: "nothing due" })
+    return NextResponse.json({ message: "nothing due", collected })
   }
 
   // Revalidate the affected pages so the new post is visible immediately.
@@ -63,5 +77,6 @@ export async function GET(req: NextRequest) {
     published: claimed.slug,
     title: claimed.title,
     deployTriggered,
+    collected,
   })
 }
