@@ -1,6 +1,8 @@
 import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
+import { ConvexHttpClient } from "convex/browser"
+import { api } from "@/convex/_generated/api"
 
 const BLOG_DIR = path.join(process.cwd(), "content/blog")
 
@@ -13,9 +15,13 @@ export interface BlogPost {
   readTime: string
   featured?: boolean
   content: string
+  source: "filesystem" | "convex"
 }
 
-export function getAllPosts(): BlogPost[] {
+// ── Filesystem-backed posts (the original 57) ─────────────────────────────────
+
+function readFsPosts(): BlogPost[] {
+  if (!fs.existsSync(BLOG_DIR)) return []
   const files = fs.readdirSync(BLOG_DIR)
   return files
     .filter((f) => f.endsWith(".mdx"))
@@ -23,23 +29,87 @@ export function getAllPosts(): BlogPost[] {
       const slug = f.replace(".mdx", "")
       const raw = fs.readFileSync(path.join(BLOG_DIR, f), "utf8")
       const { data, content } = matter(raw)
-      return { slug, content, ...data } as BlogPost
+      return { slug, content, ...data, source: "filesystem" } as BlogPost
     })
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
 
-export function getPost(slug: string): BlogPost | null {
+// ── Convex-backed posts (the daily-published batch generator output) ──────────
+
+function getConvexClient(): ConvexHttpClient | null {
+  const url = process.env.NEXT_PUBLIC_CONVEX_URL
+  if (!url) return null
+  return new ConvexHttpClient(url)
+}
+
+async function readConvexPosts(): Promise<BlogPost[]> {
+  const convex = getConvexClient()
+  if (!convex) return []
   try {
-    const raw = fs.readFileSync(path.join(BLOG_DIR, `${slug}.mdx`), "utf8")
-    const { data, content } = matter(raw)
-    return { slug, content, ...data } as BlogPost
+    const rows = await convex.query(api.scheduledBlogs.allPublished, {})
+    return rows.map((r) => ({
+      slug: r.slug,
+      title: r.title,
+      date: r.date,
+      category: r.category,
+      excerpt: r.excerpt,
+      readTime: r.readTime,
+      content: r.mdxBody,
+      featured: false,
+      source: "convex" as const,
+    }))
+  } catch {
+    return []
+  }
+}
+
+async function readConvexPost(slug: string): Promise<BlogPost | null> {
+  const convex = getConvexClient()
+  if (!convex) return null
+  try {
+    const row = await convex.query(api.scheduledBlogs.bySlug, { slug })
+    if (!row) return null
+    return {
+      slug: row.slug,
+      title: row.title,
+      date: row.date,
+      category: row.category,
+      excerpt: row.excerpt,
+      readTime: row.readTime,
+      content: row.mdxBody,
+      featured: false,
+      source: "convex",
+    }
   } catch {
     return null
   }
 }
 
-export function getPostsByCategory(category: string): BlogPost[] {
-  return getAllPosts().filter((p) => p.category === category)
+// ── Public API (async — callers must await) ───────────────────────────────────
+
+export async function getAllPosts(): Promise<BlogPost[]> {
+  const [fs, cv] = await Promise.all([Promise.resolve(readFsPosts()), readConvexPosts()])
+  // Filesystem wins on slug collision
+  const seen = new Set(fs.map((p) => p.slug))
+  const merged = [...fs, ...cv.filter((p) => !seen.has(p.slug))]
+  return merged.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}
+
+export async function getPost(slug: string): Promise<BlogPost | null> {
+  // Filesystem first
+  try {
+    const file = path.join(BLOG_DIR, `${slug}.mdx`)
+    const raw = fs.readFileSync(file, "utf8")
+    const { data, content } = matter(raw)
+    return { slug, content, ...data, source: "filesystem" } as BlogPost
+  } catch {
+    // Fall through to Convex
+  }
+  return await readConvexPost(slug)
+}
+
+export async function getPostsByCategory(category: string): Promise<BlogPost[]> {
+  const all = await getAllPosts()
+  return all.filter((p) => p.category === category)
 }
 
 export const CATEGORIES = [

@@ -3,17 +3,22 @@ import { MDXRemote } from "next-mdx-remote/rsc"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
+import { SiteFooter } from "@/components/SiteFooter"
 
 export async function generateStaticParams() {
-  const posts = getAllPosts()
+  const posts = await getAllPosts()
   return posts.map((p) => ({ slug: p.slug }))
 }
+
+// Allow dynamic rendering for slugs that exist in Convex but were added after build —
+// the daily cron triggers a redeploy, so this is mostly belt-and-braces.
+export const dynamicParams = true
 
 const SITE_URL = "https://meridiangtv.co.uk"
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = await getPost(slug)
   if (!post) return {}
   return {
     title: `${post.title}`,
@@ -53,11 +58,11 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = await getPost(slug)
   if (!post) notFound()
 
   const col = CATEGORY_COLORS[post.category] ?? "#7C3AED"
-  const allPosts = getAllPosts()
+  const allPosts = await getAllPosts()
   const related = allPosts.filter((p) => p.slug !== slug && p.category === post.category).slice(0, 3)
 
   const articleSchema = {
@@ -188,6 +193,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </div>
         )}
       </div>
+      <SiteFooter />
     </div>
   )
 }

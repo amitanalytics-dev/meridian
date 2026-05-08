@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { SiteFooter } from "@/components/SiteFooter"
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
@@ -153,6 +154,7 @@ export default function AboutPage() {
           </div>
         </motion.div>
       </div>
+      <SiteFooter />
     </div>
   )
 }

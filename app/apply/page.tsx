@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import Link from "next/link"
+import { SiteFooter } from "@/components/SiteFooter"
 
 interface FormData {
   name: string
@@ -258,6 +259,7 @@ export default function ApplyPage() {
           </div>
         </motion.div>
       </div>
+      <SiteFooter />
     </div>
   )
 }

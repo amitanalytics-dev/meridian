@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import Link from "next/link"
+import { SiteFooter } from "@/components/SiteFooter"
 
 const SECTIONS = [
   {
@@ -293,6 +294,7 @@ export default function LegalPage() {
           </div>
         </motion.div>
       </div>
+      <SiteFooter />
     </div>
   )
 }

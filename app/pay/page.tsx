@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { useState } from "react"
+import { SiteFooter } from "@/components/SiteFooter"
 
 const BANK = {
   name:    "Amit Tyagi",
@@ -220,6 +221,7 @@ export default function PayPage() {
           </div>
         </motion.div>
       </div>
+      <SiteFooter />
     </div>
   )
 }

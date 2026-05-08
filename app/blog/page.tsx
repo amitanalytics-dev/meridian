@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { getAllPosts, CATEGORIES } from "@/lib/blog"
 import type { Metadata } from "next"
+import { SiteFooter } from "@/components/SiteFooter"
 
 type Props = { searchParams: Promise<{ category?: string }> }
 
@@ -40,7 +41,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export default async function BlogPage({ searchParams }: Props) {
   const { category: activeCategory } = await searchParams
-  const posts = getAllPosts()
+  const posts = await getAllPosts()
   const filtered = activeCategory ? posts.filter((p) => p.category === activeCategory) : posts
   const featured = activeCategory ? [] : posts.filter((p) => p.featured).slice(0, 2)
   const rest = activeCategory ? filtered : posts.filter((p) => !p.featured)
@@ -181,6 +182,7 @@ export default async function BlogPage({ searchParams }: Props) {
           </Link>
         </div>
       </div>
+      <SiteFooter />
     </div>
   )
 }
