@@ -35,8 +35,19 @@ function getOrCreateSessionId(): string {
 const OPENING_MESSAGE: Message = {
   role: "assistant",
   content:
-    "Hi — I'm Aria. I help with questions about the UK Global Talent Visa and how Meridian works. What's on your mind?",
+    "Hi — I'm Aria, Amit's assistant. I'll point you to whether the UK Global Talent Visa fits, what your specific gaps are, and what to do next. Quickest start — pick one below or just tell me what you do.",
 }
+
+// Quick-reply chips shown only on the first turn (before user types anything).
+// These pre-fill the input and submit, jumping straight to Stage 2 qualification.
+const QUICK_REPLIES = [
+  "I'm a founder",
+  "I'm an engineer",
+  "I'm a PM/operator",
+  "I'm an AI researcher",
+  "I've been rejected before",
+  "Just researching",
+]
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false)
@@ -71,14 +82,14 @@ export function ChatWidget() {
     }
   }, [messages, emailSubmitted])
 
-  async function send() {
-    const trimmed = input.trim()
-    if (!trimmed || streaming) return
+  async function send(overrideText?: string) {
+    const text = (overrideText ?? input).trim()
+    if (!text || streaming) return
 
-    const userMsg: Message = { role: "user", content: trimmed }
+    const userMsg: Message = { role: "user", content: text }
     const next = [...messages, userMsg]
     setMessages([...next, { role: "assistant", content: "" }])
-    setInput("")
+    if (!overrideText) setInput("")
     setStreaming(true)
 
     try {
@@ -212,6 +223,21 @@ export function ChatWidget() {
                   </div>
                 </div>
               ))}
+
+              {/* Quick-reply chips — first turn only, before any user message exists */}
+              {messages.length === 1 && !streaming && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {QUICK_REPLIES.map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => send(q)}
+                      className="text-xs px-3 py-1.5 rounded-full border border-brand/30 bg-brand/8 text-platinum-dim hover:text-platinum hover:border-brand/60 hover:bg-brand/15 transition-all"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Email capture (revealed when assistant invites it) */}
@@ -258,7 +284,7 @@ export function ChatWidget() {
                   className="flex-1 resize-none rounded-xl bg-void border border-void-border px-4 py-2.5 text-sm text-platinum placeholder:text-platinum-faint focus:outline-none focus:border-brand/50 max-h-32"
                 />
                 <button
-                  onClick={send}
+                  onClick={() => send()}
                   disabled={streaming || !input.trim()}
                   className="px-4 py-2.5 rounded-xl bg-brand text-white text-sm font-medium hover:bg-brand-light disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
