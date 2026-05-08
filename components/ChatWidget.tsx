@@ -17,7 +17,10 @@ import { motion, AnimatePresence } from "framer-motion"
 interface Message {
   role: "user" | "assistant"
   content: string
+  chips?: string[]    // Quick-reply chips suggested for the NEXT user turn
 }
+
+const META_SENTINEL = "\n<<<__ARIA_META__>>>"
 
 const STORAGE_KEY = "meridian.aria.sessionId"
 const SEEN_KEY = "meridian.aria.seen"
@@ -121,14 +124,32 @@ export function ChatWidget() {
         const { value, done } = await reader.read()
         if (done) break
         acc += decoder.decode(value, { stream: true })
-        // Filter the qualification trailer client-side too as a safety net
-        const visible = acc.split(/\n?>>/)[0]
+        // Split on meta sentinel so the JSON tail never leaks into the visible reply
+        const visible = acc.split(META_SENTINEL)[0]
         setMessages((prev) => {
           const copy = [...prev]
           copy[copy.length - 1] = { role: "assistant", content: visible }
           return copy
         })
       }
+
+      // After streaming completes, parse the meta JSON for chips
+      const parts = acc.split(META_SENTINEL)
+      const finalReply = parts[0].trim()
+      let chips: string[] = []
+      if (parts[1]) {
+        try {
+          const meta = JSON.parse(parts[1].trim()) as { chips?: string[] }
+          if (Array.isArray(meta.chips)) chips = meta.chips
+        } catch {
+          /* ignore — chips just won't render */
+        }
+      }
+      setMessages((prev) => {
+        const copy = [...prev]
+        copy[copy.length - 1] = { role: "assistant", content: finalReply, chips }
+        return copy
+      })
     } finally {
       setStreaming(false)
     }
@@ -210,21 +231,42 @@ export function ChatWidget() {
 
             {/* Messages */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-5 space-y-4 bg-void">
-              {messages.map((m, i) => (
-                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div
-                    className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
-                      m.role === "user"
-                        ? "bg-brand text-white"
-                        : "bg-void-surface border border-void-border text-platinum-dim"
-                    }`}
-                  >
-                    {m.content || (streaming && i === messages.length - 1 ? <Dots /> : "")}
-                  </div>
-                </div>
-              ))}
+              {messages.map((m, i) => {
+                const isLastAssistant =
+                  m.role === "assistant" && i === messages.length - 1 && !streaming
+                return (
+                  <div key={i} className="space-y-2">
+                    <div className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                      <div
+                        className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
+                          m.role === "user"
+                            ? "bg-brand text-white"
+                            : "bg-void-surface border border-void-border text-platinum-dim"
+                        }`}
+                      >
+                        {m.content || (streaming && i === messages.length - 1 ? <Dots /> : "")}
+                      </div>
+                    </div>
 
-              {/* Quick-reply chips — first turn only, before any user message exists */}
+                    {/* Dynamic chips emitted by Aria for the NEXT user turn */}
+                    {isLastAssistant && m.chips && m.chips.length > 0 && (
+                      <div className="flex flex-wrap gap-2 pl-1">
+                        {m.chips.map((chip) => (
+                          <button
+                            key={chip}
+                            onClick={() => send(chip)}
+                            className="text-xs px-3 py-1.5 rounded-full border border-brand/30 bg-brand/8 text-platinum-dim hover:text-platinum hover:border-brand/60 hover:bg-brand/15 transition-all"
+                          >
+                            {chip}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+
+              {/* First-turn fallback chips (before any user message exists) */}
               {messages.length === 1 && !streaming && (
                 <div className="flex flex-wrap gap-2 pt-2">
                   {QUICK_REPLIES.map((q) => (
