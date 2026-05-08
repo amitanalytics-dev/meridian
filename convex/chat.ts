@@ -114,3 +114,28 @@ export const markAmitNotified = mutation({
     if (lead) await ctx.db.patch(lead._id, { notifiedAmit: true })
   },
 })
+
+// ── Feedback (end-of-chat) ────────────────────────────────────────────────────
+
+export const submitFeedback = mutation({
+  args: {
+    sessionId:    v.string(),
+    rating:       v.number(),
+    comment:      v.optional(v.string()),
+    emailShared:  v.optional(v.string()),
+    messageCount: v.number(),
+    pageContext:  v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now()
+    return await ctx.db.insert("chatFeedback", {
+      sessionId:    args.sessionId,
+      rating:       args.rating,
+      comment:      args.comment,
+      emailShared:  args.emailShared,
+      messageCount: args.messageCount,
+      pageContext:  args.pageContext,
+      createdAt:    now,
+    })
+  },
+})

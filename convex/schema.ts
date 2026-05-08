@@ -107,4 +107,15 @@ export default defineSchema({
     notifiedAmit:  v.boolean(),
     createdAt:     v.number(),
   }).index("by_session", ["sessionId"]),
+
+  // End-of-chat feedback (rating + optional comment, optional email)
+  chatFeedback: defineTable({
+    sessionId:    v.string(),
+    rating:       v.number(),                // 1–5
+    comment:      v.optional(v.string()),
+    emailShared:  v.optional(v.string()),    // captured here if user opted to email Amit on exit
+    messageCount: v.number(),
+    pageContext:  v.optional(v.string()),    // URL where chat was open
+    createdAt:    v.number(),
+  }).index("by_session", ["sessionId"]),
 })
