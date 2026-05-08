@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { revalidatePath } from "next/cache"
 import { ConvexHttpClient } from "convex/browser"
 import { api } from "@/convex/_generated/api"
 
@@ -40,7 +41,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: "nothing due" })
   }
 
-  // Trigger a redeploy so the published post enters the static build
+  // Revalidate the affected pages so the new post is visible immediately.
+  // (No deploy hook needed — Next's on-demand revalidation handles it.)
+  revalidatePath("/blog")
+  revalidatePath("/sitemap.xml")
+  revalidatePath(`/blog/${claimed.slug}`)
+
+  // Optional: also trigger a Vercel redeploy if a hook URL is configured —
+  // belt-and-braces for cases where ISR revalidation isn't enough.
   let deployTriggered = false
   if (process.env.VERCEL_DEPLOY_HOOK_URL) {
     try {
