@@ -108,7 +108,7 @@ function Navbar() {
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-brand/50 via-data/70 to-[#E1306C]/50" />
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <Image src="/logo.png" alt="Meridian" width={36} height={36} className="rounded-xl" />
+          <Image src="/logo.png" alt="Meridian" width={48} height={48} style={{ mixBlendMode: "screen" }} />
           <span className="flex flex-col leading-none">
             <span className="font-display text-lg leading-none" style={{ background: "linear-gradient(90deg, #7C3AED, #06B6D4, #D97706)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Meridian</span>
             <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
@@ -1068,7 +1068,7 @@ function Footer() {
         <div className="grid md:grid-cols-5 gap-10 mb-10">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
-              <Image src="/logo.png" alt="Meridian" width={28} height={28} className="rounded-lg" />
+              <Image src="/logo.png" alt="Meridian" width={40} height={40} style={{ mixBlendMode: "screen" }} />
               <span className="flex flex-col leading-none">
                 <span className="font-display text-base text-platinum leading-none">Meridian</span>
                 <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>

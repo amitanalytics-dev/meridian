@@ -50,7 +50,7 @@ export function SiteFooter() {
           {/* Brand + socials */}
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <Image src="/logo.png" alt="Meridian" width={28} height={28} className="rounded-lg" />
+              <Image src="/logo.png" alt="Meridian" width={40} height={40} style={{ mixBlendMode: "screen" }} />
               <span className="flex flex-col leading-none">
                 <span className="font-display text-base text-platinum leading-none">Meridian</span>
                 <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
