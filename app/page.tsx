@@ -3,6 +3,7 @@
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { useRef, useEffect, useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 // Spots remaining — hardcoded; update manually as needed
 const SPOTS_REMAINING = 67
 const SPOTS_TOTAL = 100
@@ -107,9 +108,7 @@ function Navbar() {
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-brand/50 via-data/70 to-[#E1306C]/50" />
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand via-data to-[#06B6D4] flex items-center justify-center shadow-lg shadow-brand/40">
-            <span className="text-white text-sm font-black">M</span>
-          </div>
+          <Image src="/logo.png" alt="Meridian" width={36} height={36} className="rounded-xl" />
           <span className="flex flex-col leading-none">
             <span className="font-display text-lg leading-none" style={{ background: "linear-gradient(90deg, #7C3AED, #06B6D4, #D97706)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Meridian</span>
             <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
@@ -1069,13 +1068,11 @@ function Footer() {
         <div className="grid md:grid-cols-5 gap-10 mb-10">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand to-data flex items-center justify-center">
-                <span className="text-white text-xs font-bold">M</span>
-              </div>
+              <Image src="/logo.png" alt="Meridian" width={28} height={28} className="rounded-lg" />
               <span className="flex flex-col leading-none">
-            <span className="font-display text-base text-platinum leading-none">Meridian</span>
-            <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
-          </span>
+                <span className="font-display text-base text-platinum leading-none">Meridian</span>
+                <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
+              </span>
             </div>
             <p className="text-platinum-dim text-sm leading-relaxed max-w-xs mb-5">
               Strategic advisory for builders applying for UK Global Talent recognition.

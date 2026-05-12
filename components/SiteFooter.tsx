@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 
 /**
  * Shared site-wide footer.
@@ -49,9 +50,7 @@ export function SiteFooter() {
           {/* Brand + socials */}
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand to-data flex items-center justify-center">
-                <span className="text-white text-xs font-bold">M</span>
-              </div>
+              <Image src="/logo.png" alt="Meridian" width={28} height={28} className="rounded-lg" />
               <span className="flex flex-col leading-none">
                 <span className="font-display text-base text-platinum leading-none">Meridian</span>
                 <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
