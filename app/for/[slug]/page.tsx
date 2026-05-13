@@ -2,6 +2,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { SiteFooter } from "@/components/SiteFooter"
+import { SiteNav } from "@/components/SiteNav"
 
 const SITE_URL = "https://meridiangtv.co.uk"
 
@@ -544,7 +545,7 @@ export default async function AudiencePage({ params }: { params: Promise<{ slug:
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-      { "@type": "ListItem", position: 2, name: "Knowledge Hub", item: `${SITE_URL}/knowledge` },
+      { "@type": "ListItem", position: 2, name: "Who it's for", item: `${SITE_URL}/#who` },
       { "@type": "ListItem", position: 3, name: audience.primaryKeyword, item: `${SITE_URL}/for/${audience.slug}` },
     ],
   }
@@ -575,49 +576,65 @@ export default async function AudiencePage({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <div className="min-h-screen bg-void">
+    <div className="min-h-screen" style={{ background: "var(--color-canvas)" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
-      {/* Header */}
-      <div className="border-b border-void-border px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex flex-col leading-none">
-            <span className="font-display text-base text-gradient-brand leading-none">Meridian</span>
-            <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
-          </Link>
-          <Link href="/scorecard" className="btn-primary text-xs text-white px-4 py-2 rounded-lg font-medium">
-            Free assessment →
-          </Link>
-        </div>
-      </div>
+      <SiteNav />
 
-      <article className="max-w-3xl mx-auto px-6 py-16">
-        <header className="mb-14">
-          <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-4">For {audience.plural}</p>
-          <h1 className="font-display text-4xl md:text-5xl text-platinum mb-5 leading-tight">{audience.h1}</h1>
-          <p className="text-platinum-dim text-lg leading-relaxed">{audience.intro}</p>
-        </header>
+      {/* Hero */}
+      <section style={{
+        background: "radial-gradient(800px 500px at 22% 0%, rgba(91,33,182,.12), transparent 60%), var(--color-canvas)",
+        padding: "64px 0 48px",
+      }}>
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="flex items-center gap-3 flex-wrap mb-7 font-mono text-[11px] tracking-[0.1em]"
+            style={{ color: "var(--color-ink-faint)" }}>
+            <Link href="/" style={{ color: "var(--color-violet)", fontWeight: 600 }}>← Home</Link>
+            <span style={{ color: "var(--color-line)" }}>/</span>
+            <span className="px-3 py-1 rounded-full uppercase tracking-[0.14em] font-semibold text-[10px]"
+              style={{ background: "rgba(91,33,182,.08)", color: "var(--color-violet)" }}>
+              For {audience.plural}
+            </span>
+          </div>
+          <h1 className="font-display leading-tight mb-6"
+            style={{ fontSize: "clamp(36px, 5vw, 60px)", letterSpacing: "-0.025em", color: "var(--color-ink)" }}>
+            {audience.h1}
+          </h1>
+          <p className="text-lg leading-relaxed max-w-2xl" style={{ color: "var(--color-ink-soft)" }}>
+            {audience.intro}
+          </p>
+        </div>
+      </section>
+
+      <article className="max-w-3xl mx-auto px-6 py-14">
 
         {/* Category guidance */}
-        <section className="card-border p-7 mb-12" aria-label="Category guidance">
-          <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-3">Talent vs Promise</p>
-          <p className="text-platinum-dim leading-relaxed">{audience.category}</p>
+        <section className="mb-12 p-7 rounded-2xl" aria-label="Category guidance"
+          style={{ background: "var(--color-paper)", border: "1px solid var(--color-line)" }}>
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] mb-3" style={{ color: "var(--color-violet)" }}>
+            Exceptional Talent vs Exceptional Promise
+          </p>
+          <p className="leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>{audience.category}</p>
         </section>
 
         {/* Evidence focus */}
         <section className="mb-14" aria-label="Strongest evidence">
-          <h2 className="font-display text-3xl text-platinum mb-3 leading-tight">
+          <h2 className="font-display mb-3 leading-tight"
+            style={{ fontSize: "clamp(26px, 3.5vw, 36px)", letterSpacing: "-0.02em", color: "var(--color-ink)" }}>
             What evidence matters most for {audience.plural.toLowerCase()}
           </h2>
-          <p className="text-platinum-dim mb-6 leading-relaxed">
+          <p className="mb-7 leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
             The Tech Nation framework applies universally — but the evidence that lands strongest looks different
             for each profession. For {audience.plural.toLowerCase()}, the strongest signals are:
           </p>
           <ul className="space-y-3">
-            {audience.evidenceFocus.map((e) => (
-              <li key={e} className="card-border p-5 flex gap-4 text-sm text-platinum-dim leading-relaxed">
-                <span className="text-brand flex-shrink-0 mt-0.5">✦</span>
+            {audience.evidenceFocus.map((e, i) => (
+              <li key={e} className="flex gap-4 p-5 rounded-xl text-sm leading-relaxed"
+                style={{ background: "var(--color-paper)", border: "1px solid var(--color-line)", color: "var(--color-ink-soft)" }}>
+                <span className="font-mono text-xs flex-shrink-0 mt-0.5" style={{ color: "var(--color-violet)" }}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
                 {e}
               </li>
             ))}
@@ -626,17 +643,19 @@ export default async function AudiencePage({ params }: { params: Promise<{ slug:
 
         {/* Common gaps */}
         <section className="mb-14" aria-label="Common gaps">
-          <h2 className="font-display text-3xl text-platinum mb-3 leading-tight">
+          <h2 className="font-display mb-3 leading-tight"
+            style={{ fontSize: "clamp(26px, 3.5vw, 36px)", letterSpacing: "-0.02em", color: "var(--color-ink)" }}>
             Where {audience.plural.toLowerCase()} typically lose the case
           </h2>
-          <p className="text-platinum-dim mb-6 leading-relaxed">
+          <p className="mb-7 leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
             These are the patterns that cause strong {audience.plural.toLowerCase()} to receive rejections — usually
             structural, not credentials-based.
           </p>
           <ul className="space-y-3">
             {audience.commonGaps.map((g) => (
-              <li key={g} className="card-border p-5 flex gap-4 text-sm text-platinum-dim leading-relaxed">
-                <span className="text-[#EF4444] flex-shrink-0 mt-0.5">✕</span>
+              <li key={g} className="flex gap-4 p-5 rounded-xl text-sm leading-relaxed"
+                style={{ background: "var(--color-paper)", border: "1px solid var(--color-line)", borderLeft: "3px solid var(--color-red)", color: "var(--color-ink-soft)" }}>
+                <span className="flex-shrink-0 mt-0.5" style={{ color: "var(--color-red)" }}>✕</span>
                 {g}
               </li>
             ))}
@@ -645,61 +664,75 @@ export default async function AudiencePage({ params }: { params: Promise<{ slug:
 
         {/* FAQ */}
         <section className="mb-14" aria-label="FAQ">
-          <h2 className="font-display text-3xl text-platinum mb-6 leading-tight">Common questions</h2>
+          <h2 className="font-display mb-6 leading-tight"
+            style={{ fontSize: "clamp(26px, 3.5vw, 36px)", letterSpacing: "-0.02em", color: "var(--color-ink)" }}>
+            Common questions
+          </h2>
           <div className="space-y-3">
             {faqs.map((f) => (
-              <details key={f.q} className="card-border p-6 group">
-                <summary className="font-display text-base text-platinum cursor-pointer list-none flex items-center justify-between gap-4">
+              <details key={f.q} className="group rounded-xl overflow-hidden"
+                style={{ background: "var(--color-paper)", border: "1px solid var(--color-line)" }}>
+                <summary className="flex items-center justify-between gap-4 p-6 cursor-pointer list-none font-semibold"
+                  style={{ color: "var(--color-ink)" }}>
                   <span>{f.q}</span>
-                  <span className="text-brand text-2xl flex-shrink-0 group-open:rotate-45 transition-transform">+</span>
+                  <span className="text-2xl flex-shrink-0 transition-transform group-open:rotate-45"
+                    style={{ color: "var(--color-violet)" }}>+</span>
                 </summary>
-                <p className="mt-4 pt-4 border-t border-void-border text-platinum-dim text-sm leading-relaxed">{f.a}</p>
+                <p className="px-6 pb-6 text-sm leading-relaxed"
+                  style={{ color: "var(--color-ink-soft)", borderTop: "1px solid var(--color-line)", paddingTop: 16 }}>
+                  {f.a}
+                </p>
               </details>
             ))}
           </div>
         </section>
 
-        {/* Internal links */}
+        {/* Related links */}
         <section className="mb-14" aria-label="Related">
-          <h2 className="font-display text-2xl text-platinum mb-6 leading-tight">Related</h2>
+          <h2 className="font-display text-2xl mb-5 leading-tight" style={{ color: "var(--color-ink)" }}>Related</h2>
           <div className="space-y-2">
-            <Link href="/knowledge"
-              className="card-border p-5 group hover:shadow-md transition-all flex items-center justify-between gap-4 block">
-              <span className="text-platinum">UK Global Talent Visa knowledge hub — full guide</span>
-              <span className="text-brand group-hover:translate-x-1 transition-transform">→</span>
-            </Link>
-            <Link href="/methodology"
-              className="card-border p-5 group hover:shadow-md transition-all flex items-center justify-between gap-4 block">
-              <span className="text-platinum">How Meridian builds cases — methodology</span>
-              <span className="text-brand group-hover:translate-x-1 transition-transform">→</span>
-            </Link>
-            <Link href="/blog"
-              className="card-border p-5 group hover:shadow-md transition-all flex items-center justify-between gap-4 block">
-              <span className="text-platinum">Strategy blog — evidence, narrative, and recommendation deep dives</span>
-              <span className="text-brand group-hover:translate-x-1 transition-transform">→</span>
-            </Link>
+            {[
+              { href: "/knowledge", label: "UK Global Talent Visa knowledge hub — full guide" },
+              { href: "/methodology", label: "How Meridian builds cases — methodology" },
+              { href: "/blog", label: "Strategy blog — evidence, narrative, and recommendation deep dives" },
+            ].map(({ href, label }) => (
+              <Link key={href} href={href}
+                className="group flex items-center justify-between gap-4 p-5 rounded-xl transition-all hover:shadow-sm"
+                style={{ background: "var(--color-paper)", border: "1px solid var(--color-line)", color: "var(--color-ink)" }}>
+                <span className="text-sm">{label}</span>
+                <span className="flex-shrink-0 transition-transform group-hover:translate-x-1"
+                  style={{ color: "var(--color-violet)" }}>→</span>
+              </Link>
+            ))}
           </div>
         </section>
 
         {/* CTA */}
-        <section className="card-border p-10 text-center">
-          <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-3">Where do you stand?</p>
-          <h2 className="font-display text-2xl text-platinum mb-4">Take the free 4-minute readiness assessment.</h2>
-          <p className="text-platinum-dim mb-7 max-w-md mx-auto text-sm leading-relaxed">
+        <section className="p-10 rounded-2xl text-center"
+          style={{ background: "var(--color-paper)", border: "2px solid rgba(91,33,182,.2)", borderRadius: 20 }}>
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] mb-3" style={{ color: "var(--color-violet)" }}>
+            Where do you stand?
+          </p>
+          <h2 className="font-display text-2xl mb-4 leading-tight" style={{ color: "var(--color-ink)", letterSpacing: "-0.02em" }}>
+            Take the free 4-minute readiness assessment.
+          </h2>
+          <p className="text-sm leading-relaxed mb-7 max-w-sm mx-auto" style={{ color: "var(--color-ink-soft)" }}>
             12 questions. Scored breakdown across the four credibility dimensions. Built for {audience.plural.toLowerCase()}.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/scorecard"
-              className="btn-primary inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-white font-semibold text-sm">
+              className="btn-primary inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-white font-semibold text-sm">
               Check my readiness — free →
             </Link>
             <Link href="/apply"
-              className="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-medium text-platinum">
+              className="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-medium"
+              style={{ color: "var(--color-ink)", borderColor: "var(--color-line)" }}>
               Apply to work with Amit
             </Link>
           </div>
         </section>
       </article>
+
       <SiteFooter />
     </div>
   )
