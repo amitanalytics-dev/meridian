@@ -23,9 +23,7 @@ export const metadata: Metadata = {
       "Expert strategy and deep-dive analysis on UK Global Talent Visa applications. Written by Amit Tyagi — Exceptional Talent holder.",
     type: "website",
   },
-  alternates: {
-    canonical: "https://meridiangtv.co.uk/blog",
-  },
+  alternates: { canonical: "https://meridiangtv.co.uk/blog" },
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -39,149 +37,214 @@ const CATEGORY_COLORS: Record<string, string> = {
   "Premium Insights":       "#7C3AED",
 }
 
+// Deterministic colour cycling for visual card variety
+const CARD_GRADIENTS = [
+  "linear-gradient(135deg, #2E0F69 0%, #5B21B6 50%, #6D28D9 100%)",
+  "linear-gradient(135deg, #1A1530 0%, #5B21B6 70%, #B8893B 100%)",
+  "linear-gradient(135deg, #5B21B6 0%, #B8893B 100%)",
+  "linear-gradient(135deg, #1A1530 0%, #2E0F69 60%, #B8893B 100%)",
+  "linear-gradient(135deg, #2E0F69 0%, #1A1530 100%)",
+]
+
 export default async function BlogPage({ searchParams }: Props) {
   const { category: activeCategory } = await searchParams
-  const posts = await getAllPosts()
-  const filtered = activeCategory ? posts.filter((p) => p.category === activeCategory) : posts
-  const featured = activeCategory ? [] : posts.filter((p) => p.featured).slice(0, 2)
-  const rest = activeCategory ? filtered : posts.filter((p) => !p.featured)
+  const posts   = await getAllPosts()
+  const filtered = activeCategory ? posts.filter(p => p.category === activeCategory) : posts
+  const featured = activeCategory ? [] : posts.filter(p => p.featured).slice(0, 1)
+  const rest     = activeCategory ? filtered : posts.filter(p => !p.featured)
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <div className="border-b border-void-border bg-white/60 backdrop-blur-sm sticky top-0 z-40">
+    <div className="min-h-screen" style={{ background: "var(--color-canvas)" }}>
+
+      {/* ── Nav ─────────────────────────────────────────── */}
+      <nav style={{ borderBottom: "1px solid var(--color-line)", background: "rgba(246,241,231,0.9)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 40 }}>
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="flex flex-col leading-none">
-            <span className="font-display text-base text-gradient-brand leading-none">Meridian</span>
-            <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
+          <Link href="/" className="flex items-center gap-2.5">
+            <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="18" stroke="var(--color-violet)" strokeWidth="1.5"/>
+              <ellipse cx="24" cy="24" rx="7.5" ry="18" stroke="var(--color-violet)" strokeWidth="1.5"/>
+              <line x1="6" y1="24" x2="42" y2="24" stroke="var(--color-violet)" strokeWidth="1.5"/>
+              <circle cx="24" cy="6" r="2.3" fill="var(--color-violet)"/>
+            </svg>
+            <div>
+              <div className="font-display text-sm leading-none" style={{ color: "var(--color-ink)" }}>Meridian</div>
+              <div className="font-mono text-[9px] uppercase tracking-widest leading-none mt-0.5" style={{ color: "var(--color-ink-faint)" }}>Global Talent Advisory</div>
+            </div>
           </Link>
-          <Link href="/scorecard" className="btn-primary text-xs text-white px-4 py-2 rounded-lg font-medium">
-            Free assessment →
+          <div className="hidden md:flex items-center gap-6">
+            {[["/#services","Services"],["/about","About"],["/#pricing","Pricing"],["/blog","Blog"]].map(([href, label]) => (
+              <Link key={label} href={href} className="text-sm font-medium transition-colors" style={{ color: "var(--color-ink-soft)" }}>{label}</Link>
+            ))}
+          </div>
+          <Link href="/scorecard" className="btn-primary text-xs text-white px-4 py-2 rounded-full font-medium">
+            Check my readiness →
           </Link>
         </div>
-      </div>
+      </nav>
 
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        {/* Title */}
-        <div className="mb-14">
-          <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-4">Meridian Insights</p>
-          <h1 className="font-display text-5xl md:text-6xl text-platinum mb-4 leading-tight">
-            Built for founders.<br />
-            <span className="text-gradient-brand">Not for applicants.</span>
-          </h1>
-          <p className="text-platinum-dim text-lg max-w-2xl leading-relaxed">
-            Strategic thinking on credibility, evidence, and career positioning for ambitious
-            technology professionals building toward global recognition.
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section style={{ background: "radial-gradient(800px 500px at 22% 0%, rgba(91,33,182,.15), transparent 60%), radial-gradient(600px 400px at 85% 30%, rgba(184,137,59,.12), transparent 60%), var(--color-canvas)", padding: "80px 0 56px" }}>
+        <div className="max-w-6xl mx-auto px-6">
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] mb-5" style={{ color: "var(--color-violet)" }}>
+            Insights
           </p>
-        </div>
+          <h1 className="font-display leading-tight mb-5 max-w-4xl" style={{ fontSize: "clamp(40px, 5.5vw, 64px)", letterSpacing: "-0.025em", color: "var(--color-ink)" }}>
+            Field notes from{" "}
+            <span className="text-gradient-brand italic">inside the framework.</span>
+          </h1>
+          <p className="text-lg max-w-2xl mb-10 leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
+            Specific, useful writing about what evaluators actually look for, why strong applicants get
+            rejected, and how to architect a case that lands. By Amit Tyagi.
+          </p>
 
-        {/* Featured posts */}
-        {featured.length > 0 && (
-          <div className="grid md:grid-cols-2 gap-6 mb-14">
-            {featured.map((post) => {
-              const col = CATEGORY_COLORS[post.category] ?? "#7C3AED"
+          {/* Filter chips */}
+          <div className="flex flex-wrap gap-2.5">
+            <Link href="/blog"
+              className="px-4 py-2 rounded-full text-sm font-medium border transition-all"
+              style={!activeCategory
+                ? { background: "var(--color-ink)", color: "white", border: "1px solid var(--color-ink)" }
+                : { background: "var(--color-paper)", color: "var(--color-ink-soft)", border: "1px solid var(--color-line)" }}>
+              All
+            </Link>
+            {CATEGORIES.map(cat => {
+              const isActive = activeCategory === cat
               return (
-                <Link key={post.slug} href={`/blog/${post.slug}`}
-                  className="card-border p-8 group hover:shadow-lg transition-all duration-300 block">
-                  <div className="flex items-center gap-3 mb-5">
-                    <span className="text-xs font-mono px-2.5 py-1 rounded-full"
-                      style={{ background: `${col}12`, color: col }}>
-                      {post.category}
-                    </span>
-                    <span className="text-xs text-platinum-faint">{post.readTime}</span>
+                <Link key={cat}
+                  href={isActive ? "/blog" : `/blog?category=${encodeURIComponent(cat)}`}
+                  className="px-4 py-2 rounded-full text-sm font-medium border transition-all"
+                  style={isActive
+                    ? { background: "var(--color-ink)", color: "white", border: "1px solid var(--color-ink)" }
+                    : { background: "var(--color-paper)", color: "var(--color-ink-soft)", border: "1px solid var(--color-line)" }}>
+                  {cat}
+                </Link>
+              )
+            })}
+          </div>
+
+          {/* Featured post */}
+          {featured.length > 0 && featured.map(post => {
+            const col = CATEGORY_COLORS[post.category] ?? "#7C3AED"
+            return (
+              <Link key={post.slug} href={`/blog/${post.slug}`}
+                className="mt-14 grid md:grid-cols-[1.3fr_1fr] rounded-3xl overflow-hidden block transition-all hover:-translate-y-1"
+                style={{ background: "var(--color-paper)", border: "1px solid var(--color-line)", boxShadow: "var(--shadow-lift)" }}>
+                {/* Image pane */}
+                <div className="relative overflow-hidden flex items-center justify-center"
+                  style={{ aspectRatio: "1.3", background: "linear-gradient(135deg, #2E0F69, #5B21B6 60%, #1A1530)" }}>
+                  <div className="absolute inset-0"
+                    style={{ background: "radial-gradient(circle at 30% 30%, rgba(184,137,59,.3), transparent 55%), radial-gradient(circle at 70% 70%, rgba(91,33,182,.4), transparent 55%)" }} />
+                  <div className="absolute top-6 left-6 font-mono text-[11px] uppercase tracking-[0.2em]" style={{ color: "rgba(255,255,255,0.7)", zIndex: 1 }}>
+                    FEATURED · {post.readTime?.toUpperCase()}
                   </div>
-                  <h2 className="font-display text-2xl text-platinum mb-3 leading-tight group-hover:text-brand transition-colors">
+                  <span className="font-display italic relative z-10 leading-none" style={{ fontSize: 200, color: "rgba(255,255,255,0.9)" }}>
+                    i.
+                  </span>
+                </div>
+                {/* Body pane */}
+                <div className="p-12 flex flex-col justify-center">
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono mb-5 w-fit"
+                    style={{ background: `${col}12`, color: col, border: `1px solid ${col}30` }}>
+                    Most read
+                  </div>
+                  <h2 className="font-display text-3xl leading-tight mb-4" style={{ color: "var(--color-ink)", letterSpacing: "-0.025em" }}>
                     {post.title}
                   </h2>
-                  <p className="text-platinum-dim text-sm leading-relaxed mb-6">{post.excerpt}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-platinum-faint">
-                      {new Date(post.date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                  <p className="text-sm leading-relaxed mb-5" style={{ color: "var(--color-ink-soft)" }}>{post.excerpt}</p>
+                  <div className="flex gap-4 font-mono text-[11px] tracking-[0.1em]" style={{ color: "var(--color-ink-faint)" }}>
+                    <span>By Amit Tyagi</span>
+                    <span style={{ color: "var(--color-line)" }}>·</span>
+                    <span>{post.readTime}</span>
+                    <span style={{ color: "var(--color-line)" }}>·</span>
+                    <span>{new Date(post.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</span>
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* ── Posts grid ─────────────────────────────────── */}
+      <section className="pt-12 pb-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-3 gap-7">
+            {rest.map((post, i) => {
+              const col = CATEGORY_COLORS[post.category] ?? "#7C3AED"
+              const gradIdx = i % CARD_GRADIENTS.length
+              return (
+                <Link key={post.slug} href={`/blog/${post.slug}`}
+                  className="flex flex-col rounded-2xl overflow-hidden transition-all hover:-translate-y-1"
+                  style={{ background: "var(--color-paper)", border: "1px solid var(--color-line)" }}>
+                  {/* Card image */}
+                  <div className="relative flex items-center justify-center"
+                    style={{ aspectRatio: "1.5", background: CARD_GRADIENTS[gradIdx], position: "relative" }}>
+                    <div className="absolute top-4 right-4 font-mono text-[11px] tracking-[0.16em]"
+                      style={{ color: "rgba(255,255,255,0.6)" }}>
+                      {String(i + 1).padStart(2, "0")}
+                    </div>
+                    <span className="font-display italic text-7xl leading-none relative z-10"
+                      style={{ color: "rgba(255,255,255,0.85)" }}>
+                      {post.title.charAt(0)}
                     </span>
-                    <span className="text-sm text-brand font-medium group-hover:translate-x-1 transition-transform inline-block">
-                      Read →
-                    </span>
+                  </div>
+                  {/* Card body */}
+                  <div className="p-7 flex flex-col flex-1">
+                    <div className="font-mono text-[10px] uppercase tracking-[0.14em] font-semibold mb-2.5"
+                      style={{ color: col }}>
+                      {post.category}
+                    </div>
+                    <h3 className="font-display text-2xl leading-tight mb-2.5 flex-1"
+                      style={{ color: "var(--color-ink)", letterSpacing: "-0.02em" }}>
+                      {post.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-ink-soft)" }}>
+                      {post.excerpt}
+                    </p>
+                    <div className="flex justify-between items-center pt-3 font-mono text-[11px] tracking-[0.06em]"
+                      style={{ borderTop: "1px solid var(--color-line)", color: "var(--color-ink-faint)" }}>
+                      <span>{post.readTime}</span>
+                      <span>{new Date(post.date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span>
+                    </div>
                   </div>
                 </Link>
               )
             })}
           </div>
-        )}
 
-        {/* Category nav */}
-        <div className="flex flex-wrap gap-2 mb-10">
-          <Link href="/blog"
-            className="text-xs font-mono px-3 py-1.5 rounded-full border transition-all"
-            style={{
-              borderColor: activeCategory ? "#ffffff20" : "#7C3AED",
-              color: activeCategory ? "#888" : "#7C3AED",
-              background: activeCategory ? "transparent" : "#7C3AED18",
-            }}>
-            All · {posts.length}
-          </Link>
-          {CATEGORIES.map((cat) => {
-            const col = CATEGORY_COLORS[cat] ?? "#7C3AED"
-            const count = posts.filter((p) => p.category === cat).length
-            const isActive = activeCategory === cat
-            return (
-              <Link key={cat}
-                href={isActive ? "/blog" : `/blog?category=${encodeURIComponent(cat)}`}
-                className="text-xs font-mono px-3 py-1.5 rounded-full border transition-all"
-                style={{
-                  borderColor: isActive ? col : `${col}30`,
-                  color: col,
-                  background: isActive ? `${col}22` : `${col}08`,
-                  fontWeight: isActive ? 600 : 400,
-                }}>
-                {cat} · {count}
-              </Link>
-            )
-          })}
+          {/* Newsletter block */}
+          <div className="mt-20 rounded-3xl p-14 grid md:grid-cols-[1.4fr_1fr] gap-14 items-center relative overflow-hidden"
+            style={{ background: "linear-gradient(135deg, #2E0F69, #5B21B6 60%, #1A1530)" }}>
+            <div className="absolute -right-24 -top-24 w-96 h-96 rounded-full"
+              style={{ background: "radial-gradient(circle, rgba(184,137,59,.3), transparent 70%)" }} />
+            <div className="relative z-10">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>Field notes</p>
+              <h3 className="font-display text-4xl leading-tight mb-3" style={{ color: "white", letterSpacing: "-0.025em" }}>
+                One specific insight, every other Friday.
+              </h3>
+              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
+                Short. No-fluff. Sent to ~800 builders considering or already in the process.
+                No spam, no upsells, easy unsubscribe.
+              </p>
+            </div>
+            <div className="relative z-10">
+              <form className="flex gap-2 p-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
+                onSubmit={e => e.preventDefault()}>
+                <input type="email" placeholder="you@example.com" required
+                  className="flex-1 bg-transparent outline-none px-4 py-2 text-sm"
+                  style={{ color: "white" }} />
+                <button type="submit" className="text-white text-xs px-5 py-2 rounded-full font-medium flex-shrink-0"
+                  style={{ background: "linear-gradient(135deg, #B8893B, #8C6428)" }}>
+                  Subscribe →
+                </button>
+              </form>
+              <p className="font-mono text-[11px] mt-3 tracking-[0.06em]" style={{ color: "rgba(255,255,255,0.5)" }}>
+                800+ builders subscribed · 0 spam
+              </p>
+            </div>
+          </div>
         </div>
+      </section>
 
-        {/* All posts grid */}
-        <div className="grid md:grid-cols-3 gap-5">
-          {rest.map((post) => {
-            const col = CATEGORY_COLORS[post.category] ?? "#7C3AED"
-            return (
-              <Link key={post.slug} href={`/blog/${post.slug}`}
-                className="card-border p-6 group hover:shadow-md transition-all duration-300 block flex flex-col">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xs font-mono px-2 py-0.5 rounded-full"
-                    style={{ background: `${col}10`, color: col }}>
-                    {post.category}
-                  </span>
-                </div>
-                <h3 className="font-display text-lg text-platinum mb-2 leading-tight group-hover:text-brand transition-colors flex-1">
-                  {post.title}
-                </h3>
-                <p className="text-platinum-dim text-xs leading-relaxed mb-4 line-clamp-3">
-                  {post.excerpt}
-                </p>
-                <div className="flex items-center justify-between mt-auto pt-3 border-t border-void-border">
-                  <span className="text-xs text-platinum-faint">
-                    {new Date(post.date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-                  </span>
-                  <span className="text-xs text-platinum-faint">{post.readTime}</span>
-                </div>
-              </Link>
-            )
-          })}
-        </div>
-
-        {/* Bottom CTA */}
-        <div className="mt-16 card-border p-10 md:p-14 text-center">
-          <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-4">Ready to find out where you stand?</p>
-          <h2 className="font-display text-3xl text-platinum mb-4">Take the free readiness assessment.</h2>
-          <p className="text-platinum-dim mb-8 max-w-md mx-auto text-sm leading-relaxed">
-            12 questions. A scored breakdown across 4 dimensions. Know exactly what to fix before you apply.
-          </p>
-          <Link href="/scorecard"
-            className="btn-primary inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-white font-semibold">
-            Check my readiness — free →
-          </Link>
-        </div>
-      </div>
       <SiteFooter />
     </div>
   )

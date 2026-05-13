@@ -1,418 +1,233 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// ── Question data ─────────────────────────────────────────────────────────────
 
-type ReadinessInput = {
-  role: "founder" | "engineer" | "pm" | "researcher" | "designer" | "executive" | "other"
-  yearsExp: "lt3" | "3to6" | "7to10" | "11to15" | "gt15"
-  sector: "fintech" | "ai_ml" | "saas" | "consumer" | "healthtech" | "climate" | "security" | "web3" | "other"
-  country: "india" | "uae" | "sea" | "europe" | "uk" | "us_ca" | "other"
-  employment: "founder_ceo" | "startup_employee" | "bigtech_employee" | "consultant" | "academic" | "between"
-  impactScale: "millions" | "100k_1m" | "10k_100k" | "medium" | "small"
-  metricsAvailable: "specific" | "partial" | "qualitative" | "none"
-  teamSize: "lt5" | "5to20" | "20to100" | "100plus" | "na"
-  salaryLevel: "gt300k" | "150_300k" | "100_150k" | "60_100k" | "lt60k" | "prefer_not"
-  foundingExp: "founded_funded" | "founded_boot" | "early_employee" | "no"
-  externalValidation: "strong_rec" | "media_coverage" | "speaking" | "awards" | "none"
-  hasPublications: "yes" | "no"
-  hasAwards: "yes" | "no"
-  hasOpenSource: "yes" | "no"
-  hasContent: "yes" | "no"
-  recLetterStatus: "strong_3plus" | "have_some" | "in_progress" | "none"
-  personalStatementStatus: "drafted" | "in_progress" | "not_started"
-  evidenceOrganized: "organized" | "partial" | "scattered" | "none"
-  timeline: "now" | "3months" | "6months" | "exploring"
-  biggestGap: "narrative" | "validation" | "evidence" | "visibility" | "unsure"
-}
-
-type ScoreResult = {
-  assessmentId: string
-  overallScore: number
-  readinessLevel: "not_eligible" | "not_ready" | "semi_ready" | "fully_ready"
-  recommendedTrack: "et" | "ep" | "neither"
-  secondaryTrack?: "et" | "ep"
-  trackExplanation: string
-  subScores: {
-    technicalLeadership: number
-    evidenceQuality: number
-    externalRecognition: number
-    independence: number
-    globalProfile: number
-  }
-  insights: string[]
-  documentChecklist: {
-    id: string
-    label: string
-    category: "mandatory" | "strong" | "optional"
-    importance: number
-    description: string
-    tip: string
-  }[]
-  leadQuality: "hot" | "warm" | "cold"
-}
-
-type Phase = "intro" | "questions" | "transition" | "calculating" | "checklist" | "gate" | "submitting"
-
-// ── Questions ─────────────────────────────────────────────────────────────────
-
-interface QuestionDef {
-  id: keyof ReadinessInput
-  section: number
-  text: string
-  sub?: string
-  options: { value: string; label: string; desc: string }[]
-}
-
-const QUESTIONS: QuestionDef[] = [
-  // SECTION 0: About You
+const QS = [
   {
-    id: "role", section: 0,
-    text: "What best describes your professional background?",
-    options: [
-      { value: "founder",   label: "Founder / Co-founder",            desc: "Started a company — any stage, any outcome" },
-      { value: "engineer",  label: "Senior Engineer / Technical Lead", desc: "Built systems, products, or infrastructure at scale" },
-      { value: "pm",        label: "Product Manager / Director of Product", desc: "Shaped product strategy and execution" },
-      { value: "researcher",label: "Researcher / Academic / Author",   desc: "Research lab, academic, or technical publications" },
-      { value: "executive", label: "Executive / C-Suite / Director",   desc: "VP, Director, or C-level leadership" },
-      { value: "designer",  label: "Designer / Creative Director",     desc: "Product design or creative leadership in tech" },
-      { value: "other",     label: "Other tech professional",          desc: "Something else in digital technology" },
+    p: 1, pill: "Evidence strength",
+    q: "How would you describe your most public-facing work?",
+    opts: [
+      { t: "Externally visible: products at scale, talks, papers, press, open source", s: "Strong" },
+      { t: "Some external visibility: niche conferences, GitHub, internal at well-known companies", s: "Moderate" },
+      { t: "Mostly internal: senior role at a private company, work under NDA", s: "Limited" },
+      { t: "Not sure — strong work, but haven't thought about external visibility", s: "Needs framing" },
     ],
   },
   {
-    id: "yearsExp", section: 0,
-    text: "How many years of tech industry experience do you have?",
-    options: [
-      { value: "lt3",   label: "Under 3 years", desc: "Just getting started" },
-      { value: "3to6",  label: "3–6 years",     desc: "Building real depth" },
-      { value: "7to10", label: "7–10 years",    desc: "Senior practitioner" },
-      { value: "11to15",label: "11–15 years",   desc: "Deep domain expertise" },
-      { value: "gt15",  label: "15+ years",     desc: "Seasoned leader" },
+    p: 1, pill: "Evidence strength",
+    q: "Can you point to specific innovations you led — not contributed to?",
+    opts: [
+      { t: "Yes — I can name 3+ initiatives I personally architected end-to-end", s: "Strong" },
+      { t: "Yes, 1–2 clear examples where I led", s: "Moderate" },
+      { t: "I led work, but distinguishing my contribution from team work is hard", s: "Needs work" },
+      { t: "Most of my impact is embedded in team outcomes", s: "Reframe needed" },
     ],
   },
   {
-    id: "sector", section: 0,
-    text: "Which sector best describes your primary work?",
-    options: [
-      { value: "fintech",   label: "Fintech / Financial Services",    desc: "Payments, lending, banking, wealth tech" },
-      { value: "ai_ml",     label: "AI / ML / Data Science",          desc: "Machine learning, data, and AI products" },
-      { value: "saas",      label: "SaaS / Enterprise Software",      desc: "B2B products and developer tools" },
-      { value: "consumer",  label: "Consumer / E-Commerce",           desc: "Direct-to-consumer products and marketplaces" },
-      { value: "healthtech",label: "HealthTech / BioTech",            desc: "Health, wellness, and life sciences" },
-      { value: "climate",   label: "Climate / Clean Tech",            desc: "Sustainability and climate impact" },
-      { value: "security",  label: "Cybersecurity / Infrastructure",  desc: "Security, DevOps, and cloud infrastructure" },
-      { value: "web3",      label: "Web3 / Blockchain",               desc: "Decentralised applications and crypto" },
-      { value: "other",     label: "Other technology",                desc: "Something else in digital tech" },
+    p: 1, pill: "Evidence strength",
+    q: "Do you have measurable outcomes you can point to?",
+    opts: [
+      { t: "Yes — revenue, scale, performance, adoption with my name attached", s: "Strong" },
+      { t: "Yes, but mostly in confidential contexts (NDA, private company)", s: "Workable" },
+      { t: "Some metrics, but not the kind that would impress a UK evaluator", s: "Needs framing" },
+      { t: "I struggle to quantify my impact", s: "Needs work" },
     ],
   },
   {
-    id: "country", section: 0,
-    text: "Where are you currently based?",
-    options: [
-      { value: "india",  label: "India",                    desc: "Bengaluru, Mumbai, Delhi, Hyderabad, etc." },
-      { value: "uae",    label: "UAE / Middle East",        desc: "Dubai, Abu Dhabi, etc." },
-      { value: "sea",    label: "Singapore / Southeast Asia", desc: "Singapore, Jakarta, Manila, KL, etc." },
-      { value: "europe", label: "Europe (not UK)",          desc: "Germany, Netherlands, France, etc." },
-      { value: "uk",     label: "United Kingdom",           desc: "Already in the UK" },
-      { value: "us_ca",  label: "US / Canada",              desc: "North America" },
-      { value: "other",  label: "Elsewhere",                desc: "Another country" },
+    p: 1, pill: "Evidence strength",
+    q: "Have you been recognised externally for your work?",
+    opts: [
+      { t: "Awards, press features, named speaker invitations, listings", s: "Strong" },
+      { t: "Industry mentions, podcast appearances, smaller awards", s: "Moderate" },
+      { t: "Promoted internally, well-known in my company, but quiet externally", s: "Visibility gap" },
+      { t: "None yet — but I'm planning to address this", s: "Gap to close" },
     ],
   },
   {
-    id: "employment", section: 0,
-    text: "What is your current employment status?",
-    options: [
-      { value: "founder_ceo",       label: "Founder / CEO of my own company",       desc: "I run a company" },
-      { value: "startup_employee",  label: "Employee at a startup (pre-Series D)",   desc: "Scaling with a growing company" },
-      { value: "bigtech_employee",  label: "Employee at a large tech company",       desc: "FAANG, MNC, or established tech firm" },
-      { value: "consultant",        label: "Consultant / Freelancer / Independent",  desc: "I work with multiple clients" },
-      { value: "academic",          label: "Academic / Researcher",                  desc: "University or research lab" },
-      { value: "between",           label: "Between roles / Transitioning",          desc: "Looking for my next opportunity" },
-    ],
-  },
-
-  // SECTION 1: Work & Impact
-  {
-    id: "impactScale", section: 1,
-    text: "At what scale has your work been used or felt?",
-    options: [
-      { value: "millions",   label: "Used by millions of people globally",        desc: "Mass-market product or platform" },
-      { value: "100k_1m",    label: "100K–1M users or significant impact",        desc: "Large but focused impact" },
-      { value: "10k_100k",   label: "10K–100K direct users or beneficiaries",     desc: "Meaningful, growing product" },
-      { value: "medium",     label: "Medium scale — meaningful but contained",    desc: "Strong work at focused scale" },
-      { value: "small",      label: "Small / early stage — still building",       desc: "Early product or pre-launch" },
+    p: 1, pill: "Evidence strength",
+    q: "Is your current evidence organised for an evaluator's framework?",
+    opts: [
+      { t: "Yes — I've mapped my evidence against the published criteria", s: "Strong" },
+      { t: "Sort of — I have a CV and a few documents, but no framework", s: "Needs structure" },
+      { t: "No — my evidence lives across LinkedIn, emails, and memory", s: "Gather needed" },
+      { t: "I'm not sure what 'framework' means here", s: "Start from zero" },
     ],
   },
   {
-    id: "metricsAvailable", section: 1,
-    text: "Can you back your impact with specific numbers?",
-    sub: "Revenue, user growth, %, ARR, team size — hard numbers.",
-    options: [
-      { value: "specific",    label: "Yes — specific metrics available",                      desc: "Numbers, percentages, scale" },
-      { value: "partial",     label: "Partially — some numbers, some narrative",              desc: "Mixed evidence strength" },
-      { value: "qualitative", label: "Mostly qualitative — strong story, limited numbers",   desc: "Compelling but not quantified" },
-      { value: "none",        label: "Not really — responsibilities, not outcomes",           desc: "Job descriptions without results" },
+    p: 2, pill: "Narrative clarity",
+    q: "If a stranger read your CV, could they describe your career arc in one sentence?",
+    opts: [
+      { t: "Yes — there's a clear through-line and an evident speciality", s: "Strong" },
+      { t: "They'd see good work but the arc isn't obvious", s: "Needs sharpening" },
+      { t: "Probably not — I've worn many hats", s: "Needs framing" },
+      { t: "Definitely not — I've pivoted a lot", s: "Reframe needed" },
     ],
   },
   {
-    id: "teamSize", section: 1,
-    text: "What is your largest organizational footprint?",
-    options: [
-      { value: "100plus", label: "Led or influenced 100+ people",              desc: "Large organizational impact" },
-      { value: "20to100", label: "Influenced a team of 20–100",                desc: "Mid-level organizational impact" },
-      { value: "5to20",   label: "Core team member of 5–20 people",           desc: "Tight team, clear contribution" },
-      { value: "lt5",     label: "Individual contributor on a small team",     desc: "Direct personal output" },
-      { value: "na",      label: "Independent / freelance — no team structure",desc: "Solo or contractor work" },
+    p: 2, pill: "Narrative clarity",
+    q: "Have you drafted a personal statement that argues a case (not lists a career)?",
+    opts: [
+      { t: "Yes, and it's been reviewed by someone who's been through the process", s: "Strong" },
+      { t: "I have a draft but I think it reads like a CV in paragraphs", s: "Common — fixable" },
+      { t: "No, but I have notes I could turn into one", s: "Workable" },
+      { t: "No — and I'm not sure where to start", s: "Needs work" },
     ],
   },
   {
-    id: "salaryLevel", section: 1,
-    text: "What is your approximate annual income (USD)?",
-    sub: "Used as a signal of market recognition — not a judgment on your work.",
-    options: [
-      { value: "gt300k",     label: "Over $300,000",       desc: "Top-tier senior compensation" },
-      { value: "150_300k",   label: "$150,000–$300,000",   desc: "Senior professional level" },
-      { value: "100_150k",   label: "$100,000–$150,000",   desc: "Mid-senior level" },
-      { value: "60_100k",    label: "$60,000–$100,000",    desc: "Professional level" },
-      { value: "lt60k",      label: "Under $60,000",       desc: "Earlier stage" },
-      { value: "prefer_not", label: "Prefer not to say",   desc: "Skip this question" },
+    p: 2, pill: "Narrative clarity",
+    q: "Can you articulate why you matter to your sector (not your employer)?",
+    opts: [
+      { t: "Yes — I can describe my influence on the field, not just my company", s: "Strong" },
+      { t: "Sort of — I'd need help framing it that way", s: "Workable" },
+      { t: "Honestly, no — I'd describe my role, not my sector influence", s: "Critical gap" },
+      { t: "I'm not sure my work matters at sector level", s: "Underselling likely" },
     ],
   },
   {
-    id: "foundingExp", section: 1,
-    text: "What is your founding / entrepreneurial experience?",
-    options: [
-      { value: "founded_funded", label: "Founded a company that raised external funding", desc: "VC, angels, or grants" },
-      { value: "founded_boot",   label: "Founded a bootstrapped company",                 desc: "Self-funded, operating or exited" },
-      { value: "early_employee", label: "Early employee or core founding team",           desc: "Employee #1–20 of a startup" },
-      { value: "no",             label: "No founding experience — primarily employed",    desc: "Career in established organizations" },
-    ],
-  },
-
-  // SECTION 2: Your Evidence
-  {
-    id: "externalValidation", section: 2,
-    text: "What is your strongest form of external validation?",
-    sub: "Pick your single strongest proof point.",
-    options: [
-      { value: "strong_rec",    label: "Strong recommendation letters from recognized leaders", desc: "Senior endorsement from credible figures" },
-      { value: "media_coverage",label: "Press / media coverage",                                desc: "TechCrunch, Forbes, The Times, industry press" },
-      { value: "speaking",      label: "Conference speaking or panel invitations",              desc: "Industry events, not internal company talks" },
-      { value: "awards",        label: "Industry awards or formal recognition",                 desc: "Sector awards, accelerator selection, lists" },
-      { value: "none",          label: "None of the above yet",                                 desc: "My work has been primarily internal" },
+    p: 2, pill: "Narrative clarity",
+    q: "Which category fits your profile?",
+    opts: [
+      { t: "Exceptional Talent — established track record, externally recognised", s: "Talent route" },
+      { t: "Exceptional Promise — earlier career, clearly rising", s: "Promise route" },
+      { t: "I genuinely don't know which fits", s: "Needs guidance" },
+      { t: "I assumed Promise — but maybe I'm underselling", s: "Worth a check" },
     ],
   },
   {
-    id: "hasPublications", section: 2,
-    text: "Do you have published research, patents, or technical writing?",
-    options: [
-      { value: "yes", label: "Yes — papers, patents, or formal publications", desc: "Academic or formal research output" },
-      { value: "no",  label: "No formal publications or patents",             desc: "Not published in formal channels" },
+    p: 2, pill: "Narrative clarity",
+    q: "Is your seniority and scope clear from titles alone?",
+    opts: [
+      { t: "Yes — Director / VP / Founder / Principal-level roles", s: "Strong" },
+      { t: "Mid-level titles but I owned more than the title implies", s: "Needs reframing" },
+      { t: "I changed company stages so titles look smaller than my impact", s: "Reframe needed" },
+      { t: "I work without formal titles (founder, freelance, advisor)", s: "Workable" },
     ],
   },
   {
-    id: "hasAwards", section: 2,
-    text: "Have you received industry awards or formal recognition?",
-    options: [
-      { value: "yes", label: "Yes — I've received industry recognition", desc: "Awards, formal lists, accelerator selections" },
-      { value: "no",  label: "No formal awards yet",                     desc: "Recognition has been internal or informal" },
+    p: 3, pill: "Recommendation quality",
+    q: "Have you identified 3 potential recommenders?",
+    opts: [
+      { t: "Yes — and they cover different dimensions of my credibility", s: "Strong" },
+      { t: "Yes, but they're all from the same company/context", s: "Needs diversification" },
+      { t: "I have a couple but I'm short one", s: "Workable" },
+      { t: "No — I'm not sure who to ask", s: "Needs work" },
     ],
   },
   {
-    id: "hasOpenSource", section: 2,
-    text: "Do you have meaningful open-source work or community contributions?",
-    options: [
-      { value: "yes", label: "Yes — projects with real usage or significant contributions", desc: "Open-source repos, major project contributions" },
-      { value: "no",  label: "No significant open-source or community work",               desc: "My work has been proprietary or internal" },
+    p: 3, pill: "Recommendation quality",
+    q: "Do your recommenders have the seniority and standing required?",
+    opts: [
+      { t: "Yes — sector-recognised leaders, well-known figures, executives", s: "Strong" },
+      { t: "Senior people but not externally famous", s: "Workable" },
+      { t: "Mix — one strong, one mid, one weak", s: "Strengthen weakest" },
+      { t: "I'd be asking friends and direct managers", s: "Needs work" },
     ],
   },
   {
-    id: "hasContent", section: 2,
-    text: "Do you create regular content, writing, or public thought leadership?",
-    options: [
-      { value: "yes", label: "Yes — published writing or speaking with real audience", desc: "Blog, newsletter, LinkedIn articles, podcast appearances" },
-      { value: "no",  label: "No regular public content",                               desc: "I haven't built a public presence through content" },
-    ],
-  },
-
-  // SECTION 3: Application Readiness
-  {
-    id: "recLetterStatus", section: 3,
-    text: "Where are you with recommendation letters?",
-    options: [
-      { value: "strong_3plus", label: "I have 3+ strong letters from recognized tech leaders", desc: "Letters that demonstrate impact, not just relationships" },
-      { value: "have_some",    label: "I have some letters but they need strengthening",        desc: "Existing letters that could be more specific" },
-      { value: "in_progress",  label: "I'm working on getting letters",                         desc: "Building the relationships and approach" },
-      { value: "none",         label: "I don't have recommendation letters yet",                desc: "Starting from scratch here" },
+    p: 3, pill: "Recommendation quality",
+    q: "Have you briefed recommenders on what to write?",
+    opts: [
+      { t: "Yes — each got a written brief covering specific dimensions to address", s: "Strong" },
+      { t: "I told them to mention strengths, but no structured brief", s: "Common — risky" },
+      { t: "I'll send them my CV and ask them to wing it", s: "Critical gap" },
+      { t: "Haven't asked yet", s: "Plan needed" },
     ],
   },
   {
-    id: "personalStatementStatus", section: 3,
-    text: "Where are you with your personal statement?",
-    options: [
-      { value: "drafted",      label: "Drafted — needs refinement but structure is there", desc: "A working draft exists" },
-      { value: "in_progress",  label: "In progress — partial or unstructured notes",       desc: "Started but not complete" },
-      { value: "not_started",  label: "Haven't started yet",                               desc: "Clean slate" },
+    p: 3, pill: "Recommendation quality",
+    q: "Do your recommenders know each other?",
+    opts: [
+      { t: "No — they're independent voices from different contexts", s: "Ideal" },
+      { t: "Two work together; one is external", s: "Workable" },
+      { t: "Most know each other (same company)", s: "Diversify needed" },
+      { t: "Not sure", s: "Check needed" },
     ],
   },
   {
-    id: "evidenceOrganized", section: 3,
-    text: "How organized is your evidence portfolio?",
-    options: [
-      { value: "organized", label: "Everything is compiled and well-organized",         desc: "Documents ready to review" },
-      { value: "partial",   label: "Most documents exist but need structuring",         desc: "Gathered but not polished" },
-      { value: "scattered", label: "Documents are scattered and need work",             desc: "Hard to find and assemble" },
-      { value: "none",      label: "Haven't started gathering evidence",                desc: "Starting from zero" },
+    p: 3, pill: "Recommendation quality",
+    q: "Confident letters will describe sector impact, not relationship?",
+    opts: [
+      { t: "Yes — I've reviewed past letters they've written and they understand the bar", s: "Strong" },
+      { t: "Hopefully — but it's a known failure mode I'm worried about", s: "Coach them" },
+      { t: "No — they'll describe how nice I am to work with", s: "Critical gap" },
+      { t: "I haven't thought about this yet", s: "Plan needed" },
     ],
   },
   {
-    id: "timeline", section: 3,
-    text: "What is your target application timeline?",
-    options: [
-      { value: "now",       label: "I want to apply in the next 1–3 months", desc: "Active and ready to move" },
-      { value: "3months",   label: "Within the next 3–6 months",             desc: "Building toward a specific date" },
-      { value: "6months",   label: "Within the next 6–12 months",            desc: "Planning ahead" },
-      { value: "exploring", label: "Just exploring — no fixed timeline",     desc: "Curious about eligibility" },
+    p: 4, pill: "External validation",
+    q: "Do you have a verifiable online footprint?",
+    opts: [
+      { t: "Yes — LinkedIn, GitHub, blog, talks, press all coherent", s: "Strong" },
+      { t: "Some — LinkedIn is updated, the rest is patchy", s: "Tidy up" },
+      { t: "Minimal — I'm a builder, not a poster", s: "Visibility gap" },
+      { t: "I've kept a low profile deliberately", s: "Workable but harder" },
     ],
   },
   {
-    id: "biggestGap", section: 3,
-    text: "What do you think is your biggest gap right now?",
-    sub: "Be honest — this becomes the focus of your recommendations.",
-    options: [
-      { value: "narrative",  label: "My narrative doesn't clearly position my uniqueness",  desc: "Hard to tell my story compellingly" },
-      { value: "validation", label: "I lack external validation (press, speaking, recognition)", desc: "My impact is known internally but not publicly" },
-      { value: "evidence",   label: "My evidence isn't organized or compelling enough",     desc: "I know I've done it — hard to prove it" },
-      { value: "visibility", label: "I'm not visible enough outside my immediate network",  desc: "Nobody outside my team knows my name" },
-      { value: "unsure",     label: "I'm not sure — that's why I'm here",                   desc: "Need expert eyes to diagnose" },
+    p: 4, pill: "External validation",
+    q: "Have you been invited to speak, mentor, judge, or advise externally?",
+    opts: [
+      { t: "Yes — multiple times, with names attached", s: "Strong" },
+      { t: "A handful of small invitations", s: "Moderate" },
+      { t: "Within my company only", s: "Limited" },
+      { t: "Not yet", s: "Gap to close" },
+    ],
+  },
+  {
+    p: 4, pill: "External validation",
+    q: "Has your work led to citations, derivatives, or third-party uses?",
+    opts: [
+      { t: "Yes — products built on my OSS, papers citing mine, projects derived from my work", s: "Strong" },
+      { t: "Some — colleagues and partners reference my work", s: "Moderate" },
+      { t: "Internal influence but limited external trace", s: "Surface needed" },
+      { t: "Not directly traceable", s: "Reframe needed" },
+    ],
+  },
+  {
+    p: 4, pill: "External validation",
+    q: "Have you previously applied for Global Talent or a similar visa?",
+    opts: [
+      { t: "Yes — approved", s: "Already there" },
+      { t: "Yes — rejected, planning to reapply", s: "We help here" },
+      { t: "No — this would be my first application", s: "Most common" },
+      { t: "Still deciding if it's right for me", s: "Start here" },
+    ],
+  },
+  {
+    p: 4, pill: "External validation",
+    q: "What's your honest assessment of your readiness today?",
+    opts: [
+      { t: "Strong — I just need to package and submit", s: "Diagnostic enough" },
+      { t: "Good underlying case, weak presentation", s: "Advisory likely" },
+      { t: "Uncertain — I'd like a professional eye on it", s: "Diagnostic first" },
+      { t: "Early — need to build evidence before I apply", s: "Strategy first" },
     ],
   },
 ]
 
-const SECTIONS = [
-  { title: "About You",           desc: "Tell us who you are and where you're based." },
-  { title: "Your Work & Impact",  desc: "Help us understand the scale and depth of your contribution." },
-  { title: "Your Evidence",       desc: "Let's assess the proof points you have available." },
-  { title: "Your Readiness",      desc: "Finally — where are you in the application process?" },
+const TOTAL = QS.length
+
+const PILLAR_LABELS = [
+  "Evidence strength",
+  "Narrative clarity",
+  "Recommendation quality",
+  "External validation",
 ]
 
-const TOTAL = QUESTIONS.length
+// ── Logo mark ─────────────────────────────────────────────────────────────────
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function readinessLabel(level: ScoreResult["readinessLevel"]) {
-  return {
-    fully_ready:  "Fully Ready",
-    semi_ready:   "Semi-Ready",
-    not_ready:    "Not Ready Yet",
-    not_eligible: "Build More First",
-  }[level] ?? level
-}
-
-function readinessColor(level: ScoreResult["readinessLevel"]) {
-  return {
-    fully_ready:  "#06B6D4",
-    semi_ready:   "#7C3AED",
-    not_ready:    "#D97706",
-    not_eligible: "#94A3B8",
-  }[level] ?? "#94A3B8"
-}
-
-function trackLabel(track: "et" | "ep" | "neither") {
-  return { et: "Exceptional Talent", ep: "Exceptional Promise", neither: "Needs Preparation" }[track]
-}
-
-// ── Slide variants ────────────────────────────────────────────────────────────
-
-const slideVariants = {
-  enter:  (d: number) => ({ opacity: 0, x: d > 0 ? 48 : -48 }),
-  center: { opacity: 1, x: 0 },
-  exit:   (d: number) => ({ opacity: 0, x: d > 0 ? -48 : 48 }),
-}
-
-// ── OptionCard ────────────────────────────────────────────────────────────────
-
-function OptionCard({
-  option,
-  selected,
-  onSelect,
-  wide = false,
-}: {
-  option: { value: string; label: string; desc: string }
-  selected: boolean
-  onSelect: () => void
-  wide?: boolean
-}) {
+function LogoMark({ className = "" }: { className?: string }) {
   return (
-    <motion.button
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
-      onClick={onSelect}
-      className={`${wide ? "w-full" : "w-full"} text-left p-5 rounded-2xl border transition-all duration-200 ${
-        selected
-          ? "border-brand bg-brand/10 shadow-[0_0_24px_rgba(124,58,237,0.2)]"
-          : "border-void-border bg-void-surface hover:border-brand/40 hover:bg-brand/5"
-      }`}
-    >
-      <div className="flex items-start gap-4">
-        <div
-          className={`mt-0.5 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-            selected ? "border-brand bg-brand" : "border-platinum-faint"
-          }`}
-        >
-          {selected && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="w-2 h-2 rounded-full bg-white"
-            />
-          )}
-        </div>
-        <div>
-          <p className={`font-medium text-sm leading-snug ${selected ? "text-platinum" : "text-platinum-dim"}`}>
-            {option.label}
-          </p>
-          <p className="text-xs text-platinum-faint mt-1 leading-relaxed">{option.desc}</p>
-        </div>
-      </div>
-    </motion.button>
-  )
-}
-
-// ── Shared header ─────────────────────────────────────────────────────────────
-
-function AssessmentHeader({ right }: { right: React.ReactNode }) {
-  return (
-    <div className="border-b border-void-border px-6 py-4">
-      <div className="max-w-2xl mx-auto flex items-center justify-between">
-        <Link href="/" className="flex flex-col leading-none">
-          <span className="font-display text-base text-gradient-brand leading-none">Meridian</span>
-          <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">
-            Global Talent Visa
-          </span>
-        </Link>
-        <span className="text-xs font-mono text-platinum-faint">{right}</span>
-      </div>
-    </div>
-  )
-}
-
-// ── Progress bar ──────────────────────────────────────────────────────────────
-
-function ProgressBar({ value }: { value: number }) {
-  return (
-    <div className="h-0.5 bg-void-border">
-      <motion.div
-        className="h-full bg-gradient-to-r from-brand via-data to-gold"
-        initial={{ width: "0%" }}
-        animate={{ width: `${value}%` }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-      />
-    </div>
+    <svg className={className} viewBox="0 0 48 48" fill="none" style={{ width: 36, height: 36 }}>
+      <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="1.5" />
+      <ellipse cx="24" cy="24" rx="7.5" ry="18" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="6" y1="24" x2="42" y2="24" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="24" cy="6" r="2.3" fill="currentColor" />
+    </svg>
   )
 }
 
@@ -420,712 +235,620 @@ function ProgressBar({ value }: { value: number }) {
 
 export default function ReadinessPage() {
   const router = useRouter()
+  const [idx, setIdx] = useState(0)
+  const [answers, setAnswers] = useState<(number | null)[]>(new Array(TOTAL).fill(null))
+  const [animKey, setAnimKey] = useState(0)
+  const [slideDir, setSlideDir] = useState<"forward" | "back">("forward")
 
-  const [phase, setPhase] = useState<Phase>("intro")
-  const [step, setStep] = useState(0)
-  const [answers, setAnswers] = useState<Partial<ReadinessInput>>({})
-  const [direction, setDirection] = useState(1)
-  const [pendingSection, setPendingSection] = useState(0)
-  const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null)
-  const [checkedDocs, setCheckedDocs] = useState<Set<string>>(new Set())
-  const [leadData, setLeadData] = useState({ name: "", email: "", phone: "", linkedinUrl: "" })
+  const q = QS[idx]
+  const selected = answers[idx]
+  const pct = Math.round(((idx + 1) / TOTAL) * 100)
+  const activePillar = q.p
 
-  const [sessionId] = useState<string>(() => {
-    if (typeof window === "undefined") return crypto.randomUUID()
-    let id = localStorage.getItem("meridian.readiness.session")
-    if (!id) {
-      id = crypto.randomUUID()
-      localStorage.setItem("meridian.readiness.session", id)
-    }
-    return id
-  })
-
-  // ── Helpers ──────────────────────────────────────────────────────────────
-
-  const q = QUESTIONS[step]
-  const currentSection = q?.section ?? 0
-  const selected = answers[q?.id]
-
-  function selectAnswer(value: string) {
-    setAnswers((prev) => ({ ...prev, [q.id]: value as never }))
-  }
-
-  function goBack() {
-    if (step === 0) return
-    setDirection(-1)
-    setStep(step - 1)
-  }
-
-  function goNext() {
-    if (!answers[q.id as keyof ReadinessInput]) return
-
-    if (step < TOTAL - 1) {
-      const nextStep = step + 1
-      const nextQ = QUESTIONS[nextStep]
-      if (nextQ.section !== q.section) {
-        setPendingSection(nextQ.section)
-        setDirection(1)
-        setPhase("transition")
-      } else {
-        setDirection(1)
-        setStep(nextStep)
-      }
-    } else {
-      callScoreAPI()
-    }
-  }
-
-  function continueFromTransition() {
-    setPhase("questions")
-    setDirection(1)
-    setStep(QUESTIONS.findIndex((qu) => qu.section === pendingSection))
-  }
-
-  async function callScoreAPI() {
-    setPhase("calculating")
-    try {
-      const res = await fetch("/api/readiness/score", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, answers }),
-      })
-      const data = (await res.json()) as ScoreResult
-      setScoreResult(data)
-      setPhase("checklist")
-    } catch {
-      setPhase("checklist")
-    }
-  }
-
-  async function handleLeadSubmit() {
-    if (!leadData.name || !leadData.email) return
-    setPhase("submitting")
-    try {
-      if (scoreResult?.assessmentId) {
-        await fetch("/api/readiness/lead", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ assessmentId: scoreResult.assessmentId, ...leadData }),
-        })
-      }
-      if (scoreResult) {
-        sessionStorage.setItem("readiness_result", JSON.stringify(scoreResult))
-      }
-      router.push(
-        `/readiness/result${scoreResult?.assessmentId ? "?id=" + scoreResult.assessmentId : ""}`,
-      )
-    } catch {
-      router.push("/readiness/result")
-    }
-  }
-
-  function toggleDoc(id: string) {
-    setCheckedDocs((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
+  function selectOpt(i: number) {
+    setAnswers((prev) => {
+      const next = [...prev]
+      next[idx] = i
       return next
     })
   }
 
-  // ── Phase: intro ─────────────────────────────────────────────────────────
-
-  if (phase === "intro") {
-    return (
-      <div className="min-h-screen bg-void flex flex-col relative overflow-hidden">
-        {/* Orbs */}
-        <div className="orb-violet absolute -top-32 -left-32 w-[500px] h-[500px] opacity-50 pointer-events-none" />
-        <div className="orb-cyan absolute -bottom-32 -right-32 w-[400px] h-[400px] opacity-40 pointer-events-none" />
-
-        {/* Header */}
-        <div className="relative z-10 border-b border-void-border px-6 py-4">
-          <div className="max-w-2xl mx-auto flex items-center justify-between">
-            <Link href="/" className="flex flex-col leading-none">
-              <span className="font-display text-base text-gradient-brand leading-none">Meridian</span>
-              <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">
-                Global Talent Visa
-              </span>
-            </Link>
-            <span className="text-xs font-mono text-platinum-faint">Free · ~5 min</span>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 flex-1 flex items-center justify-center px-6 py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full max-w-lg text-center"
-          >
-            {/* Icon */}
-            <motion.div
-              initial={{ scale: 0.7, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="w-16 h-16 rounded-2xl bg-brand/15 border border-brand/30 flex items-center justify-center mx-auto mb-8"
-            >
-              <span className="text-brand text-2xl">✦</span>
-            </motion.div>
-
-            <h1 className="font-display text-4xl md:text-5xl text-platinum mb-5 leading-tight">
-              Global Talent Visa{" "}
-              <span className="text-gradient-brand">Readiness Score</span>
-            </h1>
-
-            <p className="text-platinum-dim leading-relaxed mb-8 text-base">
-              Answer 20 questions in under 5 minutes. Get an AI-powered readiness
-              score, track recommendation, and personalized document checklist.
-            </p>
-
-            {/* Stats */}
-            <div className="flex items-center justify-center gap-6 mb-10">
-              {["20 questions", "AI-scored", "Free"].map((stat) => (
-                <div key={stat} className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand inline-block" />
-                  <span className="font-mono text-xs text-platinum-dim">{stat}</span>
-                </div>
-              ))}
-            </div>
-
-            <motion.button
-              onClick={() => {
-                setPhase("questions")
-                setStep(0)
-              }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="btn-primary px-10 py-4 rounded-xl text-white font-medium text-base w-full sm:w-auto"
-            >
-              Start Free Assessment →
-            </motion.button>
-
-            <p className="text-xs text-platinum-faint mt-5 leading-relaxed">
-              Free assessment · ~5 minutes · Not immigration legal advice
-            </p>
-          </motion.div>
-        </div>
-      </div>
-    )
+  function goNext() {
+    if (selected === null) return
+    if (idx < TOTAL - 1) {
+      setSlideDir("forward")
+      setAnimKey((k) => k + 1)
+      setIdx(idx + 1)
+    } else {
+      try {
+        localStorage.setItem("mer_answers", JSON.stringify(answers))
+      } catch (_) {}
+      router.push("/readiness/result")
+    }
   }
 
-  // ── Phase: transition ────────────────────────────────────────────────────
-
-  if (phase === "transition") {
-    const sec = SECTIONS[pendingSection]
-    return (
-      <div className="min-h-screen bg-void flex flex-col">
-        <AssessmentHeader right={`Section ${pendingSection + 1} of 4`} />
-        <ProgressBar value={((QUESTIONS.findIndex((qu) => qu.section === pendingSection)) / TOTAL) * 100} />
-
-        <div className="flex-1 flex items-center justify-center px-6 py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full max-w-md text-center"
-          >
-            <p className="font-mono text-xs text-brand mb-4 tracking-wider uppercase">
-              Section {pendingSection + 1} of 4
-            </p>
-
-            <motion.div
-              animate={{ rotate: [0, 15, -15, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="text-brand text-3xl mb-6 inline-block"
-            >
-              ✦
-            </motion.div>
-
-            <h2 className="font-display text-4xl md:text-5xl text-platinum mb-4 leading-tight">
-              {sec.title}
-            </h2>
-            <p className="text-platinum-dim leading-relaxed mb-10">{sec.desc}</p>
-
-            <motion.button
-              onClick={continueFromTransition}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="btn-primary px-10 py-3.5 rounded-xl text-white font-medium text-sm"
-            >
-              Continue →
-            </motion.button>
-          </motion.div>
-        </div>
-      </div>
-    )
+  function goBack() {
+    if (idx === 0) return
+    setSlideDir("back")
+    setAnimKey((k) => k + 1)
+    setIdx(idx - 1)
   }
 
-  // ── Phase: calculating ───────────────────────────────────────────────────
-
-  if (phase === "calculating") {
-    return (
-      <div className="min-h-screen bg-void flex flex-col">
-        <AssessmentHeader right="Analyzing..." />
-        <ProgressBar value={100} />
-
-        <div className="flex-1 flex items-center justify-center px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
-              className="w-12 h-12 border-2 border-brand/20 border-t-brand rounded-full mx-auto mb-6"
-            />
-            <h2 className="font-display text-2xl text-platinum mb-3">
-              Analyzing your profile across 5 dimensions...
-            </h2>
-            <p className="text-platinum-dim text-sm leading-relaxed max-w-sm mx-auto">
-              AI is assessing your evidence, track fit, and documentation readiness.
-            </p>
-          </motion.div>
-        </div>
-      </div>
-    )
+  // Auto-advance on selection
+  function handleSelect(i: number) {
+    selectOpt(i)
   }
-
-  // ── Phase: submitting ────────────────────────────────────────────────────
-
-  if (phase === "submitting") {
-    return (
-      <div className="min-h-screen bg-void flex flex-col">
-        <AssessmentHeader right="Almost done..." />
-        <ProgressBar value={100} />
-
-        <div className="flex-1 flex items-center justify-center px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
-              className="w-12 h-12 border-2 border-brand/20 border-t-brand rounded-full mx-auto mb-6"
-            />
-            <h2 className="font-display text-2xl text-platinum mb-3">
-              Generating your personalized report...
-            </h2>
-            <p className="text-platinum-dim text-sm">
-              This will only take a moment.
-            </p>
-          </motion.div>
-        </div>
-      </div>
-    )
-  }
-
-  // ── Phase: checklist ─────────────────────────────────────────────────────
-
-  if (phase === "checklist") {
-    const track = scoreResult?.recommendedTrack ?? "neither"
-    const trackName = trackLabel(track)
-    const level = scoreResult?.readinessLevel ?? "not_ready"
-    const levelColor = readinessColor(level)
-    const levelText = readinessLabel(level)
-    const score = scoreResult?.overallScore ?? 0
-
-    const mandatory = scoreResult?.documentChecklist?.filter((d) => d.category === "mandatory") ?? []
-    const strong    = scoreResult?.documentChecklist?.filter((d) => d.category === "strong")    ?? []
-    const optional  = scoreResult?.documentChecklist?.filter((d) => d.category === "optional")  ?? []
-
-    return (
-      <div className="min-h-screen bg-void flex flex-col">
-        <AssessmentHeader right="Document Checklist" />
-        <ProgressBar value={100} />
-
-        <div className="flex-1 overflow-y-auto px-6 py-10">
-          <div className="max-w-2xl mx-auto">
-
-            {/* Score summary */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="card-border p-6 mb-8"
-            >
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div>
-                  <p className="font-mono text-xs text-platinum-faint mb-1 uppercase tracking-wider">
-                    Your Readiness Score
-                  </p>
-                  <div className="flex items-baseline gap-3">
-                    <span className="font-mono text-5xl font-bold text-platinum">{score}</span>
-                    <span className="text-platinum-dim font-mono text-lg">/ 100</span>
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span
-                      className="w-2 h-2 rounded-full inline-block"
-                      style={{ background: levelColor }}
-                    />
-                    <span className="font-mono text-xs text-platinum-dim">{levelText}</span>
-                  </div>
-                </div>
-
-                {track !== "neither" && (
-                  <div className="text-right">
-                    <p className="font-mono text-xs text-platinum-faint mb-1 uppercase tracking-wider">
-                      Recommended Track
-                    </p>
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand/10 border border-brand/25">
-                      <span className="text-brand text-sm font-mono font-medium uppercase tracking-wide">
-                        {track.toUpperCase()}
-                      </span>
-                      <span className="text-platinum-dim text-xs">— {trackName}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {scoreResult?.trackExplanation && (
-                <p className="text-platinum-dim text-sm leading-relaxed mt-4 pt-4 border-t border-void-border">
-                  {scoreResult.trackExplanation}
-                </p>
-              )}
-            </motion.div>
-
-            {/* Checklist title */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.4 }}
-              className="mb-6"
-            >
-              <h2 className="font-display text-2xl text-platinum mb-1">
-                Your Document Checklist
-                {track !== "neither" && (
-                  <span className="text-brand"> for {track.toUpperCase()} Track</span>
-                )}
-              </h2>
-              <p className="text-platinum-dim text-sm">
-                Mark what you already have. Your advisor will focus on what's missing.
-              </p>
-            </motion.div>
-
-            {/* Checklist sections */}
-            {[
-              { items: mandatory, label: "Mandatory Documents", dot: "#EF4444", bg: "bg-red-50 border-red-100" },
-              { items: strong,    label: "Strong Supporting Evidence", dot: "#D97706", bg: "bg-amber-50 border-amber-100" },
-              { items: optional,  label: "Optional but Valuable", dot: "#94A3B8", bg: "bg-void-surface border-void-border" },
-            ].map(({ items, label, dot, bg }) =>
-              items.length > 0 ? (
-                <motion.div
-                  key={label}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15, duration: 0.4 }}
-                  className="mb-8"
-                >
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: dot }} />
-                    <h3 className="font-mono text-xs uppercase tracking-wider text-platinum-dim">{label}</h3>
-                  </div>
-                  <div className="space-y-3">
-                    {items.map((doc) => {
-                      const checked = checkedDocs.has(doc.id)
-                      return (
-                        <motion.div
-                          key={doc.id}
-                          whileHover={{ scale: 1.005 }}
-                          className={`rounded-xl border p-4 transition-all duration-200 cursor-pointer ${
-                            checked ? "opacity-60" : ""
-                          } ${bg}`}
-                          onClick={() => toggleDoc(doc.id)}
-                        >
-                          <div className="flex items-start gap-3">
-                            <div
-                              className={`mt-0.5 w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-                                checked
-                                  ? "border-brand bg-brand"
-                                  : "border-platinum-faint bg-white"
-                              }`}
-                            >
-                              {checked && (
-                                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
-                                  <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between gap-2">
-                                <p className={`font-medium text-sm ${checked ? "line-through text-platinum-faint" : "text-platinum"}`}>
-                                  {doc.label}
-                                </p>
-                                <span
-                                  className="font-mono text-xs px-2 py-0.5 rounded-full flex-shrink-0"
-                                  style={{ background: dot + "20", color: dot }}
-                                >
-                                  {doc.importance}/10
-                                </span>
-                              </div>
-                              <p className="text-xs text-platinum-faint mt-1 leading-relaxed">{doc.description}</p>
-                              {doc.tip && (
-                                <p className="text-xs text-data mt-1.5 leading-relaxed italic">{doc.tip}</p>
-                              )}
-                            </div>
-                          </div>
-                        </motion.div>
-                      )
-                    })}
-                  </div>
-                </motion.div>
-              ) : null,
-            )}
-
-            {/* CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              className="pt-4 pb-8"
-            >
-              <motion.button
-                onClick={() => setPhase("gate")}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="btn-primary w-full py-4 rounded-xl text-white font-medium text-base"
-              >
-                Continue to Get Your Full Report →
-              </motion.button>
-              <p className="text-xs text-platinum-faint text-center mt-3">
-                Free assessment · Not immigration legal advice
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // ── Phase: gate ──────────────────────────────────────────────────────────
-
-  if (phase === "gate") {
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leadData.email)
-    const canSubmit = leadData.name.trim().length > 0 && emailValid
-
-    return (
-      <div className="min-h-screen bg-void flex flex-col">
-        <AssessmentHeader right="Almost there" />
-        <ProgressBar value={100} />
-
-        <div className="flex-1 flex items-center justify-center px-6 py-12">
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full max-w-md"
-          >
-            {/* Icon */}
-            <div className="w-14 h-14 rounded-2xl bg-brand/15 border border-brand/30 flex items-center justify-center mx-auto mb-6">
-              <span className="text-brand text-xl">✦</span>
-            </div>
-
-            <h1 className="font-display text-3xl text-platinum mb-3 text-center">
-              Your readiness report is ready.
-            </h1>
-            <p className="text-platinum-dim leading-relaxed mb-8 text-center text-sm">
-              Enter your details to receive your AI readiness report and document strategy.
-            </p>
-
-            <div className="space-y-4">
-              {/* Full name */}
-              <div>
-                <label className="block font-mono text-xs text-platinum-dim mb-1.5 uppercase tracking-wide">
-                  Full Name <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={leadData.name}
-                  onChange={(e) => setLeadData((p) => ({ ...p, name: e.target.value }))}
-                  placeholder="Arjun Mehta"
-                  className="input-field"
-                  autoFocus
-                />
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block font-mono text-xs text-platinum-dim mb-1.5 uppercase tracking-wide">
-                  Email <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="email"
-                  value={leadData.email}
-                  onChange={(e) => setLeadData((p) => ({ ...p, email: e.target.value }))}
-                  placeholder="arjun@yourcompany.com"
-                  className="input-field"
-                />
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="block font-mono text-xs text-platinum-dim mb-1.5 uppercase tracking-wide">
-                  Phone Number{" "}
-                  <span className="text-platinum-faint normal-case font-sans tracking-normal">(recommended)</span>
-                </label>
-                <input
-                  type="tel"
-                  value={leadData.phone}
-                  onChange={(e) => setLeadData((p) => ({ ...p, phone: e.target.value }))}
-                  placeholder="+91 98765 43210"
-                  className="input-field"
-                />
-              </div>
-
-              {/* LinkedIn */}
-              <div>
-                <label className="block font-mono text-xs text-platinum-dim mb-1.5 uppercase tracking-wide">
-                  LinkedIn URL{" "}
-                  <span className="text-platinum-faint normal-case font-sans tracking-normal">(recommended)</span>
-                </label>
-                <input
-                  type="url"
-                  value={leadData.linkedinUrl}
-                  onChange={(e) => setLeadData((p) => ({ ...p, linkedinUrl: e.target.value }))}
-                  placeholder="linkedin.com/in/arjunmehta"
-                  className="input-field"
-                />
-              </div>
-
-              {/* Submit */}
-              <motion.button
-                onClick={handleLeadSubmit}
-                disabled={!canSubmit}
-                whileHover={canSubmit ? { scale: 1.02 } : {}}
-                whileTap={canSubmit ? { scale: 0.98 } : {}}
-                className={`btn-primary w-full py-4 rounded-xl text-white font-medium text-base transition-all mt-2 ${
-                  !canSubmit ? "opacity-40 cursor-not-allowed" : ""
-                }`}
-              >
-                See my full score →
-              </motion.button>
-            </div>
-
-            <p className="text-xs text-platinum-faint text-center mt-4 leading-relaxed">
-              Amit may personally review high-potential profiles. No spam.
-            </p>
-          </motion.div>
-        </div>
-      </div>
-    )
-  }
-
-  // ── Phase: questions ─────────────────────────────────────────────────────
-
-  const isBinary = q.options.length === 2
-  const progressValue = ((step + 1) / TOTAL) * 100
 
   return (
-    <div className="min-h-screen bg-void flex flex-col">
-      <AssessmentHeader right={`Step ${step + 1} of ${TOTAL}`} />
-      <ProgressBar value={progressValue} />
-
-      {/* Question area */}
-      <div className="flex-1 flex items-center justify-center px-6 py-10">
-        <div className="w-full max-w-2xl">
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={step}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {/* Section + step badge */}
-              <div className="flex items-center gap-3 mb-8">
-                <span className="font-mono text-xs text-brand">
-                  Q{String(step + 1).padStart(2, "0")}
-                </span>
-                <span className="font-mono text-xs text-platinum-faint">
-                  · SECTION {currentSection + 1} OF 4 — {SECTIONS[currentSection].title.toUpperCase()}
-                </span>
-                <div className="flex-1 flex gap-1 justify-end">
-                  {QUESTIONS.map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-0.5 rounded-full transition-all duration-300"
-                      style={{
-                        width: i === step ? "20px" : "6px",
-                        background: i <= step ? "#7C3AED" : "#E2E8F0",
-                      }}
-                    />
-                  ))}
-                </div>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "var(--canvas)",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {/* ── Nav ── */}
+      <nav
+        style={{
+          background: "rgba(246,241,231,0.92)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid var(--line)",
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1240,
+            margin: "0 auto",
+            padding: "0 32px",
+            height: 72,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Link
+            href="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              color: "var(--ink)",
+            }}
+          >
+            <LogoMark />
+            <div>
+              <div
+                style={{
+                  fontFamily: "var(--f-display)",
+                  fontSize: 18,
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1,
+                  color: "var(--ink)",
+                }}
+              >
+                Meridian
               </div>
+              <div
+                style={{
+                  fontFamily: "var(--f-mono)",
+                  fontSize: 9,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "var(--ink-faint)",
+                  lineHeight: 1,
+                  marginTop: 2,
+                }}
+              >
+                Global Talent Advisory
+              </div>
+            </div>
+          </Link>
 
-              {/* Question */}
-              <h1 className="font-display text-3xl md:text-4xl text-platinum mb-2 leading-tight">
-                {q.text}
-              </h1>
-              {q.sub && (
-                <p className="text-platinum-dim text-sm mb-8 leading-relaxed">{q.sub}</p>
-              )}
-              {!q.sub && <div className="mb-8" />}
+          <Link
+            href="/"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "8px 18px",
+              borderRadius: 8,
+              border: "1.5px solid var(--line)",
+              fontFamily: "var(--f-sans)",
+              fontSize: 13,
+              fontWeight: 500,
+              color: "var(--ink-soft)",
+              background: "transparent",
+              transition: "all .2s",
+            }}
+          >
+            ← Back to home
+          </Link>
+        </div>
+      </nav>
 
-              {/* Options */}
-              {isBinary ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {q.options.map((opt) => (
-                    <OptionCard
-                      key={opt.value}
-                      option={opt}
-                      selected={selected === opt.value}
-                      onSelect={() => selectAnswer(opt.value)}
-                    />
-                  ))}
+      {/* ── Shell ── */}
+      <div
+        style={{
+          flex: 1,
+          display: "grid",
+          gridTemplateColumns: "380px 1fr",
+        }}
+        className="ra-shell"
+      >
+        {/* ── Sidebar ── */}
+        <aside
+          style={{
+            background: `
+              radial-gradient(700px 600px at 0% 0%, rgba(91,33,182,.45), transparent 60%),
+              radial-gradient(500px 400px at 100% 100%, rgba(184,137,59,.25), transparent 60%),
+              var(--ink)
+            `,
+            color: "white",
+            padding: "52px 40px",
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* Free badge */}
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "6px 14px",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              fontFamily: "var(--f-mono)",
+              fontSize: 11,
+              letterSpacing: "0.12em",
+              color: "white",
+              alignSelf: "flex-start",
+              marginBottom: 0,
+            }}
+          >
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "var(--gold-soft)",
+                display: "inline-block",
+              }}
+            />
+            Free · 4 minutes
+          </div>
+
+          <h2
+            style={{
+              fontFamily: "var(--f-display)",
+              fontSize: 38,
+              lineHeight: 1.08,
+              letterSpacing: "-0.025em",
+              color: "white",
+              marginTop: 28,
+              marginBottom: 16,
+              fontWeight: 400,
+            }}
+          >
+            Your free{" "}
+            <span
+              style={{
+                fontStyle: "italic",
+                color: "var(--gold-soft)",
+              }}
+            >
+              readiness
+            </span>{" "}
+            check.
+          </h2>
+
+          <p
+            style={{
+              color: "rgba(255,255,255,0.75)",
+              fontSize: 14.5,
+              lineHeight: 1.6,
+              margin: 0,
+            }}
+          >
+            Twenty questions across the four dimensions Tech Nation evaluates.
+            Honest answers give you an honest score.
+          </p>
+
+          {/* Pillars */}
+          <div style={{ marginTop: 32 }}>
+            {PILLAR_LABELS.map((label, i) => {
+              const pillarNum = i + 1
+              const isActive = activePillar === pillarNum
+              const isDone = activePillar > pillarNum
+              return (
+                <div
+                  key={label}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "12px 0",
+                    borderBottom:
+                      i < PILLAR_LABELS.length - 1
+                        ? "1px solid rgba(255,255,255,0.08)"
+                        : "none",
+                    fontSize: 13.5,
+                    color: isActive
+                      ? "white"
+                      : isDone
+                      ? "rgba(255,255,255,0.7)"
+                      : "rgba(255,255,255,0.55)",
+                    fontWeight: isActive ? 500 : 400,
+                    transition: "color .3s",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: "50%",
+                      flexShrink: 0,
+                      background: isActive
+                        ? "var(--gold-soft)"
+                        : isDone
+                        ? "white"
+                        : "rgba(255,255,255,0.2)",
+                      boxShadow: isActive
+                        ? "0 0 0 4px rgba(212,166,71,0.2)"
+                        : "none",
+                      transition: "all .3s",
+                    }}
+                  />
+                  {label}
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  {q.options.map((opt) => (
-                    <OptionCard
-                      key={opt.value}
-                      option={opt}
-                      selected={selected === opt.value}
-                      onSelect={() => selectAnswer(opt.value)}
-                    />
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+              )
+            })}
+          </div>
+
+          {/* Meta */}
+          <div
+            style={{
+              marginTop: "auto",
+              paddingTop: 32,
+              borderTop: "1px solid rgba(255,255,255,0.12)",
+              fontFamily: "var(--f-mono)",
+              fontSize: 11,
+              letterSpacing: "0.14em",
+              color: "rgba(255,255,255,0.5)",
+              lineHeight: 1.9,
+            }}
+          >
+            <div>
+              <strong style={{ color: "white", fontWeight: 600 }}>
+                No account required
+              </strong>
+            </div>
+            <div>No email needed to start</div>
+            <div>Your answers stay on this device</div>
+          </div>
+        </aside>
+
+        {/* ── Main ── */}
+        <main
+          style={{
+            padding: "64px",
+            maxWidth: 720,
+            width: "100%",
+            margin: "0 auto",
+            display: "flex",
+            flexDirection: "column",
+          }}
+          className="ra-main"
+        >
+          {/* Progress label */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 16,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "var(--f-mono)",
+                fontSize: 11,
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: "var(--ink-faint)",
+              }}
+            >
+              Question{" "}
+              <strong style={{ color: "var(--violet)", fontWeight: 600 }}>
+                {idx + 1}
+              </strong>{" "}
+              of {TOTAL}
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--f-mono)",
+                fontSize: 11,
+                color: "var(--ink-faint)",
+              }}
+            >
+              {pct}% complete
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div
+            style={{
+              height: 4,
+              background: "var(--line)",
+              borderRadius: 2,
+              overflow: "hidden",
+              marginBottom: 56,
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                background: "var(--grad-primary)",
+                borderRadius: 2,
+                width: `${pct}%`,
+                transition: "width .5s cubic-bezier(.22,1,.36,1)",
+              }}
+            />
+          </div>
+
+          {/* Question card — keyed to animate on change */}
+          <div
+            key={animKey}
+            style={{
+              animation: `slideIn${slideDir === "forward" ? "Right" : "Left"} .35s cubic-bezier(.22,1,.36,1) both`,
+            }}
+          >
+            {/* Pillar pill */}
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 12px",
+                borderRadius: 999,
+                background: "rgba(91,33,182,.08)",
+                color: "var(--violet)",
+                fontFamily: "var(--f-mono)",
+                fontSize: 11,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                fontWeight: 600,
+                marginBottom: 20,
+              }}
+            >
+              Pillar {q.p} · {q.pill}
+            </div>
+
+            {/* Question text */}
+            <h1
+              style={{
+                fontFamily: "var(--f-display)",
+                fontSize: 38,
+                lineHeight: 1.15,
+                marginBottom: 14,
+                letterSpacing: "-0.025em",
+                color: "var(--ink)",
+                fontWeight: 400,
+              }}
+            >
+              {q.q}
+            </h1>
+
+            {/* Hint */}
+            <p
+              style={{
+                fontSize: 15,
+                color: "var(--ink-soft)",
+                marginBottom: 40,
+                lineHeight: 1.55,
+              }}
+            >
+              Pick the closest answer. Honest is better than impressive.
+            </p>
+
+            {/* Options */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {q.opts.map((opt, i) => {
+                const isSelected = selected === i
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleSelect(i)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 14,
+                      padding: "18px 22px",
+                      borderRadius: 14,
+                      border: isSelected
+                        ? "1.5px solid var(--violet)"
+                        : "1.5px solid var(--line)",
+                      background: isSelected
+                        ? "rgba(91,33,182,.04)"
+                        : "var(--paper)",
+                      boxShadow: isSelected
+                        ? "0 0 0 4px rgba(91,33,182,.06)"
+                        : "none",
+                      cursor: "pointer",
+                      textAlign: "left",
+                      fontFamily: "inherit",
+                      fontSize: 15,
+                      color: "var(--ink)",
+                      transition: "all .2s",
+                      width: "100%",
+                    }}
+                  >
+                    {/* Radio dot */}
+                    <span
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: "50%",
+                        border: isSelected
+                          ? "2px solid var(--violet)"
+                          : "2px solid var(--line)",
+                        background: isSelected ? "var(--violet)" : "transparent",
+                        flexShrink: 0,
+                        position: "relative",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "all .2s",
+                      }}
+                    >
+                      {isSelected && (
+                        <span
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            background: "white",
+                            display: "block",
+                          }}
+                        />
+                      )}
+                    </span>
+
+                    {/* Label */}
+                    <span style={{ flex: 1 }}>{opt.t}</span>
+
+                    {/* Score tag */}
+                    <span
+                      style={{
+                        fontFamily: "var(--f-mono)",
+                        fontSize: 10,
+                        letterSpacing: "0.08em",
+                        color: "var(--ink-faint)",
+                        padding: "3px 8px",
+                        borderRadius: 6,
+                        background: "var(--canvas)",
+                        textTransform: "uppercase",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {opt.s}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
 
           {/* Navigation */}
-          <div className="flex items-center justify-between mt-10">
+          <div
+            style={{
+              marginTop: "auto",
+              paddingTop: 56,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 16,
+            }}
+          >
             <button
               onClick={goBack}
-              disabled={step === 0}
-              className="text-sm text-platinum-dim hover:text-platinum transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2"
+              disabled={idx === 0}
+              style={{
+                background: "none",
+                border: "none",
+                color: "var(--ink-soft)",
+                fontSize: 14,
+                fontWeight: 500,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: 8,
+                fontFamily: "inherit",
+                cursor: idx === 0 ? "not-allowed" : "pointer",
+                opacity: idx === 0 ? 0.3 : 1,
+                transition: "opacity .2s",
+              }}
             >
               ← Back
             </button>
-            <motion.button
+
+            <button
               onClick={goNext}
-              disabled={!selected}
-              whileHover={selected ? { scale: 1.02 } : {}}
-              whileTap={selected ? { scale: 0.98 } : {}}
-              className={`btn-primary px-8 py-3 rounded-xl text-sm font-medium text-white transition-all ${
-                !selected ? "opacity-40 cursor-not-allowed" : ""
-              }`}
+              disabled={selected === null}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                padding: "14px 28px",
+                borderRadius: 10,
+                background:
+                  selected === null
+                    ? "rgba(91,33,182,.35)"
+                    : "var(--grad-primary)",
+                color: "white",
+                fontFamily: "var(--f-sans)",
+                fontSize: 15,
+                fontWeight: 600,
+                border: "none",
+                cursor: selected === null ? "not-allowed" : "pointer",
+                opacity: selected === null ? 0.4 : 1,
+                transition: "all .2s",
+                pointerEvents: selected === null ? "none" : "auto",
+              }}
             >
-              {step === TOTAL - 1 ? "Calculate my score →" : "Continue →"}
-            </motion.button>
+              {idx === TOTAL - 1 ? "See my score →" : "Continue →"}
+            </button>
           </div>
-        </div>
+
+          {/* Disclaimer */}
+          <div
+            style={{
+              marginTop: 24,
+              textAlign: "center",
+              fontFamily: "var(--f-mono)",
+              fontSize: 11,
+              color: "var(--ink-faint)",
+              letterSpacing: "0.06em",
+            }}
+          >
+            Advisory only — not immigration legal advice.
+          </div>
+        </main>
       </div>
 
-      {/* Footer */}
-      <div className="px-6 py-4 border-t border-void-border text-center">
-        <p className="text-xs text-platinum-faint">
-          Free assessment · ~5 minutes · Not immigration legal advice
-        </p>
-      </div>
+      {/* ── Slide animations ── */}
+      <style>{`
+        .ra-shell {
+          min-height: calc(100vh - 72px);
+        }
+        @media (max-width: 900px) {
+          .ra-shell {
+            grid-template-columns: 1fr !important;
+          }
+          .ra-main {
+            padding: 40px 24px !important;
+          }
+          aside {
+            padding: 40px 24px !important;
+          }
+        }
+        @keyframes slideInRight {
+          from { opacity: 0; transform: translateX(32px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInLeft {
+          from { opacity: 0; transform: translateX(-32px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
     </div>
   )
 }

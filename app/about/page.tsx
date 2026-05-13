@@ -4,156 +4,286 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { SiteFooter } from "@/components/SiteFooter"
 
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between items-start gap-4 py-4 border-b border-void-border last:border-0">
-      <span className="text-xs font-mono text-platinum-faint uppercase tracking-widest pt-0.5 flex-shrink-0">{label}</span>
-      <span className="text-sm text-platinum text-right">{value}</span>
-    </div>
-  )
-}
+const STATS = [
+  { value: "20+",  label: "Builders advised",       accent: "violet" },
+  { value: "48h",  label: "Personal response",       accent: "gold" },
+  { value: "4",    label: "Continents represented",  accent: "violet" },
+  { value: "£500", label: "Starting engagement",     accent: "gold" },
+]
+
+const METHODS = [
+  {
+    num: "01",
+    title: "Evidence Architecture",
+    body: "Map every proof point in your career against the specific signals evaluators are trained to look for. Identify what's missing, what's weak, and what to lead with — before you write a word of the statement.",
+  },
+  {
+    num: "02",
+    title: "Narrative Engineering",
+    body: "Build the career story that creates a coherent, compelling case — not a job history. Structure it so evaluators can read your trajectory in 90 seconds and walk away with the right conclusion.",
+  },
+  {
+    num: "03",
+    title: "Recommendation Architecture",
+    body: "Identify the right recommenders, coach them on what to write, and structure a three-letter portfolio where each letter covers a different dimension of your credibility. The most under-invested pillar.",
+  },
+]
+
+const PRINCIPLES = [
+  {
+    n: "i.",
+    title: "The case is yours, not a template.",
+    body: "Two builders with similar profiles will end up with very different cases. Every engagement starts from your specific situation — your evidence, your career, your sector — and builds outward. No filled-in templates.",
+  },
+  {
+    n: "ii.",
+    title: "Strong work doesn't speak for itself.",
+    body: "The most common mistake is assuming your work is self-evidently exceptional. It rarely is to a stranger reading 40 applications a day. The job of the case is to make the argument the work cannot make on its own.",
+  },
+  {
+    n: "iii.",
+    title: "Honesty over hype.",
+    body: "If your case isn't ready, Amit will say so. The most valuable advice is sometimes \"build more evidence before applying\" — and a £500 diagnostic is enough to find that out cheaply.",
+  },
+  {
+    n: "iv.",
+    title: "Fixed scope. Fixed price.",
+    body: "No open-ended retainers. No hourly billing. No surprise scope creep. Three tiers, three prices, every engagement defined before it begins.",
+  },
+  {
+    n: "v.",
+    title: "Advisory, not legal advice.",
+    body: "Amit is not an immigration lawyer and is not OISC-regulated. He helps with case architecture and narrative — not with regulated immigration advice. If you need legal advice, you should consult an accredited immigration solicitor in parallel.",
+  },
+]
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-void">
-      {/* Header */}
-      <div className="border-b border-void-border px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex flex-col leading-none">
-            <span className="font-display text-base text-gradient-brand leading-none">Meridian</span>
-            <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
+    <div className="min-h-screen" style={{ background: "var(--color-canvas)" }}>
+
+      {/* ── Nav ────────────────────────────────────────────── */}
+      <nav
+        style={{
+          borderBottom: "1px solid var(--color-line)",
+          background: "rgba(246,241,231,0.85)",
+          backdropFilter: "blur(12px)",
+          position: "sticky",
+          top: 0,
+          zIndex: 40,
+        }}
+      >
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-2.5">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="18" stroke="var(--color-violet)" strokeWidth="1.5"/>
+              <ellipse cx="24" cy="24" rx="7.5" ry="18" stroke="var(--color-violet)" strokeWidth="1.5"/>
+              <line x1="6" y1="24" x2="42" y2="24" stroke="var(--color-violet)" strokeWidth="1.5"/>
+              <circle cx="24" cy="6" r="2.3" fill="var(--color-violet)"/>
+            </svg>
+            <div>
+              <div className="font-display text-base leading-none" style={{ color: "var(--color-ink)" }}>Meridian</div>
+              <div className="font-mono text-[9px] uppercase tracking-widest leading-none mt-0.5" style={{ color: "var(--color-ink-faint)" }}>Global Talent Advisory</div>
+            </div>
           </Link>
-          <span className="text-xs font-mono text-platinum-faint">About</span>
-        </div>
-      </div>
 
-      <div className="max-w-3xl mx-auto px-6 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {/* Title */}
-          <div className="mb-12">
-            <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-4">About Meridian</p>
-            <h1 className="font-display text-5xl text-platinum mb-6 leading-tight">
-              Built by someone<br />
-              <span className="text-gradient-brand">who went through it.</span>
-            </h1>
-          </div>
-
-          {/* Credential badge */}
-          <motion.div
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.15 }}
-            className="inline-flex mb-10"
-          >
-            <a href="https://www.linkedin.com/in/amitisb1tyagi/"
-              target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-gold/30 bg-gold/8 hover:bg-gold/15 hover:border-gold/50 transition-all">
-              <div className="w-2 h-2 rounded-full bg-gold" />
-              <span className="text-sm text-gold font-medium">
-                Amit Tyagi — UK Global Talent, Exceptional Talent
-              </span>
-              <span className="w-4 h-4 rounded bg-[#0A66C2] flex items-center justify-center text-white font-bold flex-shrink-0" style={{ fontSize: "9px" }}>in</span>
-            </a>
-          </motion.div>
-
-          {/* Story */}
-          <div className="space-y-5 mb-14">
-            {[
-              "Amit Tyagi received UK Global Talent recognition under the Exceptional Talent category. Not by luck, and not by hiring an expensive immigration consultancy. By understanding precisely how the Tech Nation assessment framework evaluates applicants — and building a case that spoke directly to that framework, in the language evaluators are trained to read.",
-              "His background spans fintech, startups, product, and founding. He has built products, led teams, and operated at scale — and he knows what genuinely exceptional work looks like from the inside. More critically, he knows how to translate that work into the evidence portfolio, narrative, and recommendation structure that evaluators expect.",
-              "Meridian exists because Amit recognised a gap. Most exceptional builders applying for Global Talent recognition are not rejected because they are unqualified. They are rejected because their case does not present their work the way the assessment panel is trained to look for it. Wrong sequencing. Generic evidence. Recommendation letters that describe the relationship instead of the work. A personal statement that reads like a CV.",
-              "Meridian fixes that. Not with a template — with a case built specifically around your evidence, your career, and the specific gaps that are most likely to cost you the application.",
-              "This is advisory, not legal. Amit is not an immigration lawyer and does not pretend to be. His value is that he has been through the process, he understands what a strong case looks like, and he works directly with you to build one.",
-            ].map((para, i) => (
-              <motion.p
-                key={i}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.07 }}
-                className="text-platinum-dim leading-relaxed"
-              >
-                {para}
-              </motion.p>
+          <div className="hidden md:flex items-center gap-7">
+            {[["/#services","Services"],["#about","About"],["/#pricing","Pricing"],["/blog","Blog"]].map(([href, label]) => (
+              <Link key={label} href={href}
+                className="text-sm font-medium transition-colors"
+                style={{ color: "var(--color-ink-soft)" }}>
+                {label}
+              </Link>
             ))}
           </div>
 
-          {/* Facts */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="card-border p-8 mb-10"
-          >
-            <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-4">Credentials & Context</p>
-            <Row label="Recognition"      value="UK Global Talent — Exceptional Talent" />
-            <Row label="Background"       value="Fintech · Startups · Product · Founding" />
-            <Row label="Advisory basis"   value="Direct personal experience of the application process" />
-            <Row label="Advisory type"    value="Independent — not regulated immigration advice" />
-            <Row label="Capacity"         value="Limited engagements per month, reviewed personally" />
-            <Row label="Pricing"          value="£150 – £4,000 hard cap. No open-ended retainers." />
-            <Row label="Contact"          value="amit@berriesadvisory.com" />
-          </motion.div>
-
-          {/* What Amit is not */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="p-6 rounded-xl border border-void-border bg-void-surface mb-10"
-          >
-            <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-3">Important</p>
-            <p className="text-sm text-platinum-dim leading-relaxed">
-              Amit Tyagi is not an immigration lawyer, is not OISC-registered, and does not provide
-              regulated immigration legal advice. Meridian is an independent advisory service only.
-              For regulated immigration legal advice, consult an accredited immigration solicitor.
-            </p>
-          </motion.div>
-
-          {/* Reach out */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.65 }}
-            className="card-border p-8 mb-8"
-          >
-            <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-5">Reach out directly</p>
-            <p className="text-sm text-platinum-dim leading-relaxed mb-5">
-              If you have a quick question or want to introduce yourself before applying,
-              connect with Amit on LinkedIn or drop him a WhatsApp message.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <a href="https://www.linkedin.com/in/amitisb1tyagi/"
-                target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-5 py-3 rounded-xl border border-[#0A66C2]/30 bg-[#0A66C2]/8 text-sm text-platinum hover:bg-[#0A66C2]/15 transition-all">
-                <span className="w-6 h-6 rounded bg-[#0A66C2] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">in</span>
-                Connect on LinkedIn
-              </a>
-              <a href="https://wa.me/447776842287"
-                target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-5 py-3 rounded-xl border border-[#25D366]/30 bg-[#25D366]/8 text-sm text-platinum hover:bg-[#25D366]/15 transition-all">
-                <span className="w-6 h-6 rounded bg-[#25D366] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">W</span>
-                WhatsApp +44 7776 842287
-              </a>
-            </div>
-          </motion.div>
-
-          {/* CTA */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex items-center gap-3">
+            <a href="https://www.linkedin.com/in/amitisb1tyagi/" target="_blank" rel="noopener noreferrer"
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold border transition-all"
+              style={{ background: "#0A66C208", border: "1px solid #0A66C230", color: "#0A66C2" }}>in</a>
+            <a href="https://wa.me/447776842287" target="_blank" rel="noopener noreferrer"
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold border transition-all"
+              style={{ background: "#25D36608", border: "1px solid #25D36630", color: "#25D366" }}>W</a>
             <Link href="/scorecard"
-              className="btn-primary inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-white font-medium text-sm">
-              Take the free readiness assessment →
-            </Link>
-            <Link href="/apply"
-              className="btn-secondary inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-platinum font-medium text-sm">
-              Apply to work with Amit
+              className="btn-primary text-xs text-white px-4 py-2 rounded-full font-medium">
+              Check my readiness →
             </Link>
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </nav>
+
+      {/* ── Hero ───────────────────────────────────────────── */}
+      <section
+        style={{
+          background: "radial-gradient(800px 600px at 20% 0%, rgba(91,33,182,.15), transparent 60%), var(--color-canvas)",
+          paddingTop: 80,
+          paddingBottom: 0,
+        }}
+      >
+        <div className="max-w-6xl mx-auto px-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] mb-5" style={{ color: "var(--color-violet)" }}>
+              About Amit
+            </p>
+            <h1 className="font-display text-5xl md:text-6xl leading-tight mb-6 max-w-4xl" style={{ letterSpacing: "-0.025em", color: "var(--color-ink)" }}>
+              He didn&apos;t learn this from a textbook.{" "}
+              <span className="text-gradient-brand italic">He went through it.</span>
+            </h1>
+            <p className="text-lg max-w-2xl mb-14 leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
+              Amit Tyagi is a UK Global Talent visa holder under{" "}
+              <strong style={{ color: "var(--color-ink)" }}>Exceptional Talent</strong> — and the strategic advisor
+              behind Meridian. Every engagement starts with one principle: the case is yours, not a template.
+            </p>
+
+            {/* Two-column: text + portrait */}
+            <div className="grid md:grid-cols-[1.5fr_1fr] gap-16 items-center mb-0">
+              <div>
+                {[
+                  "Amit applied for UK Global Talent under the Exceptional Talent category through a strategically engineered, evidence-led application. Not by luck. By understanding exactly how the assessment framework evaluates applicants — and building a case that spoke directly to that framework.",
+                  "His background is in fintech and startups — founder, operator, product builder. He knows how exceptional work actually looks from the inside, and more importantly, how to translate that into the language evaluators recognise.",
+                  "His advisory is not built on a template. Every engagement starts from your specific situation, your evidence, your career — and builds toward a case that is uniquely yours.",
+                ].map((p, i) => (
+                  <motion.p key={i} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 + i * 0.07 }}
+                    className="text-lg leading-relaxed mb-4" style={{ color: "var(--color-ink-soft)" }}>
+                    {p}
+                  </motion.p>
+                ))}
+                <div className="flex gap-3 mt-8 flex-wrap">
+                  <Link href="/apply" className="btn-primary text-white text-sm px-6 py-3 rounded-full font-medium inline-block">
+                    Apply to work with Amit →
+                  </Link>
+                  <a href="https://www.linkedin.com/in/amitisb1tyagi/" target="_blank" rel="noopener noreferrer"
+                    className="btn-secondary text-sm px-6 py-3 rounded-full font-medium inline-block"
+                    style={{ color: "var(--color-ink)", borderColor: "var(--color-line)" }}>
+                    Connect on LinkedIn
+                  </a>
+                </div>
+              </div>
+
+              {/* Portrait card */}
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
+                className="relative rounded-3xl overflow-hidden"
+                style={{
+                  aspectRatio: "1.05",
+                  background: "linear-gradient(135deg, #2E0F69 0%, #5B21B6 60%, #B8893B 100%)",
+                  boxShadow: "var(--shadow-lift)",
+                }}>
+                <div className="absolute inset-0"
+                  style={{ background: "linear-gradient(180deg, rgba(20,16,40,0) 55%, rgba(20,16,40,0.6) 100%)" }} />
+                <div className="absolute top-5 right-5 px-3 py-1.5 rounded-full font-mono text-[10px] uppercase tracking-widest"
+                  style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(10px)", color: "white", letterSpacing: "0.16em" }}>
+                  Exceptional Talent
+                </div>
+                <div className="absolute bottom-5 left-5 font-display text-xl" style={{ color: "rgba(255,255,255,0.85)" }}>
+                  Amit Tyagi
+                </div>
+                {/* Decorative glyph */}
+                <div className="absolute inset-0 flex items-center justify-center font-display italic text-[120px] leading-none"
+                  style={{ color: "rgba(255,255,255,0.12)", pointerEvents: "none", userSelect: "none" }}>
+                  A
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Stats row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mt-16 pt-14"
+              style={{ borderTop: "1px solid var(--color-line)" }}>
+              {STATS.map((s, i) => (
+                <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + i * 0.07 }}>
+                  <div className="font-display text-5xl leading-none mb-2" style={{ letterSpacing: "-0.03em", color: s.accent === "violet" ? "var(--color-violet)" : "var(--color-gold)" }}>
+                    {s.value}
+                  </div>
+                  <div className="font-mono text-[11px] uppercase tracking-[0.12em]" style={{ color: "var(--color-ink-faint)" }}>
+                    {s.label}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Method ─────────────────────────────────────────── */}
+      <section className="py-24" style={{ background: "var(--color-canvas-soft)" }}>
+        <div className="max-w-6xl mx-auto px-6">
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] mb-5" style={{ color: "var(--color-violet)" }}>
+            The method
+          </p>
+          <h2 className="font-display text-4xl mb-4 max-w-3xl" style={{ letterSpacing: "-0.025em", color: "var(--color-ink)" }}>
+            Three pillars of <span className="text-gradient-brand italic">a strong case.</span>
+          </h2>
+          <p className="max-w-xl mb-12 leading-relaxed" style={{ color: "var(--color-ink-soft)", fontSize: 16 }}>
+            Every engagement, whatever the tier, is structured around the same three architectural questions.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            {METHODS.map((m, i) => (
+              <motion.div key={m.num} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.08 }}
+                className="card-border p-8">
+                <div className="font-display text-5xl leading-none mb-4" style={{ color: "var(--color-violet)" }}>
+                  {m.num}
+                </div>
+                <h3 className="font-sans font-bold text-lg mb-3" style={{ color: "var(--color-ink)" }}>{m.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>{m.body}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Principles ─────────────────────────────────────── */}
+      <section className="py-24">
+        <div className="max-w-3xl mx-auto px-6">
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] mb-5" style={{ color: "var(--color-violet)" }}>
+            Principles
+          </p>
+          <h2 className="font-display text-4xl mb-12" style={{ letterSpacing: "-0.025em", color: "var(--color-ink)" }}>
+            How <span className="text-gradient-brand italic">Amit works.</span>
+          </h2>
+
+          {PRINCIPLES.map((p, i) => (
+            <motion.div key={p.n} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: i * 0.06 }}
+              className="grid grid-cols-[50px_1fr] gap-6 py-7"
+              style={{ borderBottom: i < PRINCIPLES.length - 1 ? "1px solid var(--color-line)" : "none" }}>
+              <div className="font-display text-3xl leading-none" style={{ color: "var(--color-gold)" }}>{p.n}</div>
+              <div>
+                <h3 className="font-sans font-bold text-xl mb-2" style={{ color: "var(--color-ink)" }}>{p.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>{p.body}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Final CTA ──────────────────────────────────────── */}
+      <section className="py-28 px-6 text-center relative overflow-hidden"
+        style={{ background: "radial-gradient(800px 500px at 20% 0%, rgba(91,33,182,.55), transparent 60%), radial-gradient(700px 400px at 80% 100%, rgba(184,137,59,.3), transparent 60%), var(--color-ink)" }}>
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] mb-6 inline-flex" style={{ color: "rgba(255,255,255,0.5)" }}>
+          Want Amit to read your case?
+        </p>
+        <h2 className="font-display text-4xl md:text-5xl mb-5 max-w-3xl mx-auto" style={{ color: "white", letterSpacing: "-0.025em" }}>
+          Start with a <span className="text-gradient-brand italic">free 4-minute check.</span>
+        </h2>
+        <p className="max-w-xl mx-auto mb-10 text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
+          Or skip the check and apply directly — Amit will respond personally within 48 hours.
+        </p>
+        <div className="flex gap-4 justify-center flex-wrap">
+          <Link href="/scorecard"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-white font-semibold text-sm transition-all hover:-translate-y-0.5"
+            style={{ background: "linear-gradient(135deg, #B8893B, #8C6428)", boxShadow: "0 8px 32px -8px rgba(184,137,59,.5)" }}>
+            Take the free assessment →
+          </Link>
+          <Link href="/apply"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-medium transition-all hover:-translate-y-0.5"
+            style={{ border: "1px solid rgba(255,255,255,0.25)", color: "white", background: "rgba(255,255,255,0.06)" }}>
+            Apply for advisory
+          </Link>
+        </div>
+      </section>
+
       <SiteFooter />
     </div>
   )

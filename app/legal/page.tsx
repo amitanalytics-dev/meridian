@@ -1,299 +1,322 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { SiteFooter } from "@/components/SiteFooter"
 
 const SECTIONS = [
   {
+    id: "disclaimer",
+    title: "Disclaimer",
+    updated: "Updated · February 2026",
+    content: (
+      <>
+        <div className="mb-5 p-5 rounded-r-xl" style={{ background: "rgba(169,56,56,.06)", borderLeft: "3px solid var(--color-red)" }}>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--color-ink)" }}>
+            <strong style={{ color: "var(--color-red)" }}>Meridian is an advisory service. It is not immigration legal advice.</strong>{" "}
+            Amit Tyagi is not an immigration lawyer, is not regulated by the OISC (Office of the Immigration Services
+            Commissioner), and does not provide regulated immigration advice. For regulated legal advice, consult an
+            accredited immigration solicitor in parallel.
+          </p>
+        </div>
+        <h3 className="font-sans font-bold text-base mb-2 mt-5" style={{ color: "var(--color-ink)" }}>What Meridian does</h3>
+        <p className="text-sm leading-relaxed mb-3" style={{ color: "var(--color-ink-soft)" }}>
+          Meridian provides strategic advisory services covering evidence architecture, narrative engineering, and
+          recommendation strategy for individuals preparing applications for UK Global Talent endorsement and similar
+          talent-based visa routes. The engagement is fundamentally an editorial and structural advisory relationship
+          — comparable to a writing coach or career strategist — not a legal one.
+        </p>
+        <h3 className="font-sans font-bold text-base mb-2 mt-5" style={{ color: "var(--color-ink)" }}>What Meridian does not do</h3>
+        <ul className="text-sm leading-relaxed mb-3 space-y-1.5" style={{ color: "var(--color-ink-soft)", paddingLeft: 20 }}>
+          {["Submit, file, or sign applications on your behalf","Provide regulated immigration advice as defined by the Immigration and Asylum Act 1999","Guarantee an endorsement, visa approval, or any other immigration outcome","Act as a sponsor, employer, or intermediary with the Home Office or Tech Nation"].map(item => (
+            <li key={item} className="list-disc">{item}</li>
+          ))}
+        </ul>
+        <h3 className="font-sans font-bold text-base mb-2 mt-5" style={{ color: "var(--color-ink)" }}>No affiliation</h3>
+        <p className="text-sm leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
+          Meridian is independent. It is not affiliated with, endorsed by, or representative of the UK Government,
+          the Home Office, UK Visas &amp; Immigration, Tech Nation, the Royal Academy of Engineering, or any other
+          endorsement body or visa authority.
+        </p>
+      </>
+    ),
+  },
+  {
     id: "terms",
     title: "Terms & Conditions",
-    content: `
-**Last updated: May 2026**
-
-These Terms & Conditions govern your engagement with Meridian, a trading name of Amit Tyagi ("Meridian", "we", "us"). By engaging our advisory services you agree to these terms.
-
-**1. Nature of Services**
-Meridian provides independent credibility advisory services to individuals applying for recognition programmes including but not limited to the UK Global Talent visa route. Our services are advisory in nature only. We do not provide immigration legal advice, regulated legal services, or OISC-regulated advice.
-
-**2. No Guarantee of Outcome**
-We make no representation, warranty, or guarantee that use of our services will result in approval of any visa application, recognition programme, or any other outcome. Advisory services improve the quality and presentation of an application — they do not determine or influence decisions made by any government body, assessor, or endorsing body.
-
-**3. Engagement and Payment**
-An engagement begins upon receipt of cleared payment. No advisory work, including calls, written feedback, or sessions, will commence until payment has been received and confirmed. Engagements are scoped individually — the scope, deliverables, and price are confirmed in writing by Amit before payment is requested.
-
-**4. Client Responsibilities**
-You are responsible for providing accurate information about your background, credentials, and career history. Meridian relies on information you provide. We accept no liability for outcomes resulting from inaccurate or incomplete information.
-
-**5. Intellectual Property**
-All written materials, templates, frameworks, and documents produced by Meridian remain our intellectual property until full payment is received, at which point a limited licence to use them for the purpose of your visa application is granted.
-
-**6. Confidentiality**
-We treat all client information as confidential. See our NDA & Confidentiality policy for full details.
-
-**7. Limitation of Liability**
-To the maximum extent permitted by law, Meridian's total liability in connection with any engagement shall not exceed the amount paid for that engagement. We are not liable for indirect, consequential, or special damages.
-
-**8. Governing Law**
-These terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.
-
-**9. Changes to These Terms**
-We may update these terms from time to time. The version in force at the time of your engagement applies.
-
-For questions: amit@berriesadvisory.com
-    `,
+    updated: "Updated · February 2026",
+    content: (
+      <>
+        {[
+          { h: "1. Agreement", p: "By engaging Meridian for any paid service, you agree to these terms. Free assessments and tools available on this website are governed by sections 1, 2, 6, 7, 8, and the disclaimer above." },
+          { h: "2. Engagement scope", p: "Each paid engagement is defined by the tier you book — Diagnostic, Application Advisory, or Full Case Build — and confirmed in writing before payment is taken. Deliverables and timelines are fixed at the point of confirmation. Scope changes are by mutual written agreement only." },
+          { h: "3. Capacity & scheduling", p: "Amit takes a limited number of engagements per month. Confirmation of a booking is at his discretion based on capacity and fit. If you apply and we cannot accept you immediately, you will be offered the next available slot or a refund." },
+          { h: "5. Intellectual property", p: "Templates, frameworks, briefs, and methodologies provided by Meridian remain Meridian intellectual property and are licensed to you for use in your own application. They may not be redistributed, resold, or repurposed for advising third parties." },
+          { h: "6. Limitation of liability", p: "To the maximum extent permitted by law, Meridian's total liability arising from any engagement is limited to the amount paid for that engagement. Meridian is not liable for indirect, consequential, or incidental losses including but not limited to visa rejection, missed deadlines, or downstream financial impact." },
+          { h: "7. Governing law", p: "These terms are governed by the laws of England and Wales. Disputes are subject to the exclusive jurisdiction of the courts of England and Wales." },
+          { h: "8. Changes", p: "Meridian may update these terms from time to time. The version in effect at the start of your engagement governs your engagement. Material changes will be communicated by email where you have an active engagement." },
+        ].map(item => (
+          <div key={item.h}>
+            <h3 className="font-sans font-bold text-base mb-2 mt-5 first:mt-0" style={{ color: "var(--color-ink)" }}>{item.h}</h3>
+            <p className="text-sm leading-relaxed mb-2" style={{ color: "var(--color-ink-soft)" }}>{item.p}</p>
+          </div>
+        ))}
+        <h3 className="font-sans font-bold text-base mb-2 mt-5" style={{ color: "var(--color-ink)" }}>4. Client responsibilities</h3>
+        <ul className="text-sm leading-relaxed mb-3 space-y-1.5" style={{ color: "var(--color-ink-soft)", paddingLeft: 20 }}>
+          {["Provide accurate information about your background, evidence, and intent","Respond to communications within reasonable timeframes (typically 5 working days) to keep timelines on track","Do not represent Meridian as a legal advisor in any correspondence with UK authorities"].map(item => (
+            <li key={item} className="list-disc">{item}</li>
+          ))}
+        </ul>
+      </>
+    ),
   },
   {
     id: "privacy",
     title: "Privacy Policy",
-    content: `
-**Last updated: May 2026**
-
-Meridian (Amit Tyagi) is committed to protecting your personal data in accordance with the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018.
-
-**1. What Data We Collect**
-We collect information you provide when using our assessment tool, submitting an application, or contacting us directly. This includes: name, email address, professional background, career history, and information about your visa goals. We also collect standard website usage data (page views, device type) via analytics.
-
-**2. How We Use Your Data**
-Your data is used to: provide and personalise our advisory services; respond to your application; communicate about your engagement; and improve our services. We do not use your data for unsolicited marketing.
-
-**3. Legal Basis for Processing**
-We process your data on the basis of contractual necessity (to deliver services you have requested) and legitimate interests (to improve our advisory offering).
-
-**4. Data Sharing**
-We do not sell or share your personal data with third parties for marketing purposes. We may share data with: service providers who support our operations (e.g. email, document storage) on a strictly necessary basis; and where required by law.
-
-**5. Data Retention**
-We retain your data for the duration of your engagement and for up to 3 years afterwards, or as required by applicable law.
-
-**6. Your Rights**
-Under UK GDPR you have the right to: access your data; correct inaccurate data; request deletion; restrict or object to processing; and data portability. To exercise these rights, contact amit@berriesadvisory.com.
-
-**7. Cookies**
-Our website uses functional cookies necessary for operation. No third-party tracking cookies are set without consent.
-
-**8. Contact**
-Data controller: Amit Tyagi. Email: amit@berriesadvisory.com
-
-You have the right to lodge a complaint with the Information Commissioner's Office (ICO) at ico.org.uk.
-    `,
-  },
-  {
-    id: "nda",
-    title: "NDA & Confidentiality",
-    content: `
-**Last updated: May 2026**
-
-**Our Commitment to You**
-Meridian treats all information shared during an advisory engagement as strictly confidential. This includes your career history, visa strategy, application materials, personal statement drafts, and any other information you share with us.
-
-We will not disclose your information to any third party without your explicit written consent, except where required by law.
-
-**Mutual Confidentiality**
-Any proprietary frameworks, methodologies, templates, or materials shared with you by Meridian in the course of an engagement are also confidential. You agree not to reproduce, distribute, or share these with third parties, including other visa applicants or advisors.
-
-**Formal NDA**
-If you require a formal mutual non-disclosure agreement before sharing sensitive information, we are happy to provide one. Contact amit@berriesadvisory.com to request a signed NDA before your engagement begins.
-
-**Testimonials and Case Studies**
-We will never share details of your engagement, application, or outcome publicly without your explicit written permission. Any case studies used on our platform are anonymised unless express permission has been given.
-
-**Data Handling**
-All documents and materials are handled in accordance with our Privacy Policy. Files are not stored on third-party public platforms without your consent.
-    `,
+    updated: "Updated · February 2026",
+    content: (
+      <>
+        <h3 className="font-sans font-bold text-base mb-2" style={{ color: "var(--color-ink)" }}>What we collect</h3>
+        <ul className="text-sm leading-relaxed mb-4 space-y-1.5" style={{ color: "var(--color-ink-soft)", paddingLeft: 20 }}>
+          {["Contact details: name, email, phone, location, role — provided when you apply or subscribe","Application content: the materials you share with us as part of an engagement (CV, drafts, recommendation letters)","Assessment answers: stored in your browser's localStorage only — never sent to us unless you choose to share","Analytics: aggregated page-view data via privacy-preserving analytics. No third-party advertising trackers."].map(item => (
+            <li key={item} className="list-disc">{item}</li>
+          ))}
+        </ul>
+        <h3 className="font-sans font-bold text-base mb-2 mt-5" style={{ color: "var(--color-ink)" }}>How we use it</h3>
+        <ul className="text-sm leading-relaxed mb-4 space-y-1.5" style={{ color: "var(--color-ink-soft)", paddingLeft: 20 }}>
+          {["To respond to your application and deliver the engagement","To improve the readiness check and the materials on this site","To send the field-notes newsletter (only with your explicit consent — easy unsubscribe in every email)"].map(item => (
+            <li key={item} className="list-disc">{item}</li>
+          ))}
+        </ul>
+        <h3 className="font-sans font-bold text-base mb-2 mt-5" style={{ color: "var(--color-ink)" }}>What we do not do</h3>
+        <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-ink-soft)" }}>
+          We do not sell your data, share it with marketing partners, or use it for behavioural advertising.
+          We do not use AI training on your application materials.
+        </p>
+        <h3 className="font-sans font-bold text-base mb-2 mt-5" style={{ color: "var(--color-ink)" }}>Your rights</h3>
+        <p className="text-sm leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
+          Under UK GDPR you can request access to, correction of, or deletion of your personal data at any time.
+          Email{" "}
+          <a href="mailto:privacy@meridian.advisory" className="font-semibold" style={{ color: "var(--color-violet)" }}>
+            privacy@meridian.advisory
+          </a>.
+        </p>
+      </>
+    ),
   },
   {
     id: "refunds",
     title: "Refund Policy",
-    content: `
-**Last updated: May 2026**
-
-**General Principle**
-Meridian's engagements involve significant preparation time before sessions take place. Our refund policy reflects the value of that preparation work.
-
-**Readiness Diagnostic (£150 – £500)**
-No refund once the written diagnostic has been delivered. If you cancel before delivery begins, a full refund is provided within 5 business days.
-
-**Application Advisory (£800 – £2,000)**
-If you cancel before the first session has taken place: 50% refund within 5 business days.
-If you cancel after the first session: no refund, as significant advisory time will have been invested.
-
-**Full Case Build (£2,000 – £4,000)**
-If you cancel within 48 hours of payment and before any work has commenced: full refund.
-If you cancel after work has commenced: a partial refund may be offered at Amit's discretion, reflecting the proportion of work not yet completed.
-
-**Change of Circumstances**
-If your personal circumstances change materially (e.g. visa route no longer relevant), contact us and we will discuss options individually. We aim to be fair.
-
-**How to Request a Refund**
-Email amit@berriesadvisory.com with your name, reference number, reason for cancellation, and the tier you paid for. We will respond within 5 business days.
-
-**Disputes**
-If you are not satisfied with our response, you may refer the matter to an independent dispute resolution service. We are bound by the laws of England and Wales.
-    `,
+    updated: "Updated · February 2026",
+    content: (
+      <>
+        <div className="mb-5 p-5 rounded-r-xl" style={{ background: "rgba(91,33,182,.05)", borderLeft: "3px solid var(--color-violet)" }}>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--color-ink)" }}>
+            <strong>Plain version:</strong> If a Diagnostic doesn&apos;t help you, full refund within 14 days. For Advisory and Full Build, pro-rata refund based on work completed.
+          </p>
+        </div>
+        {[
+          { h: "Readiness Diagnostic — £500", p: "Full refund if requested within 14 days of receiving the written diagnostic, no questions asked. If you decide the diagnostic was not useful, we'd rather give the money back than keep an unhappy client." },
+          { h: "Application Advisory — £2,500", p: "50% refund if requested within 7 days of the first session and before the second. After the second session has taken place, refund is pro-rata based on remaining sessions and deliverables (typically 25–40%). No refund once the engagement is more than 70% complete." },
+          { h: "Full Case Build — £5,500", p: "Pro-rata refund based on stage of work. Full refund if Amit determines after kick-off that he cannot effectively help your case. Stage milestones and refund percentages are stated in your engagement letter at signing." },
+          { h: "Diagnostic credit", p: "If you book a £500 Diagnostic and choose to continue to Application Advisory or Full Case Build within 60 days, the Diagnostic fee is credited toward the new engagement." },
+        ].map(item => (
+          <div key={item.h}>
+            <h3 className="font-sans font-bold text-base mb-2 mt-5 first:mt-0" style={{ color: "var(--color-ink)" }}>{item.h}</h3>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>{item.p}</p>
+          </div>
+        ))}
+      </>
+    ),
+  },
+  {
+    id: "nda",
+    title: "NDA & Confidentiality",
+    updated: "Updated · February 2026",
+    content: (
+      <>
+        {[
+          { h: "Default confidentiality", p: "Everything you share as part of an engagement is treated as confidential by default. Amit will not discuss the specifics of your case, your employer, or your evidence with any third party — including in anonymised form on this blog or in talks — without your explicit written permission." },
+          { h: "Mutual NDA", p: "A formal mutual NDA is available on request before any engagement begins and will be signed before you share sensitive materials. There is no additional fee for this." },
+          { h: "Recommender communications", p: "Where the engagement involves direct communication with your recommenders (e.g. coaching their letter), this is always done with your prior knowledge and at your direction. Amit does not contact your network without your explicit instruction." },
+          { h: "Testimonials", p: "The testimonials on this site are real but anonymised — first initial only, no surname, no company name, no identifying detail. Clients consent to their testimonial being published in this anonymised form. We do not use full names, photographs, or identifying details without separate explicit consent." },
+        ].map(item => (
+          <div key={item.h}>
+            <h3 className="font-sans font-bold text-base mb-2 mt-5 first:mt-0" style={{ color: "var(--color-ink)" }}>{item.h}</h3>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>{item.p}</p>
+          </div>
+        ))}
+      </>
+    ),
   },
   {
     id: "delivery",
     title: "Service Delivery",
-    content: `
-**Last updated: May 2026**
-
-**How Meridian Delivers Services**
-
-**Readiness Diagnostic**
-Delivered as a written document via email within 5–7 business days of payment confirmation. The diagnostic covers a scored assessment of your profile across the four key dimensions, an evidence gap analysis specific to your background, and the top three areas to address before applying.
-
-**Application Advisory**
-Delivered over 3–6 weeks from the date of payment confirmation, depending on your responsiveness and the volume of materials to review. Includes: two focused advisory sessions via video call (Google Meet, Zoom, or equivalent); written feedback on personal statement drafts; recommendation strategy document delivered via email; and 30 days of async support via email.
-
-**Full Case Build**
-Delivered over 4–8 weeks from the date of payment confirmation. Includes everything in Application Advisory plus: full personal statement drafting and iteration; per-recommender coaching briefs; a final readiness review call; and 90 days of async email support.
-
-**Session Format**
-All sessions are conducted via video call. A session recording may be provided upon request. Sessions are scheduled by mutual agreement after payment is confirmed.
-
-**Scheduling**
-Amit will contact you within 48 hours of payment confirmation to agree a schedule. All timelines are estimates — complex cases may take longer, and Amit will communicate any delays proactively.
-
-**Rescheduling**
-Sessions can be rescheduled with at least 48 hours notice. Rescheduling within 48 hours of a session may result in the session being forfeited if Amit is unable to reallocate the time.
-    `,
+    updated: "Updated · February 2026",
+    content: (
+      <>
+        <h3 className="font-sans font-bold text-base mb-2" style={{ color: "var(--color-ink)" }}>Format</h3>
+        <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-ink-soft)" }}>
+          Engagements are delivered remotely — sessions over video call (Google Meet by default; Zoom or Teams on
+          request), written deliverables in shared document form, and async communication via email or a private
+          Slack channel for Advisory and Full Build tiers.
+        </p>
+        <h3 className="font-sans font-bold text-base mb-2 mt-5" style={{ color: "var(--color-ink)" }}>Timeline</h3>
+        <ul className="text-sm leading-relaxed mb-4 space-y-1.5" style={{ color: "var(--color-ink-soft)", paddingLeft: 20 }}>
+          {["Readiness Diagnostic: typically completed within 5–7 working days of payment","Application Advisory: 3–6 weeks depending on responsiveness and material readiness","Full Case Build: 4–8 weeks, including reviewer cycles and recommendation letter coaching"].map(item => (
+            <li key={item} className="list-disc">{item}</li>
+          ))}
+        </ul>
+        <h3 className="font-sans font-bold text-base mb-2 mt-5" style={{ color: "var(--color-ink)" }}>Working hours</h3>
+        <p className="text-sm leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
+          Amit works UK time. Async responses are typically within 24 working hours; session bookings respect your
+          timezone where reasonable.
+        </p>
+      </>
+    ),
   },
   {
-    id: "disclaimer",
-    title: "Disclaimer",
-    content: `
-**Last updated: May 2026**
-
-**Independent Advisory Service**
-Meridian is an independent advisory service operated by Amit Tyagi. We are not affiliated with the UK Government, the Home Office, Tech Nation, the UKVI (UK Visas and Immigration), or any official visa body, endorsing body, or recognition programme.
-
-**Not Immigration Legal Advice**
-Nothing on this website or in any communication from Meridian constitutes immigration legal advice. Amit Tyagi is not an immigration lawyer, is not registered with the Office of the Immigration Services Commissioner (OISC), and is not authorised to provide regulated immigration advice. For regulated immigration legal advice, you must consult an accredited immigration solicitor or OISC-registered advisor.
-
-**No Guarantee of Outcome**
-The Founder Credibility Index™ (FCI) score produced by our assessment tool is an advisory intelligence instrument. It is not a prediction of visa outcome, nor does it constitute an assessment by any official body. Scores are based on self-reported information and a proprietary algorithm. They are indicative only.
-
-**Accuracy of Information**
-While we take care to ensure the information on this site is accurate and up to date, visa requirements, assessment criteria, and recognition programmes change regularly. You should always verify current requirements directly with the relevant authority or a qualified immigration professional.
-
-**External Links**
-This website may contain links to external sites. We are not responsible for the content or practices of those sites.
-
-**Liability**
-To the maximum extent permitted by law, Meridian accepts no liability for decisions made in reliance on information provided on this website or in advisory communications.
-    `,
+    id: "contact",
+    title: "Contact",
+    updated: "For everything else",
+    content: (
+      <ul className="space-y-3 text-sm" style={{ listStyle: "none", padding: 0 }}>
+        {[
+          { label: "General & engagement enquiries", value: "hello@meridian.advisory", href: "mailto:hello@meridian.advisory" },
+          { label: "Privacy & data",   value: "privacy@meridian.advisory", href: "mailto:privacy@meridian.advisory" },
+          { label: "Legal",            value: "legal@meridian.advisory",   href: "mailto:legal@meridian.advisory" },
+          { label: "WhatsApp",         value: "+44 7776 842287",           href: "https://wa.me/447776842287" },
+          { label: "LinkedIn",         value: "amitisb1tyagi",             href: "https://www.linkedin.com/in/amitisb1tyagi/" },
+        ].map(item => (
+          <li key={item.label} className="py-2.5" style={{ borderBottom: "1px solid var(--color-line-soft)" }}>
+            <strong style={{ color: "var(--color-ink)" }}>{item.label}: </strong>
+            <a href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined}
+              rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+              className="font-semibold transition-colors hover:opacity-80" style={{ color: "var(--color-violet)" }}>
+              {item.value}
+            </a>
+          </li>
+        ))}
+      </ul>
+    ),
   },
 ]
 
-function Section({ s, isOpen, toggle }: {
-  s: typeof SECTIONS[0]
-  isOpen: boolean
-  toggle: () => void
-}) {
-  return (
-    <div id={s.id} className="card-border overflow-hidden scroll-mt-24">
-      <button
-        onClick={toggle}
-        className="w-full px-8 py-6 flex items-center justify-between gap-4 text-left"
-      >
-        <span className="font-display text-lg text-platinum">{s.title}</span>
-        <motion.span
-          animate={{ rotate: isOpen ? 45 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="text-brand text-2xl flex-shrink-0"
-        >+</motion.span>
-      </button>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className="px-8 pb-8 border-t border-void-border pt-6">
-              <div className="prose prose-sm max-w-none">
-                {s.content.trim().split("\n\n").map((block, i) => {
-                  if (block.startsWith("**") && block.endsWith("**") && !block.slice(2).includes("**")) {
-                    return <h3 key={i} className="text-platinum font-semibold text-sm mb-2 mt-4 first:mt-0">{block.replace(/\*\*/g, "")}</h3>
-                  }
-                  return (
-                    <p key={i} className="text-platinum-dim text-sm leading-relaxed mb-3"
-                      dangerouslySetInnerHTML={{
-                        __html: block
-                          .replace(/\*\*(.+?)\*\*/g, '<strong class="text-platinum">$1</strong>')
-                      }}
-                    />
-                  )
-                })}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
+const NAV_ITEMS = SECTIONS.map(s => ({ id: s.id, label: s.title }))
 
 export default function LegalPage() {
-  const [openId, setOpenId] = useState<string | null>("terms")
+  const [activeId, setActiveId] = useState("disclaimer")
+  const [openId, setOpenId]     = useState<string | null>(null)
+
+  // Sync active TOC link on scroll
+  useEffect(() => {
+    function onScroll() {
+      const y = window.scrollY + 200
+      let current = SECTIONS[0].id
+      SECTIONS.forEach(s => {
+        const el = document.getElementById(s.id)
+        if (el && el.offsetTop <= y) current = s.id
+      })
+      setActiveId(current)
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   return (
-    <div className="min-h-screen bg-void">
-      {/* Header */}
-      <div className="border-b border-void-border px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex flex-col leading-none">
-            <span className="font-display text-base text-gradient-brand leading-none">Meridian</span>
-            <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">Global Talent Visa</span>
+    <div className="min-h-screen" style={{ background: "var(--color-canvas)" }}>
+
+      {/* ── Nav ─────────────────────────────────────────── */}
+      <nav style={{ borderBottom: "1px solid var(--color-line)", background: "rgba(246,241,231,0.9)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 40 }}>
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="18" stroke="var(--color-violet)" strokeWidth="1.5"/>
+              <ellipse cx="24" cy="24" rx="7.5" ry="18" stroke="var(--color-violet)" strokeWidth="1.5"/>
+              <line x1="6" y1="24" x2="42" y2="24" stroke="var(--color-violet)" strokeWidth="1.5"/>
+              <circle cx="24" cy="6" r="2.3" fill="var(--color-violet)"/>
+            </svg>
+            <div>
+              <div className="font-display text-sm leading-none" style={{ color: "var(--color-ink)" }}>Meridian</div>
+              <div className="font-mono text-[9px] uppercase tracking-widest leading-none mt-0.5" style={{ color: "var(--color-ink-faint)" }}>Global Talent Advisory</div>
+            </div>
           </Link>
-          <span className="text-xs font-mono text-platinum-faint">Legal</span>
+          <div className="hidden md:flex items-center gap-6">
+            {[["/#services","Services"],["/about","About"],["/#pricing","Pricing"],["/blog","Blog"]].map(([href, label]) => (
+              <Link key={label} href={href} className="text-sm font-medium transition-colors" style={{ color: "var(--color-ink-soft)" }}>{label}</Link>
+            ))}
+          </div>
+          <Link href="/scorecard" className="btn-primary text-xs text-white px-4 py-2 rounded-full font-medium">
+            Check my readiness →
+          </Link>
+        </div>
+      </nav>
+
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section style={{ background: "radial-gradient(700px 400px at 20% 0%, rgba(91,33,182,.1), transparent 60%), var(--color-canvas)", padding: "64px 0 32px" }}>
+        <div className="max-w-6xl mx-auto px-6">
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] mb-4" style={{ color: "var(--color-violet)" }}>Legal</p>
+          <h1 className="font-display mb-4 max-w-3xl" style={{ fontSize: 56, lineHeight: 1.05, letterSpacing: "-0.025em", color: "var(--color-ink)" }}>
+            The boring (but important){" "}
+            <span className="text-gradient-brand italic">small print.</span>
+          </h1>
+          <p className="max-w-xl leading-relaxed" style={{ color: "var(--color-ink-soft)", fontSize: 16 }}>
+            Everything in one place. Last reviewed February 2026. Plain English where possible, defined terms where necessary.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Layout: sidebar + content ─────────────────── */}
+      <div className="max-w-6xl mx-auto px-6 py-14 grid lg:grid-cols-[260px_1fr] gap-14 items-start">
+
+        {/* Sticky sidebar nav */}
+        <aside className="hidden lg:block sticky top-24">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] mb-4" style={{ color: "var(--color-ink-faint)" }}>Contents</p>
+          {NAV_ITEMS.map(item => (
+            <a key={item.id} href={`#${item.id}`}
+              onClick={() => setOpenId(item.id)}
+              className="block px-4 py-2.5 rounded-xl text-sm font-medium mb-0.5 transition-all"
+              style={{
+                color:      activeId === item.id ? "var(--color-violet)" : "var(--color-ink-soft)",
+                background: activeId === item.id ? "rgba(91,33,182,.06)" : "transparent",
+              }}>
+              {item.label}
+            </a>
+          ))}
+        </aside>
+
+        {/* Content sections */}
+        <div className="space-y-14">
+          {SECTIONS.map(s => (
+            <section key={s.id} id={s.id} className="scroll-mt-24 pb-14"
+              style={{ borderBottom: "1px solid var(--color-line)" }}>
+              <h2 className="font-display text-4xl mb-2" style={{ color: "var(--color-ink)", letterSpacing: "-0.025em", lineHeight: 1.05 }}>
+                {s.title}
+              </h2>
+              <p className="font-mono text-[11px] uppercase tracking-[0.12em] mb-7" style={{ color: "var(--color-ink-faint)" }}>
+                {s.updated}
+              </p>
+              {s.content}
+            </section>
+          ))}
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="mb-12">
-            <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-4">Legal</p>
-            <h1 className="font-display text-4xl text-platinum mb-4">Legal & Policies</h1>
-            <p className="text-platinum-dim leading-relaxed">
-              Meridian is an independent advisory service. These policies govern our engagement
-              with clients. If you have questions about any of these, contact{" "}
-              <a href="mailto:amit@berriesadvisory.com" className="text-brand hover:text-brand-light transition-colors">
-                amit@berriesadvisory.com
-              </a>
-            </p>
-          </div>
-
-          {/* Quick nav */}
-          <div className="flex flex-wrap gap-2 mb-10">
-            {SECTIONS.map((s) => (
-              <a key={s.id} href={`#${s.id}`}
-                onClick={() => setOpenId(s.id)}
-                className="text-xs font-mono px-3 py-1.5 rounded-full border border-void-border text-platinum-dim hover:text-platinum hover:border-brand/40 transition-all">
-                {s.title}
-              </a>
-            ))}
-          </div>
-
-          <div className="space-y-3">
-            {SECTIONS.map((s) => (
-              <Section
-                key={s.id}
-                s={s}
-                isOpen={openId === s.id}
-                toggle={() => setOpenId(openId === s.id ? null : s.id)}
-              />
-            ))}
-          </div>
-        </motion.div>
+      {/* ── Mobile quick-nav (accordion buttons) ──────── */}
+      <div className="lg:hidden max-w-6xl mx-auto px-6 pb-10">
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] mb-3" style={{ color: "var(--color-ink-faint)" }}>Jump to section</p>
+        <div className="flex flex-wrap gap-2">
+          {NAV_ITEMS.map(item => (
+            <a key={item.id} href={`#${item.id}`}
+              className="px-3 py-1.5 rounded-full text-xs font-mono border transition-all"
+              style={{ border: "1px solid var(--color-line)", color: "var(--color-ink-soft)" }}>
+              {item.label}
+            </a>
+          ))}
+        </div>
       </div>
+
       <SiteFooter />
     </div>
   )

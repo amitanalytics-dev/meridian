@@ -1,707 +1,1309 @@
 "use client"
 
-import { motion, useInView } from "framer-motion"
-import { useRef, Suspense, useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// ── Score weights: index 0 = best answer, 3 = worst ───────────────────────────
+const W = [100, 75, 55, 30]
 
-type SubScores = {
-  technicalLeadership: number
-  evidenceQuality: number
-  externalRecognition: number
-  independence: number
-  globalProfile: number
+// ── Pillar config ─────────────────────────────────────────────────────────────
+const PILLARS = [
+  {
+    name: "Evidence strength",
+    insights: {
+      high: "Strong proof points — focus on sequencing for maximum impact.",
+      mid: "Several signals are in place. The gap is making them visible and quantified.",
+      low: "Your most impactful work needs to be surfaced before assessors can evaluate it.",
+    },
+  },
+  {
+    name: "Narrative clarity",
+    insights: {
+      high: "Your career arc reads cleanly. Now sharpen sector-level framing.",
+      mid: "The story is there, but it reads like a CV. It needs to argue, not list.",
+      low: "Without a clear personal statement, even strong evidence gets discounted.",
+    },
+  },
+  {
+    name: "Recommendation quality",
+    insights: {
+      high: "Recommenders look strong. Make sure each covers a different dimension.",
+      mid: "Brief them — even strong recommenders write generic letters without one.",
+      low: "Most likely the easiest pillar to improve quickly with the right approach.",
+    },
+  },
+  {
+    name: "External validation",
+    insights: {
+      high: "External signals are clear. Make them legible to evaluators.",
+      mid: "Some external proof, but more is needed for a clean Talent-route case.",
+      low: "External visibility is your biggest gap. Build it before applying.",
+    },
+  },
+]
+
+const RECOS_BY_PILLAR: Record<number, string[]> = {
+  0: [
+    "Audit your evidence portfolio against the published criteria — most builders skip this step.",
+    "Surface 3 measurable outcomes per role with your name attached.",
+    "Identify external recognition signals you may already have (and aren't using).",
+  ],
+  1: [
+    "Rewrite your personal statement as an argument, not a CV. Lead with sector impact.",
+    "Sharpen your career arc to a single, clear through-line evaluators can grasp in 90 seconds.",
+    "Clarify whether you should apply under Talent or Promise — the framing matters.",
+  ],
+  2: [
+    "Identify 3 recommenders covering different dimensions of your credibility.",
+    "Write a structured brief for each — leaving recommenders to wing it is the #1 failure mode.",
+    "Review at least one prior letter from each recommender to gauge their bar.",
+  ],
+  3: [
+    "Make your online footprint coherent across LinkedIn, GitHub, talks, and writing.",
+    "Pursue at least one externally-visible signal in the next 60 days (talk, mention, contribution).",
+    "Surface third-party uses of your work (citations, derivatives, public deployments).",
+  ],
 }
 
-type DocItem = {
-  id: string
-  label: string
-  category: "mandatory" | "strong" | "optional"
-  importance: number
-  description: string
-  tip: string
-}
+// ── Logo mark ─────────────────────────────────────────────────────────────────
 
-type ScoreResult = {
-  assessmentId: string
-  overallScore: number
-  readinessLevel: "not_eligible" | "not_ready" | "semi_ready" | "fully_ready"
-  recommendedTrack: "et" | "ep" | "neither"
-  secondaryTrack?: "et" | "ep"
-  trackExplanation: string
-  subScores: SubScores
-  insights: string[]
-  documentChecklist: DocItem[]
-  leadQuality: "hot" | "warm" | "cold"
-}
-
-// ── Score ring (same pattern as scorecard/result) ─────────────────────────────
-
-function ScoreRing({ score, size = 200 }: { score: number; size?: number }) {
-  const r = size / 2 - 16
-  const circ = 2 * Math.PI * r
-  const offset = circ - (score / 100) * circ
-  const ref = useRef(null)
-  const visible = useInView(ref, { once: true })
+function LogoMark({ light = false }: { light?: boolean }) {
   return (
-    <div ref={ref} style={{ width: size, height: size }} className="relative">
-      <svg width={size} height={size} className="-rotate-90" style={{ overflow: "visible" }}>
-        <defs>
-          <linearGradient id="rr_grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stopColor="#7C3AED" />
-            <stop offset="50%"  stopColor="#06B6D4" />
-            <stop offset="100%" stopColor="#F59E0B" />
-          </linearGradient>
-          <filter id="rr_glow">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-        </defs>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#E2E8F0" strokeWidth="12" />
-        <motion.circle
-          cx={size/2} cy={size/2} r={r} fill="none"
-          stroke="url(#rr_grad)" strokeWidth="12" strokeLinecap="round"
-          strokeDasharray={circ}
-          initial={{ strokeDashoffset: circ }}
-          animate={visible ? { strokeDashoffset: offset } : {}}
-          transition={{ duration: 2.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          filter="url(#rr_glow)"
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <motion.span
-          className="font-mono text-5xl font-bold text-platinum"
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={visible ? { opacity: 1, scale: 1 } : {}}
-          transition={{ delay: 0.9, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
-          {score}
-        </motion.span>
-        <span className="text-platinum-dim text-sm font-mono">/ 100</span>
-      </div>
-    </div>
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      style={{ width: 36, height: 36, color: light ? "white" : "currentColor" }}
+    >
+      <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="1.5" />
+      <ellipse cx="24" cy="24" rx="7.5" ry="18" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="6" y1="24" x2="42" y2="24" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="24" cy="6" r="2.3" fill="currentColor" />
+    </svg>
   )
 }
 
-// ── Sub-score bar ─────────────────────────────────────────────────────────────
+// ── Animated score ring ───────────────────────────────────────────────────────
 
-const SUB_META: Record<keyof SubScores, { label: string; col: string }> = {
-  technicalLeadership:  { label: "Technical Leadership",     col: "#7C3AED" },
-  evidenceQuality:      { label: "Evidence Quality",         col: "#06B6D4" },
-  externalRecognition:  { label: "External Recognition",     col: "#9F6EF5" },
-  independence:         { label: "Independence & Innovation", col: "#F59E0B" },
-  globalProfile:        { label: "Global Profile",           col: "#22D3EE" },
-}
+function ScoreRing({ score }: { score: number }) {
+  const [displayed, setDisplayed] = useState(0)
+  const [filled, setFilled] = useState(0)
+  const circumference = 628
 
-function SubScoreBar({ dim, val, index }: { dim: keyof SubScores; val: number; index: number }) {
-  const ref = useRef(null)
-  const visible = useInView(ref, { once: true })
-  const meta = SUB_META[dim]
+  useEffect(() => {
+    const t1 = setTimeout(() => {
+      // Animate ring fill
+      setFilled(circumference - (circumference * score) / 100)
+
+      // Animate counter
+      let cur = 0
+      const tick = () => {
+        cur += 2
+        if (cur >= score) {
+          setDisplayed(score)
+          return
+        }
+        setDisplayed(cur)
+        requestAnimationFrame(tick)
+      }
+      tick()
+    }, 200)
+    return () => clearTimeout(t1)
+  }, [score])
+
   return (
-    <div ref={ref}>
-      <div className="flex justify-between mb-1.5">
-        <span className="text-sm text-platinum-dim">{meta.label}</span>
-        <span className="text-sm font-mono text-platinum">{val}</span>
-      </div>
-      <div className="h-1.5 bg-void-border rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={visible ? { width: `${val}%` } : {}}
-          transition={{ duration: 1, delay: index * 0.1 + 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="h-full rounded-full"
-          style={{ background: `linear-gradient(90deg, ${meta.col}, ${meta.col}80)` }}
-        />
-      </div>
-    </div>
+    <svg viewBox="0 0 240 240" style={{ width: "100%", maxWidth: 280, display: "block", margin: "0 auto" }}>
+      <defs>
+        <linearGradient id="bigring" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#5B21B6" />
+          <stop offset="60%" stopColor="#6D28D9" />
+          <stop offset="100%" stopColor="#B8893B" />
+        </linearGradient>
+      </defs>
+      <circle cx="120" cy="120" r="100" stroke="#ECE4D2" strokeWidth="18" fill="none" />
+      <circle
+        cx="120"
+        cy="120"
+        r="100"
+        stroke="url(#bigring)"
+        strokeWidth="18"
+        fill="none"
+        strokeDasharray={circumference}
+        strokeDashoffset={filled}
+        strokeLinecap="round"
+        transform="rotate(-90 120 120)"
+        style={{ transition: "stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1)" }}
+      />
+      <text
+        x="120"
+        y="118"
+        textAnchor="middle"
+        fontFamily="Instrument Serif, Times New Roman, serif"
+        fontSize="82"
+        fill="#1A1530"
+      >
+        {displayed}
+      </text>
+      <text
+        x="120"
+        y="146"
+        textAnchor="middle"
+        fontFamily="JetBrains Mono, monospace"
+        fontSize="11"
+        fill="#8B8499"
+        letterSpacing="3"
+      >
+        / 100
+      </text>
+    </svg>
   )
 }
 
-// ── Doc checklist item ────────────────────────────────────────────────────────
+// ── Animated pillar bar ───────────────────────────────────────────────────────
 
-function DocChecklistItem({
-  item,
-  checked,
-  onToggle,
-}: {
-  item: DocItem
-  checked: boolean
-  onToggle: () => void
-}) {
-  const [expanded, setExpanded] = useState(false)
-  const importanceColor =
-    item.importance >= 9 ? "#EF4444" :
-    item.importance >= 7 ? "#F59E0B" : "#06B6D4"
-
+function PillarBar({ score, delay }: { score: number; delay: number }) {
+  const [width, setWidth] = useState(0)
+  useEffect(() => {
+    const t = setTimeout(() => setWidth(score), delay)
+    return () => clearTimeout(t)
+  }, [score, delay])
   return (
-    <div className={`p-4 rounded-xl border transition-all duration-200 ${
-      checked ? "border-brand/40 bg-brand/4" : "border-void-border bg-void"
-    }`}>
-      <div className="flex items-start gap-3">
-        {/* Checkbox */}
-        <button
-          onClick={onToggle}
-          className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
-            checked
-              ? "border-brand bg-brand"
-              : "border-void-border bg-void hover:border-brand/50"
-          }`}
-          aria-label={`Mark ${item.label} as ${checked ? "unchecked" : "checked"}`}
-        >
-          {checked && (
-            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-              <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          )}
-        </button>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className={`text-sm font-medium ${checked ? "line-through text-platinum-faint" : "text-platinum"}`}>
-              {item.label}
-            </span>
-            <span
-              className="px-1.5 py-0.5 rounded text-[10px] font-mono"
-              style={{ color: importanceColor, background: `${importanceColor}15` }}
-            >
-              {item.importance}/10
-            </span>
-          </div>
-          <p className="text-xs text-platinum-dim mt-1 leading-relaxed">{item.description}</p>
-
-          {/* Expand tip */}
-          <button
-            onClick={() => setExpanded(p => !p)}
-            className="text-xs text-brand mt-2 hover:text-brand-dark transition-colors"
-          >
-            {expanded ? "Hide tip ▲" : "Show tip ▼"}
-          </button>
-
-          {expanded && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-2 p-3 rounded-lg bg-brand/6 border border-brand/20"
-            >
-              <p className="text-xs text-platinum-dim leading-relaxed">
-                <span className="text-brand font-medium">Tip: </span>
-                {item.tip}
-              </p>
-            </motion.div>
-          )}
-        </div>
-      </div>
+    <div
+      style={{
+        height: 6,
+        borderRadius: 3,
+        background: "var(--line-soft, #ECE4D2)",
+        overflow: "hidden",
+        marginBottom: 12,
+      }}
+    >
+      <div
+        style={{
+          height: "100%",
+          borderRadius: 3,
+          background: "var(--grad-primary)",
+          width: `${width}%`,
+          transition: "width 1.2s cubic-bezier(.22,1,.36,1)",
+        }}
+      />
     </div>
   )
-}
-
-// ── Readiness badge config ────────────────────────────────────────────────────
-
-const READINESS_CONFIG = {
-  not_eligible: { label: "Not Yet Eligible",  color: "#EF4444" },
-  not_ready:    { label: "Not Ready to Apply", color: "#F59E0B" },
-  semi_ready:   { label: "Semi Ready",         color: "#06B6D4" },
-  fully_ready:  { label: "Fully Ready",        color: "#10B981" },
-}
-
-const TRACK_LABELS = {
-  et:      "Exceptional Talent",
-  ep:      "Exceptional Promise",
-  neither: "Profile Needs Development",
 }
 
 // ── Main result page ──────────────────────────────────────────────────────────
 
-function ReadinessResultInner() {
-  const [result, setResult] = useState<ScoreResult | null>(null)
-  const [loadError, setLoadError] = useState(false)
-  const [checked, setChecked] = useState<Record<string, boolean>>({})
-  const [copied, setCopied] = useState(false)
+export default function ReadinessResultPage() {
+  const [answers, setAnswers] = useState<(number | null)[] | null>(null)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     try {
-      const raw = sessionStorage.getItem("readiness_result")
-      if (!raw) { setLoadError(true); return }
-      const parsed = JSON.parse(raw) as ScoreResult
-      setResult(parsed)
-    } catch {
-      setLoadError(true)
-    }
+      const raw = localStorage.getItem("mer_answers")
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (Array.isArray(parsed) && parsed.length === 20) {
+          setAnswers(parsed)
+          return
+        }
+      }
+    } catch (_) {}
+    // Fallback demo answers
+    setAnswers([1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 0, 1, 2, 1, 1, 1, 2, 1, 2, 1])
   }, [])
 
-  const toggleCheck = useCallback((id: string) => {
-    setChecked(prev => ({ ...prev, [id]: !prev[id] }))
-  }, [])
-
-  if (loadError || !result) {
+  if (!mounted || !answers) {
     return (
-      <div className="min-h-screen bg-void flex items-center justify-center px-6">
-        <div className="card-border p-8 max-w-sm w-full text-center">
-          <p className="font-display text-2xl text-platinum mb-3">No result found.</p>
-          <p className="text-sm text-platinum-dim mb-6">
-            Your session may have expired or you arrived here directly.
-          </p>
-          <Link href="/readiness" className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm text-white font-medium">
-            Take the assessment →
-          </Link>
-        </div>
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "var(--canvas)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            border: "3px solid var(--line)",
+            borderTopColor: "var(--violet)",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+          }}
+        />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     )
   }
 
-  const readinessCfg = READINESS_CONFIG[result.readinessLevel]
-  const mandatory = result.documentChecklist.filter(d => d.category === "mandatory")
-  const strong    = result.documentChecklist.filter(d => d.category === "strong")
-  const optional  = result.documentChecklist.filter(d => d.category === "optional")
-  const totalDocs = result.documentChecklist.length
-  const checkedCount = Object.values(checked).filter(Boolean).length
-  const completionPct = totalDocs > 0 ? Math.round((checkedCount / totalDocs) * 100) : 0
+  // ── Score calculation ──
+  const PILLAR_DEF = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4]
+  const pillarScores = [0, 0, 0, 0]
+  const pillarCounts = [0, 0, 0, 0]
 
-  const shareText = `I just got my UK Global Talent Visa readiness score: ${result.overallScore}/100 (${readinessCfg.label}). Recommended track: ${TRACK_LABELS[result.recommendedTrack]}. Assessed by Meridian.`
-  const shareUrl = typeof window !== "undefined" ? window.location.origin + "/readiness" : "https://meridian.amittyagi.com/readiness"
-  const linkedInShare = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(shareText)}`
+  answers.forEach((a, i) => {
+    const p = PILLAR_DEF[i] - 1
+    pillarScores[p] += W[a ?? 2]
+    pillarCounts[p] += 1
+  })
 
-  const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(shareUrl)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch { /* ignore */ }
+  const pillarFinal = pillarScores.map((s, i) =>
+    Math.round(s / pillarCounts[i])
+  )
+  const overall = Math.round(
+    pillarFinal.reduce((a, b) => a + b, 0) / 4
+  )
+
+  // ── Verdict text ──
+  let verdict = ""
+  let verdictSub = ""
+  if (overall >= 75) {
+    verdict = "You're submission-ready — almost."
+    verdictSub = "Your case has strong foundations. Polish and packaging will unlock it."
+  } else if (overall >= 55) {
+    verdict = "Strong case, weak presentation."
+    verdictSub = "Underlying work is there. Re-framing your evidence and narrative is where the gain is."
+  } else if (overall >= 35) {
+    verdict = "Workable, but needs structure."
+    verdictSub = "A diagnostic will clarify what to build first before you spend time on a full application."
+  } else {
+    verdict = "Build the case before applying."
+    verdictSub = "You may need to develop external evidence and recognition first. Amit can map a path."
+  }
+
+  // ── Top 3 recommendations ──
+  const sorted = pillarFinal
+    .map((s, i) => ({ s, i, name: PILLARS[i].name }))
+    .sort((a, b) => a.s - b.s)
+
+  const used = new Set<string>()
+  const picks: { r: string; name: string; score: number }[] = []
+  for (const p of sorted) {
+    for (const r of RECOS_BY_PILLAR[p.i]) {
+      if (used.has(r)) continue
+      picks.push({ r, name: p.name, score: p.s })
+      used.add(r)
+      if (picks.length === 3) break
+    }
+    if (picks.length === 3) break
+  }
+
+  // ── Matched plan ──
+  let planName = ""
+  let planRationale = ""
+  let planPrice = ""
+  let planTitle = ""
+  let planTname = ""
+
+  if (overall >= 70) {
+    planName = "Application Advisory."
+    planTitle = "Application Advisory"
+    planTname = "Tier 02 · Advisory"
+    planPrice = "£2,500"
+    planRationale =
+      "Your underlying case looks strong — what you need is sharper packaging and a recommendation strategy, not a full rebuild. Advisory is built exactly for this case."
+  } else if (overall >= 45) {
+    planName = "Application Advisory."
+    planTitle = "Application Advisory"
+    planTname = "Tier 02 · Advisory"
+    planPrice = "£2,500"
+    planRationale =
+      "Solid underlying work but the case needs restructuring across narrative and recommendations. Advisory covers all three pillars in a focused engagement."
+  } else if (overall >= 30) {
+    planName = "Readiness Diagnostic."
+    planTitle = "Readiness Diagnostic"
+    planTname = "Tier 01 · Diagnostic"
+    planPrice = "£500"
+    planRationale =
+      "Start small. A written diagnostic will tell you whether to build evidence first or move straight into the case. No reason to commit further until that's clear."
+  } else {
+    planName = "Readiness Diagnostic."
+    planTitle = "Readiness Diagnostic"
+    planTname = "Tier 01 · Diagnostic"
+    planPrice = "£500"
+    planRationale =
+      "There's work to do before you apply — and a £500 diagnostic will save you from spending months on the wrong things. Amit will tell you the path."
   }
 
   return (
-    <div className="min-h-screen bg-void">
-      {/* ── Header ── */}
-      <div className="border-b border-void-border px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex flex-col leading-none">
-            <span className="font-display text-base text-gradient-brand leading-none">Meridian</span>
-            <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-platinum-dim leading-none">
-              Global Talent Visa
-            </span>
-          </Link>
-          <span className="font-mono text-xs text-platinum-faint uppercase tracking-widest">
-            Readiness Report
-          </span>
-        </div>
-        {/* Gradient line */}
-        <div className="h-px bg-gradient-to-r from-brand via-data to-gold mt-4 opacity-40" />
-      </div>
-
-      <div className="max-w-3xl mx-auto px-6 py-16">
-
-        {/* ── Score hero ── */}
-        <div className="relative overflow-hidden rounded-2xl mb-6">
-          {/* Dot grid bg */}
-          <div className="dot-grid absolute inset-0 opacity-50" />
-          {/* Orb effects */}
-          <div className="orb-violet absolute -top-20 -left-20 w-64 h-64 animate-pulse-slow" />
-          <div className="orb-cyan absolute -bottom-20 -right-20 w-64 h-64 animate-pulse-slow" />
-
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 card-border p-8 md:p-12 text-center"
-          >
-            {/* Readiness badge */}
-            <div className="flex justify-center mb-6">
+    <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
+      {/* ── Nav ── */}
+      <nav
+        style={{
+          background: "rgba(246,241,231,0.92)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid var(--line)",
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1240,
+            margin: "0 auto",
+            padding: "0 32px",
+            height: 72,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12, color: "var(--ink)" }}>
+            <LogoMark />
+            <div>
               <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-mono"
                 style={{
-                  borderColor: `${readinessCfg.color}50`,
-                  background: `${readinessCfg.color}12`,
-                  color: readinessCfg.color,
+                  fontFamily: "var(--f-display)",
+                  fontSize: 18,
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1,
                 }}
               >
-                <span
-                  className="w-2 h-2 rounded-full animate-pulse"
-                  style={{ background: readinessCfg.color }}
-                />
-                {readinessCfg.label}
+                Meridian
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--f-mono)",
+                  fontSize: 9,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "var(--ink-faint)",
+                  lineHeight: 1,
+                  marginTop: 2,
+                }}
+              >
+                Global Talent Advisory
               </div>
             </div>
+          </Link>
 
-            {/* Score ring */}
-            <div className="flex justify-center mb-6">
-              <ScoreRing score={result.overallScore} size={200} />
-            </div>
+          <Link
+            href="/apply"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "10px 20px",
+              borderRadius: 8,
+              background: "var(--grad-primary)",
+              color: "white",
+              fontFamily: "var(--f-sans)",
+              fontSize: 13,
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Apply for advisory →
+          </Link>
+        </div>
+      </nav>
 
-            {/* Track badge */}
-            <div className="flex flex-col items-center gap-3">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 bg-brand/8">
-                <span className="text-xs font-mono text-brand uppercase tracking-wider">
-                  Recommended Track
-                </span>
-                <span className="text-sm font-medium text-platinum">
-                  {TRACK_LABELS[result.recommendedTrack]}
-                </span>
-              </div>
+      {/* ── Hero section ── */}
+      <section
+        style={{
+          background: `
+            radial-gradient(800px 500px at 20% 0%, rgba(91,33,182,.15), transparent 60%),
+            radial-gradient(600px 500px at 90% 30%, rgba(184,137,59,.12), transparent 60%),
+            var(--canvas)
+          `,
+          padding: "64px 0",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div style={{ maxWidth: 1240, margin: "0 auto", padding: "0 32px" }}>
+          {/* Kicker */}
+          <div
+            style={{
+              fontFamily: "var(--f-mono)",
+              fontSize: 11,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "var(--ink-faint)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 12,
+              fontWeight: 500,
+              marginBottom: 16,
+            }}
+          >
+            <span style={{ width: 28, height: 1, background: "var(--ink-faint)", display: "inline-block" }} />
+            Your readiness report
+          </div>
 
-              {result.secondaryTrack && (
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-data/30 bg-data/8">
-                  <span className="text-xs font-mono text-data">
-                    Also possible: {TRACK_LABELS[result.secondaryTrack]}
-                  </span>
-                </div>
-              )}
-            </div>
-          </motion.div>
+          <h1
+            style={{
+              fontFamily: "var(--f-display)",
+              fontSize: "clamp(40px, 6vw, 72px)",
+              lineHeight: 1.05,
+              letterSpacing: "-0.03em",
+              color: "var(--ink)",
+              maxWidth: 920,
+              fontWeight: 400,
+              marginBottom: 22,
+            }}
+          >
+            Your case is{" "}
+            <span
+              style={{
+                fontStyle: "italic",
+                background: "linear-gradient(120deg, #5B21B6 0%, #86198F 50%, #B8893B 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              closer than you think
+            </span>{" "}
+            — and clearer about what to fix next.
+          </h1>
+
+          <p
+            style={{
+              fontSize: 19,
+              lineHeight: 1.55,
+              color: "var(--ink-soft)",
+              maxWidth: 620,
+              margin: 0,
+            }}
+          >
+            A structured snapshot across the four dimensions Tech Nation evaluates.
+            Indicative — not a guarantee — but a useful starting point.
+          </p>
         </div>
 
-        {/* ── Sub-scores ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="card-border p-8 mb-6"
-        >
-          <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-6">
-            Dimension Breakdown
-          </p>
-          <div className="space-y-5">
-            {(Object.entries(result.subScores) as [keyof SubScores, number][]).map(([key, val], i) => (
-              <SubScoreBar key={key} dim={key} val={val} index={i} />
-            ))}
-          </div>
-        </motion.div>
-
-        {/* ── AI Insights ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.25 }}
-          className="mb-6"
-        >
-          <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-4">
-            AI Assessment Insights
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {result.insights.slice(0, 3).map((insight, i) => (
-              <div key={i} className="card-border p-5 flex flex-col gap-3">
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center font-mono text-sm font-bold text-white"
-                  style={{ background: "linear-gradient(135deg,#7C3AED,#06B6D4)" }}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <p className="text-sm text-platinum-dim leading-relaxed">{insight}</p>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* ── Track explanation ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.35 }}
-          className="card-border p-8 mb-6"
-        >
-          <div className="flex items-center gap-3 mb-4">
+        {/* ── Score grid ── */}
+        <div style={{ maxWidth: 1240, margin: "48px auto 0", padding: "0 32px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "460px 1fr",
+              gap: 56,
+              alignItems: "start",
+            }}
+            className="res-grid"
+          >
+            {/* Big ring card */}
             <div
-              className="px-3 py-1.5 rounded-full text-xs font-mono font-medium"
-              style={
-                result.recommendedTrack === "et"
-                  ? { background: "#7C3AED18", color: "#7C3AED", border: "1px solid #7C3AED40" }
-                  : result.recommendedTrack === "ep"
-                  ? { background: "#06B6D418", color: "#06B6D4", border: "1px solid #06B6D440" }
-                  : { background: "#47556918", color: "#475569", border: "1px solid #47556940" }
-              }
+              style={{
+                background: "var(--paper)",
+                borderRadius: 24,
+                padding: 36,
+                boxShadow: "0 2px 4px rgba(26,21,48,.05), 0 24px 48px -16px rgba(91,33,182,.15)",
+                textAlign: "center",
+                position: "relative",
+                overflow: "hidden",
+              }}
             >
-              {result.recommendedTrack === "et"
-                ? "Exceptional Talent Track"
-                : result.recommendedTrack === "ep"
-                ? "Exceptional Promise Track"
-                : "Neither Track Yet"}
-            </div>
-          </div>
+              {/* Top accent line */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 4,
+                  background: "linear-gradient(120deg, #5B21B6 0%, #86198F 50%, #B8893B 100%)",
+                }}
+              />
 
-          <p className="text-sm text-platinum leading-relaxed mb-4">{result.trackExplanation}</p>
-
-          {result.recommendedTrack === "et" && (
-            <div className="p-4 rounded-xl bg-void-surface border border-void-border">
-              <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-2">
-                About Exceptional Talent
-              </p>
-              <p className="text-xs text-platinum-dim leading-relaxed">
-                Exceptional Talent is for established leaders who have already made a significant and
-                demonstrable contribution to their field at the national or international level.
-                Applications require strong peer endorsement and substantial evidence of sector impact.
-              </p>
-            </div>
-          )}
-
-          {result.recommendedTrack === "ep" && (
-            <div className="p-4 rounded-xl bg-void-surface border border-void-border">
-              <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-2">
-                About Exceptional Promise
-              </p>
-              <p className="text-xs text-platinum-dim leading-relaxed">
-                Exceptional Promise is for professionals early in their leadership journey who show
-                clear, evidenced potential for future sector impact. The bar is trajectory and
-                emerging recognition — not established seniority.
-              </p>
-            </div>
-          )}
-        </motion.div>
-
-        {/* ── Document checklist ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45 }}
-          className="card-border p-8 mb-6"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest">
-              Your Document Checklist
-            </p>
-            <div className="flex items-center gap-2">
-              <div className="h-1.5 w-24 bg-void-border rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-brand to-data"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${completionPct}%` }}
-                  transition={{ duration: 0.5 }}
-                />
+              {/* Stamp */}
+              <div
+                style={{
+                  display: "inline-block",
+                  padding: "6px 14px",
+                  borderRadius: 999,
+                  background: "rgba(184,137,59,.1)",
+                  color: "#8C6428",
+                  fontFamily: "var(--f-mono)",
+                  fontSize: 11,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  marginBottom: 20,
+                }}
+              >
+                Indicative score
               </div>
-              <span className="text-xs font-mono text-platinum-dim">{completionPct}%</span>
+
+              {/* Ring */}
+              <ScoreRing score={overall} />
+
+              {/* Verdict */}
+              <div
+                style={{
+                  fontFamily: "var(--f-display)",
+                  fontSize: 30,
+                  lineHeight: 1.12,
+                  marginTop: 20,
+                  letterSpacing: "-0.02em",
+                  color: "var(--ink)",
+                  fontWeight: 400,
+                }}
+              >
+                {verdict}
+              </div>
+              <p
+                style={{
+                  color: "var(--ink-soft)",
+                  fontSize: 14.5,
+                  lineHeight: 1.55,
+                  margin: "12px 0 28px",
+                }}
+              >
+                {verdictSub}
+              </p>
+
+              <Link
+                href="/apply"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  padding: "14px 24px",
+                  borderRadius: 10,
+                  background: "var(--grad-primary)",
+                  color: "white",
+                  fontFamily: "var(--f-sans)",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  width: "100%",
+                  textDecoration: "none",
+                }}
+              >
+                Apply for advisory →
+              </Link>
+            </div>
+
+            {/* Pillar cards */}
+            <div style={{ display: "grid", gap: 16 }}>
+              {PILLARS.map((pillar, i) => {
+                const s = pillarFinal[i]
+                const insight =
+                  s >= 70
+                    ? pillar.insights.high
+                    : s >= 45
+                    ? pillar.insights.mid
+                    : pillar.insights.low
+
+                return (
+                  <div
+                    key={pillar.name}
+                    style={{
+                      background: "var(--paper)",
+                      border: "1px solid var(--line)",
+                      borderRadius: 18,
+                      padding: "22px 24px",
+                      transition: "transform .2s",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: 12,
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "var(--f-sans)",
+                          fontWeight: 700,
+                          fontSize: 16,
+                          color: "var(--ink)",
+                        }}
+                      >
+                        {i + 1}. {pillar.name}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: "var(--f-display)",
+                          fontSize: 36,
+                          lineHeight: 1,
+                          color: "var(--violet)",
+                        }}
+                      >
+                        {s}
+                      </span>
+                    </div>
+                    <PillarBar score={s} delay={i * 150 + 400} />
+                    <div
+                      style={{
+                        fontSize: 13.5,
+                        color: "var(--ink-soft)",
+                        lineHeight: 1.55,
+                      }}
+                    >
+                      {insight}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
-          <p className="text-xs text-platinum-faint mb-6">
-            Tick documents you already have to track your completion percentage.
+        </div>
+      </section>
+
+      {/* ── Recommendations ── */}
+      <section style={{ padding: "112px 0", position: "relative" }}>
+        <div style={{ maxWidth: 1240, margin: "0 auto", padding: "0 32px" }}>
+          {/* Kicker */}
+          <div
+            style={{
+              fontFamily: "var(--f-mono)",
+              fontSize: 11,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "var(--ink-faint)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 12,
+              fontWeight: 500,
+            }}
+          >
+            <span style={{ width: 28, height: 1, background: "var(--ink-faint)", display: "inline-block" }} />
+            Top 3 things to fix first
+          </div>
+
+          <h2
+            style={{
+              fontFamily: "var(--f-display)",
+              fontSize: "clamp(36px, 5vw, 60px)",
+              lineHeight: 1.02,
+              letterSpacing: "-0.025em",
+              color: "var(--ink)",
+              fontWeight: 400,
+              marginTop: 20,
+              maxWidth: 760,
+            }}
+          >
+            Specific.{" "}
+            <span
+              style={{
+                fontStyle: "italic",
+                background: "linear-gradient(120deg, #5B21B6 0%, #86198F 50%, #B8893B 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              Actionable.
+            </span>
+          </h2>
+
+          <p
+            style={{
+              marginTop: 16,
+              color: "var(--ink-soft)",
+              maxWidth: 640,
+              fontSize: 16,
+              lineHeight: 1.6,
+            }}
+          >
+            Sample priorities based on your answers. A paid £500 Diagnostic returns a written,
+            personalised version of this — with the underlying signals Amit looked at, in your
+            own words.
           </p>
 
-          {/* Mandatory */}
-          {mandatory.length > 0 && (
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                <p className="text-xs font-mono text-platinum-dim uppercase tracking-widest">
-                  Mandatory ({mandatory.length})
-                </p>
+          {/* Reco cards */}
+          <div style={{ marginTop: 40, maxWidth: 880 }}>
+            {picks.map((pick, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "var(--paper)",
+                  border: "1px solid var(--line)",
+                  borderRadius: 18,
+                  padding: 24,
+                  marginBottom: 12,
+                  display: "flex",
+                  gap: 18,
+                  alignItems: "flex-start",
+                  transition: "all .25s",
+                }}
+              >
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: "50%",
+                    background: "var(--ink)",
+                    color: "white",
+                    flexShrink: 0,
+                    fontFamily: "var(--f-display)",
+                    fontSize: 16,
+                    display: "grid",
+                    placeItems: "center",
+                  }}
+                >
+                  {i + 1}
+                </div>
+                <div>
+                  <h4
+                    style={{
+                      fontFamily: "var(--f-sans)",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      marginBottom: 6,
+                      color: "var(--ink)",
+                    }}
+                  >
+                    {pick.r}
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: 13.5,
+                      color: "var(--ink-soft)",
+                      margin: 0,
+                      lineHeight: 1.55,
+                    }}
+                  >
+                    <strong style={{ color: "var(--violet)" }}>{pick.name}</strong> · current
+                    score {pick.score}/100 — biggest unlock is here.
+                  </p>
+                </div>
               </div>
-              <div className="space-y-3">
-                {mandatory.map(item => (
-                  <DocChecklistItem
-                    key={item.id}
-                    item={item}
-                    checked={!!checked[item.id]}
-                    onToggle={() => toggleCheck(item.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+            ))}
+          </div>
 
-          {/* Strong supporting */}
-          {strong.length > 0 && (
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-gold-light" />
-                <p className="text-xs font-mono text-platinum-dim uppercase tracking-widest">
-                  Strong Supporting ({strong.length})
-                </p>
-              </div>
-              <div className="space-y-3">
-                {strong.map(item => (
-                  <DocChecklistItem
-                    key={item.id}
-                    item={item}
-                    checked={!!checked[item.id]}
-                    onToggle={() => toggleCheck(item.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Optional */}
-          {optional.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-data" />
-                <p className="text-xs font-mono text-platinum-dim uppercase tracking-widest">
-                  Optional ({optional.length})
-                </p>
-              </div>
-              <div className="space-y-3">
-                {optional.map(item => (
-                  <DocChecklistItem
-                    key={item.id}
-                    item={item}
-                    checked={!!checked[item.id]}
-                    onToggle={() => toggleCheck(item.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </motion.div>
-
-        {/* ── CTA ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.55 }}
-          className="mb-6"
-        >
-          {result.leadQuality === "hot" ? (
-            <div className="relative overflow-hidden rounded-2xl p-8 md:p-10"
-              style={{ background: "linear-gradient(135deg, #0F172A 0%, #1e1148 50%, #0c2a3a 100%)" }}
+          {/* ── Plan banner ── */}
+          <div
+            style={{
+              marginTop: 48,
+              padding: 48,
+              borderRadius: 24,
+              background: `
+                radial-gradient(800px 500px at 0% 0%, rgba(91,33,182,.55), transparent 60%),
+                radial-gradient(700px 400px at 100% 100%, rgba(184,137,59,.3), transparent 60%),
+                var(--ink)
+              `,
+              color: "white",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* Matched badge */}
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 12px",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                borderRadius: 999,
+                fontFamily: "var(--f-mono)",
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+              }}
             >
-              <div className="orb-violet absolute -top-16 -right-16 w-64 h-64 opacity-40" />
-              <div className="relative z-10">
-                <p className="text-xs font-mono text-brand uppercase tracking-widest mb-3">
-                  Strong Application Potential
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "var(--gold-soft)",
+                  display: "inline-block",
+                  animation: "pulse 1.6s infinite",
+                }}
+              />
+              Matched plan based on your score
+            </span>
+
+            <h2
+              style={{
+                fontFamily: "var(--f-display)",
+                fontSize: "clamp(28px, 4vw, 48px)",
+                lineHeight: 1.05,
+                letterSpacing: "-0.025em",
+                color: "white",
+                fontWeight: 400,
+                marginTop: 20,
+                maxWidth: 600,
+              }}
+            >
+              You'd be a strong fit for{" "}
+              <span style={{ fontStyle: "italic", color: "var(--gold-soft)" }}>
+                {planName}
+              </span>
+            </h2>
+
+            <p
+              style={{
+                color: "rgba(255,255,255,0.75)",
+                maxWidth: 560,
+                marginTop: 14,
+                fontSize: 16,
+                lineHeight: 1.6,
+              }}
+            >
+              {planRationale}
+            </p>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1.5fr 1fr",
+                gap: 40,
+                marginTop: 28,
+                alignItems: "end",
+              }}
+              className="plan-cols"
+            >
+              <div>
+                <p
+                  style={{
+                    color: "rgba(255,255,255,0.7)",
+                    margin: 0,
+                    fontSize: 15,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Amit reviews your application personally within 48 hours, then either confirms
+                  this tier or recommends a different one. No pressure, no auto-charge — pricing is
+                  only confirmed after he's seen your case.
                 </p>
-                <h2 className="font-display text-2xl md:text-3xl text-white mb-4">
-                  Your profile shows strong application potential.
-                </h2>
-                <p className="text-sm text-white/70 leading-relaxed mb-6 max-w-lg">
-                  You may already qualify for a competitive submission. A 1:1 strategy session with
-                  Amit would help you finalise your approach and avoid the mistakes that cause strong
-                  profiles to fail.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Link href="/apply" className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm text-white font-medium">
-                    Book Your Strategy Session →
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 12,
+                    marginTop: 28,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <Link
+                    href="/apply"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "16px 28px",
+                      borderRadius: 10,
+                      background: "linear-gradient(135deg, #B8893B 0%, #D4A647 100%)",
+                      color: "white",
+                      fontFamily: "var(--f-sans)",
+                      fontSize: 15,
+                      fontWeight: 600,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Apply for this tier →
                   </Link>
-                  <Link href="/readiness" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-colors">
-                    Take the assessment again
+                  <Link
+                    href="/#pricing"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "16px 28px",
+                      borderRadius: 10,
+                      background: "rgba(255,255,255,0.06)",
+                      border: "1px solid rgba(255,255,255,0.2)",
+                      color: "rgba(255,255,255,0.8)",
+                      fontFamily: "var(--f-sans)",
+                      fontSize: 15,
+                      fontWeight: 500,
+                      textDecoration: "none",
+                    }}
+                  >
+                    See all tiers
                   </Link>
                 </div>
               </div>
-            </div>
-          ) : result.leadQuality === "warm" ? (
-            <div className="card-border p-8 md:p-10 border-brand/30 bg-brand/4">
-              <p className="text-xs font-mono text-brand uppercase tracking-widest mb-3">
-                Solid Foundation
-              </p>
-              <h2 className="font-display text-2xl md:text-3xl text-platinum mb-4">
-                You're closer than most applicants.
-              </h2>
-              <p className="text-sm text-platinum-dim leading-relaxed mb-6 max-w-lg">
-                Your profile has a solid foundation. A focused advisory session would map exactly
-                what to build or fix before submitting.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/apply" className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm text-white font-medium">
-                  Book a Readiness Review →
-                </Link>
-                <Link href="/readiness" className="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm text-platinum font-medium">
-                  Retake assessment
-                </Link>
+
+              {/* Plan tier box */}
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  borderRadius: 20,
+                  padding: 24,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "var(--f-mono)",
+                    fontSize: 11,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.5)",
+                    marginBottom: 10,
+                  }}
+                >
+                  {planTname}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--f-display)",
+                    fontSize: 26,
+                    lineHeight: 1.1,
+                    color: "white",
+                    fontWeight: 400,
+                  }}
+                >
+                  {planTitle}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--f-display)",
+                    fontSize: 56,
+                    lineHeight: 1,
+                    background: "linear-gradient(135deg, #FFFFFF 0%, #D4A647 100%)",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    color: "transparent",
+                  }}
+                >
+                  {planPrice}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--f-mono)",
+                    fontSize: 10,
+                    color: "rgba(255,255,255,0.5)",
+                    letterSpacing: "0.14em",
+                    marginTop: 8,
+                  }}
+                >
+                  FIXED. NO RETAINER.
+                </div>
               </div>
             </div>
-          ) : (
-            <div className="card-border p-8 md:p-10">
-              <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-3">
-                Development Roadmap
-              </p>
-              <h2 className="font-display text-2xl md:text-3xl text-platinum mb-4">
-                Your profile needs development before applying.
-              </h2>
-              <p className="text-sm text-platinum-dim leading-relaxed mb-6 max-w-lg">
-                The good news: most gaps are fixable with the right strategy. A diagnostic session
-                with Amit would give you a clear roadmap.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/apply" className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm text-white font-medium">
-                  Get a Free Roadmap Review →
-                </Link>
-                <Link href="/readiness" className="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm text-platinum font-medium">
-                  Retake assessment
-                </Link>
-              </div>
-            </div>
-          )}
 
-          {/* Trust signals */}
-          <div className="mt-4 text-center">
-            <p className="text-xs text-platinum-faint">
-              20+ builders advised · Exceptional Talent &amp; Promise approvals
-            </p>
-            <p className="text-xs text-platinum-faint mt-1">
-              Advisory only · Not immigration legal advice · Amit Tyagi is not an OISC-regulated advisor
-            </p>
-          </div>
-        </motion.div>
-
-        {/* ── Share ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.65 }}
-          className="card-border p-6 mb-8 text-center"
-        >
-          <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-4">
-            Share Your Score
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a
-              href={linkedInShare}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm text-white font-medium"
+            {/* Trust signals */}
+            <div
+              style={{
+                display: "flex",
+                gap: 24,
+                alignItems: "center",
+                marginTop: 28,
+                paddingTop: 28,
+                borderTop: "1px solid rgba(255,255,255,0.12)",
+                flexWrap: "wrap",
+              }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-              </svg>
-              Share on LinkedIn
-            </a>
-            <button
-              onClick={handleCopyLink}
-              className="btn-secondary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm text-platinum font-medium"
-            >
-              {copied ? (
-                <>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                  </svg>
-                  Copy link
-                </>
+              {["Reviewed personally by Amit", "48-hr response", "No open-ended retainers", "NDA on request"].map(
+                (blip) => (
+                  <span
+                    key={blip}
+                    style={{
+                      fontFamily: "var(--f-mono)",
+                      fontSize: 11,
+                      color: "rgba(255,255,255,0.6)",
+                      letterSpacing: "0.06em",
+                    }}
+                  >
+                    <span style={{ color: "var(--gold-soft)", marginRight: 8 }}>✦</span>
+                    {blip}
+                  </span>
+                )
               )}
-            </button>
+            </div>
           </div>
-        </motion.div>
+        </div>
+      </section>
 
-        {/* ── Legal ── */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="text-xs text-platinum-faint text-center leading-relaxed max-w-2xl mx-auto"
-        >
-          This readiness report is an advisory intelligence tool only. It does not constitute a
-          legal assessment, immigration advice, or guarantee of any visa outcome. Meridian is
-          independent and not affiliated with the UK Government or any visa body.
-        </motion.p>
+      {/* ── Save your report ── */}
+      <section style={{ paddingTop: 0, paddingBottom: 112 }}>
+        <div style={{ maxWidth: 1240, margin: "0 auto", padding: "0 32px" }}>
+          <div
+            style={{
+              padding: 40,
+              display: "grid",
+              gridTemplateColumns: "1fr auto",
+              gap: 32,
+              alignItems: "center",
+              background: "var(--canvas-soft, #EDE6D5)",
+              border: 0,
+              borderRadius: 18,
+            }}
+            className="save-row"
+          >
+            <div>
+              <div
+                style={{
+                  fontFamily: "var(--f-mono)",
+                  fontSize: 11,
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  color: "var(--ink-faint)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 12,
+                  fontWeight: 500,
+                }}
+              >
+                <span style={{ width: 28, height: 1, background: "var(--ink-faint)", display: "inline-block" }} />
+                Save your report
+              </div>
+              <h3
+                style={{
+                  fontFamily: "var(--f-display)",
+                  fontSize: 30,
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.02em",
+                  color: "var(--ink)",
+                  fontWeight: 400,
+                  marginTop: 14,
+                }}
+              >
+                Want a written diagnostic, not just a score?
+              </h3>
+              <p
+                style={{
+                  margin: "14px 0 0",
+                  color: "var(--ink-soft)",
+                  maxWidth: 560,
+                  fontSize: 14.5,
+                  lineHeight: 1.6,
+                }}
+              >
+                A £500 Diagnostic returns a written, role-specific gap analysis from Amit.{" "}
+                <strong style={{ color: "var(--violet)" }}>
+                  If you book Advisory or Full Build within 60 days, the £500 is credited.
+                </strong>{" "}
+                There's no reason not to start here.
+              </p>
+            </div>
 
-      </div>
+            <Link
+              href="/apply"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "16px 28px",
+                borderRadius: 10,
+                background: "var(--grad-primary)",
+                color: "white",
+                fontFamily: "var(--f-sans)",
+                fontSize: 15,
+                fontWeight: 600,
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Book a Diagnostic →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer
+        style={{
+          background: "var(--ink)",
+          color: "rgba(255,255,255,0.65)",
+          padding: "64px 0 40px",
+        }}
+      >
+        <div style={{ maxWidth: 1240, margin: "0 auto", padding: "0 32px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "2fr 1fr 1fr 1fr",
+              gap: 40,
+              marginBottom: 48,
+            }}
+            className="footer-grid"
+          >
+            <div>
+              <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12, color: "white" }}>
+                <LogoMark light />
+                <div>
+                  <div style={{ fontFamily: "var(--f-display)", fontSize: 18, color: "white", letterSpacing: "-0.02em" }}>
+                    Meridian
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--f-mono)",
+                      fontSize: 9,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: "rgba(255,255,255,0.5)",
+                      marginTop: 2,
+                    }}
+                  >
+                    Global Talent Advisory
+                  </div>
+                </div>
+              </Link>
+              <p
+                style={{
+                  color: "rgba(255,255,255,0.65)",
+                  marginTop: 20,
+                  maxWidth: 340,
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                }}
+              >
+                Strategic advisory for builders applying for UK Global Talent recognition.
+              </p>
+            </div>
+
+            <div>
+              <h4
+                style={{
+                  color: "white",
+                  fontFamily: "var(--f-sans)",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  marginBottom: 16,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Services
+              </h4>
+              {[
+                { href: "/readiness", label: "Readiness Assessment" },
+                { href: "/apply", label: "Apply for Advisory" },
+                { href: "/blog", label: "Insights Blog" },
+              ].map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  style={{
+                    display: "block",
+                    color: "rgba(255,255,255,0.65)",
+                    fontSize: 14,
+                    marginBottom: 10,
+                    transition: "color .2s",
+                  }}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+
+            <div>
+              <h4
+                style={{
+                  color: "white",
+                  fontFamily: "var(--f-sans)",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  marginBottom: 16,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Information
+              </h4>
+              {[
+                { href: "/about", label: "About Amit" },
+                { href: "/#pricing", label: "Pricing" },
+                { href: "/#faq", label: "FAQ" },
+              ].map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  style={{
+                    display: "block",
+                    color: "rgba(255,255,255,0.65)",
+                    fontSize: 14,
+                    marginBottom: 10,
+                  }}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+
+            <div>
+              <h4
+                style={{
+                  color: "white",
+                  fontFamily: "var(--f-sans)",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  marginBottom: 16,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Legal
+              </h4>
+              {[
+                { href: "/legal#disclaimer", label: "Disclaimer" },
+                { href: "/legal#privacy", label: "Privacy" },
+                { href: "/legal#terms", label: "Terms" },
+              ].map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  style={{
+                    display: "block",
+                    color: "rgba(255,255,255,0.65)",
+                    fontSize: 14,
+                    marginBottom: 10,
+                  }}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div
+            style={{
+              borderTop: "1px solid rgba(255,255,255,0.1)",
+              paddingTop: 24,
+              fontSize: 12,
+              lineHeight: 1.7,
+              color: "rgba(255,255,255,0.5)",
+              marginBottom: 20,
+            }}
+          >
+            <strong style={{ color: "rgba(255,255,255,0.85)" }}>
+              Advisory only — not immigration legal advice.
+            </strong>{" "}
+            Meridian is an independent advisory service. Amit Tyagi is not an immigration lawyer,
+            is not OISC-registered.
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 12,
+              color: "rgba(255,255,255,0.35)",
+              flexWrap: "wrap",
+              gap: 8,
+            }}
+          >
+            <span>© 2025 Meridian.</span>
+            <span>Designed for builders, by a builder.</span>
+          </div>
+        </div>
+      </footer>
+
+      {/* ── Responsive styles ── */}
+      <style>{`
+        @media (max-width: 900px) {
+          .res-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .plan-cols {
+            grid-template-columns: 1fr !important;
+          }
+          .footer-grid {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          .save-row {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      `}</style>
     </div>
-  )
-}
-
-// ── Page export ───────────────────────────────────────────────────────────────
-
-export default function ReadinessResultPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-void flex items-center justify-center">
-        <div className="shimmer-skeleton w-48 h-4 rounded" />
-      </div>
-    }>
-      <ReadinessResultInner />
-    </Suspense>
   )
 }
