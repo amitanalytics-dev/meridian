@@ -2,6 +2,7 @@ import Link from "next/link"
 import { getAllPosts, CATEGORIES } from "@/lib/blog"
 import type { Metadata } from "next"
 import { SiteFooter } from "@/components/SiteFooter"
+import { NewsletterForm } from "@/components/NewsletterForm"
 
 type Props = { searchParams: Promise<{ category?: string }> }
 
@@ -76,7 +77,7 @@ export default async function BlogPage({ searchParams }: Props) {
               <Link key={label} href={href} className="text-sm font-medium transition-colors" style={{ color: "var(--color-ink-soft)" }}>{label}</Link>
             ))}
           </div>
-          <Link href="/scorecard" className="btn-primary text-xs text-white px-4 py-2 rounded-full font-medium">
+          <Link href="/readiness" className="btn-primary text-xs text-white px-4 py-2 rounded-full font-medium">
             Check my readiness →
           </Link>
         </div>
@@ -227,19 +228,7 @@ export default async function BlogPage({ searchParams }: Props) {
               </p>
             </div>
             <div className="relative z-10">
-              <form className="flex gap-2 p-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
-                onSubmit={e => e.preventDefault()}>
-                <input type="email" placeholder="you@example.com" required
-                  className="flex-1 bg-transparent outline-none px-4 py-2 text-sm"
-                  style={{ color: "white" }} />
-                <button type="submit" className="text-white text-xs px-5 py-2 rounded-full font-medium flex-shrink-0"
-                  style={{ background: "linear-gradient(135deg, #B8893B, #8C6428)" }}>
-                  Subscribe →
-                </button>
-              </form>
-              <p className="font-mono text-[11px] mt-3 tracking-[0.06em]" style={{ color: "rgba(255,255,255,0.5)" }}>
-                800+ builders subscribed · 0 spam
-              </p>
+              <NewsletterForm />
             </div>
           </div>
         </div>

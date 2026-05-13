@@ -78,6 +78,33 @@
   }
 }
 
+/* ── Shorthand aliases (match HTML reference variable names) ─────────────── */
+:root {
+  --canvas:       #F6F1E7;  --canvas-soft:  #EDE6D5;  --canvas-deep:  #E5DDC9;
+  --paper:        #FFFFFF;
+  --ink:          #1A1530;  --ink-2:        #2A2348;   --ink-soft:     #5A5169;
+  --ink-faint:    #8B8499;  --line:         #E2D9C4;   --line-soft:    #ECE4D2;
+  --void:         #0E0820;
+  --violet:       #5B21B6;  --violet-2:     #6D28D9;   --violet-deep:  #2E0F69;
+  --plum:         #86198F;
+  --gold:         #B8893B;  --gold-soft:    #D4A647;
+  --teal:         #0F766E;  --teal-soft:    #2BA89A;
+  --coral:        #C2410C;
+  --sage:         #4A6347;  --sage-soft:    #6B8E68;
+  --red:          #A93838;
+  --grad-primary: linear-gradient(135deg, #2E0F69 0%, #5B21B6 50%, #6D28D9 100%);
+  --grad-warm:    linear-gradient(135deg, #5B21B6 0%, #86198F 50%, #B8893B 100%);
+  --grad-text:    linear-gradient(120deg, #5B21B6 0%, #86198F 50%, #B8893B 100%);
+  --grad-ink:     linear-gradient(180deg, #1A1530 0%, #2E0F69 100%);
+  --grad-paper:   linear-gradient(180deg, #FFFFFF 0%, #F6F1E7 100%);
+  --grad-teal:    linear-gradient(135deg, #0F766E 0%, #2BA89A 100%);
+  --grad-coral:   linear-gradient(135deg, #86198F 0%, #C2410C 100%);
+  --grad-sage:    linear-gradient(135deg, #4A6347 0%, #6B8E68 100%);
+  --f-display:    "Instrument Serif", Georgia, serif;
+  --f-sans:       "Manrope", -apple-system, "Segoe UI", sans-serif;
+  --f-mono:       "JetBrains Mono", ui-monospace, monospace;
+}
+
 /* ── Base ────────────────────────────────────────────── */
 html { scroll-behavior: smooth; }
 
