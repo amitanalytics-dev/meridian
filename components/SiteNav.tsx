@@ -73,7 +73,7 @@ export function SiteNav() {
         <div style={{
           maxWidth: 1240,
           margin: "0 auto",
-          padding: "0 32px",
+          padding: "0 20px",
           height: 64,
           display: "flex",
           alignItems: "center",
@@ -346,7 +346,7 @@ export function SiteNav() {
                 <div style={{ height: 1, background: "#E2D9C4", marginBottom: 20 }} />
 
                 {/* Socials */}
-                <div style={{ display: "flex", gap: 12 }}>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                   {SOCIALS.map(({ label, title, href, color }) => (
                     <a
                       key={label}

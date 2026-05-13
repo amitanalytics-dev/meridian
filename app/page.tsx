@@ -408,7 +408,7 @@ function TrustBar() {
       {/* Top gradient line */}
       <div className="absolute top-0 left-0 right-0 h-px"
         style={{ background: "linear-gradient(90deg, transparent, #B8893B, #5B21B6, #B8893B, transparent)", opacity: 0.7 }} />
-      <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8">
+      <div className="max-w-6xl mx-auto flex flex-wrap justify-center gap-x-8 gap-y-6">
         {items.map((item, i) => (
           <FadeUp key={item.value} delay={i * 0.07} className="flex flex-col gap-1.5">
             <div className="font-display text-xl leading-tight" style={{ color: item.col }}>{item.value}</div>
@@ -706,8 +706,8 @@ function ScorecardCTA() {
               <div className="absolute top-0 left-0 right-0 h-0.5"
                 style={{ background: "linear-gradient(90deg, #5B21B6, #86198F, #B8893B)" }} />
               <p className="text-center font-mono text-xs tracking-widest uppercase mb-4" style={{ color: "#8B8499" }}>Sample report</p>
-              <div style={{ width: size, height: size, margin: "0 auto" }} className="relative">
-                <svg width={size} height={size} style={{ overflow: "visible" }}>
+              <div style={{ width: "min(200px, 100%)", aspectRatio: "1", margin: "0 auto" }} className="relative">
+                <svg viewBox={`0 0 ${size} ${size}`} width="100%" height="100%" style={{ overflow: "visible" }}>
                   <defs>
                     <linearGradient id="ringg" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0%" stopColor="#5B21B6"/>
@@ -997,9 +997,9 @@ function Testimonials() {
           </div>
         </FadeUp>
         {/* Masonry 2-column */}
-        <div style={{ columns: 2, columnGap: "20px" }} className="max-md:block">
-          <style>{`@media (max-width: 768px) { .testimonial-masonry { columns: 1 !important; } }`}</style>
-          <div className="testimonial-masonry" style={{ columns: 2, columnGap: "20px" }}>
+        <div>
+          <style>{`.testimonial-masonry { columns: 2; column-gap: 20px; } @media (max-width: 768px) { .testimonial-masonry { columns: 1; } }`}</style>
+          <div className="testimonial-masonry">
             {TESTIMONIALS.map((t, i) => (
               <motion.div key={i}
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
@@ -1016,16 +1016,16 @@ function Testimonials() {
                   <span style={{ fontSize: "36px", color: "#5B21B6", marginRight: "2px", lineHeight: 0, verticalAlign: "-10px" }}>&ldquo;</span>
                   {t.quote}
                 </p>
-                <div className="flex justify-between items-center pt-3.5" style={{ borderTop: "1px solid #E2D9C4" }}>
-                  <span className="flex items-center gap-2.5 text-xs" style={{ color: "#5A5169" }}>
+                <div className="flex flex-wrap items-center gap-2 pt-3.5" style={{ borderTop: "1px solid #E2D9C4" }}>
+                  <span className="flex items-center gap-2.5 text-xs min-w-0 flex-1" style={{ color: "#5A5169" }}>
                     <span className="w-8 h-8 rounded-full inline-flex items-center justify-center font-bold text-xs flex-shrink-0"
                       style={{ background: "#1A1530", color: "white", border: "2px solid #B8893B" }}>
                       {t.name}
                     </span>
                     {t.title}
                   </span>
-                  <span className="text-xs font-mono font-semibold px-2 py-1 rounded-md"
-                    style={{ ...badgeStyle(t.badgeType), letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                  <span className="text-xs font-mono font-semibold px-2 py-1 rounded-md flex-shrink-0"
+                    style={{ ...badgeStyle(t.badgeType), letterSpacing: "0.06em", textTransform: "uppercase" }}>
                     {t.badge}
                   </span>
                 </div>
@@ -1582,8 +1582,10 @@ function StickyNudge() {
             fontWeight: 500,
             color: "#1A1530",
             whiteSpace: "nowrap",
+            maxWidth: "calc(100vw - 32px)",
+            overflow: "hidden",
           }}>
-          <span className="flex items-center gap-2.5">
+          <span className="hidden sm:flex items-center gap-2.5">
             <span className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse" style={{ background: "#A93838" }} />
             <strong style={{ fontWeight: 600 }}>{SPOTS_REMAINING} free spots left.</strong>
             &nbsp;Check readiness in 4 min.
