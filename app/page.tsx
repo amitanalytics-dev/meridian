@@ -3,6 +3,7 @@
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { useRef, useEffect, useState } from "react"
 import Link from "next/link"
+import { SiteNav } from "@/components/SiteNav"
 
 // ── Document Checker ──────────────────────────────────────────────────────────
 function DocumentChecker() {
@@ -269,112 +270,6 @@ function FadeUp({ children, delay = 0, className = "" }: {
   )
 }
 
-// ── Navbar ────────────────────────────────────────────────────────────────────
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
-  const [open, setOpen] = useState(false)
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20)
-    window.addEventListener("scroll", fn, { passive: true })
-    return () => window.removeEventListener("scroll", fn)
-  }, [])
-  return (
-    <motion.nav initial={{ y: -16, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300`}
-      style={{
-        background: scrolled ? "rgba(246,241,231,0.95)" : "transparent",
-        backdropFilter: scrolled ? "blur(8px)" : undefined,
-        borderBottom: scrolled ? "1px solid #E2D9C4" : "1px solid transparent",
-      }}>
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3">
-          <svg viewBox="0 0 48 48" fill="none" width="32" height="32" style={{ color: "#5B21B6" }}>
-            <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="1.5"/>
-            <ellipse cx="24" cy="24" rx="7.5" ry="18" stroke="currentColor" strokeWidth="1.5"/>
-            <line x1="6" y1="24" x2="42" y2="24" stroke="currentColor" strokeWidth="1.5"/>
-            <circle cx="24" cy="6" r="2.3" fill="currentColor"/>
-          </svg>
-          <span className="flex flex-col leading-none">
-            <span className="font-display text-lg leading-none" style={{ color: "#1A1530", letterSpacing: "-0.02em" }}>Meridian</span>
-            <span className="font-mono text-[8px] uppercase leading-none" style={{ letterSpacing: "0.2em", color: "#8B8499" }}>Global Talent Advisory</span>
-          </span>
-        </Link>
-        <div className="hidden md:flex items-center gap-8">
-          {[["Services", "#services"], ["About", "#about"], ["Pricing", "#pricing"], ["Blog", "/blog"]].map(([l, h]) => (
-            <a key={l} href={h} className="text-sm transition-colors" style={{ fontWeight: 500, color: "#5A5169", fontSize: "12px", letterSpacing: "0.08em" }}
-              onMouseEnter={(e) => (e.currentTarget as HTMLAnchorElement).style.color = "#1A1530"}
-              onMouseLeave={(e) => (e.currentTarget as HTMLAnchorElement).style.color = "#5A5169"}
-            >{l}</a>
-          ))}
-        </div>
-        <div className="hidden md:flex items-center gap-2.5">
-          <a href="https://www.linkedin.com/in/amitisb1tyagi/"
-            target="_blank" rel="noopener noreferrer" title="Connect on LinkedIn"
-            className="w-8 h-8 rounded-lg flex items-center justify-center font-black transition-all"
-            style={{ fontSize: "10px", color: "#0A66C2", background: "rgba(10,102,194,0.08)", border: "1px solid rgba(10,102,194,0.25)" }}
-            onMouseEnter={(e) => (e.currentTarget as HTMLAnchorElement).style.background = "rgba(10,102,194,0.16)"}
-            onMouseLeave={(e) => (e.currentTarget as HTMLAnchorElement).style.background = "rgba(10,102,194,0.08)"}
-          >in</a>
-          <a href="https://wa.me/447776842287"
-            target="_blank" rel="noopener noreferrer" title="WhatsApp +44 7776 842287"
-            className="w-8 h-8 rounded-lg flex items-center justify-center font-black transition-all"
-            style={{ fontSize: "10px", color: "#25D366", background: "rgba(37,211,102,0.08)", border: "1px solid rgba(37,211,102,0.25)" }}
-            onMouseEnter={(e) => (e.currentTarget as HTMLAnchorElement).style.background = "rgba(37,211,102,0.16)"}
-            onMouseLeave={(e) => (e.currentTarget as HTMLAnchorElement).style.background = "rgba(37,211,102,0.08)"}
-          >W</a>
-          <a href="https://www.instagram.com/meridianglobaltalent/"
-            target="_blank" rel="noopener noreferrer" title="Instagram @meridianglobaltalent"
-            className="w-8 h-8 rounded-lg flex items-center justify-center font-black transition-all"
-            style={{ fontSize: "10px", color: "#E1306C", background: "rgba(225,48,108,0.08)", border: "1px solid rgba(225,48,108,0.25)" }}
-            onMouseEnter={(e) => (e.currentTarget as HTMLAnchorElement).style.background = "rgba(225,48,108,0.16)"}
-            onMouseLeave={(e) => (e.currentTarget as HTMLAnchorElement).style.background = "rgba(225,48,108,0.08)"}
-          >IG</a>
-          <Link href="/readiness"
-            className="text-sm text-white px-5 py-2.5 font-bold shadow-lg transition-all"
-            style={{ background: "linear-gradient(135deg, #5B21B6, #2E0F69)", borderRadius: "999px" }}>
-            Check my readiness →
-          </Link>
-        </div>
-        <button onClick={() => setOpen(!open)} className="md:hidden p-2" style={{ color: "#5A5169" }}>
-          <div className={`w-5 h-0.5 bg-current mb-1.5 transition-all ${open ? "rotate-45 translate-y-2" : ""}`} />
-          <div className={`w-5 h-0.5 bg-current mb-1.5 transition-all ${open ? "opacity-0" : ""}`} />
-          <div className={`w-5 h-0.5 bg-current transition-all ${open ? "-rotate-45 -translate-y-2" : ""}`} />
-        </button>
-      </div>
-      <AnimatePresence>
-        {open && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden px-6 py-5 flex flex-col gap-5"
-            style={{ background: "#F6F1E7", borderTop: "1px solid #E2D9C4" }}>
-            {[["Check my readiness", "/readiness"], ["Services", "#services"], ["About Amit", "#about"], ["Pricing", "#pricing"], ["Book a call", "/apply"]].map(([l, h]) => (
-              <Link key={l} href={h} onClick={() => setOpen(false)}
-                className="text-sm transition-colors" style={{ color: "#5A5169" }}>{l}</Link>
-            ))}
-            <div className="flex gap-3 pt-1" style={{ borderTop: "1px solid #E2D9C4" }}>
-              <a href="https://www.linkedin.com/in/amitisb1tyagi/" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm transition-colors" style={{ color: "#5A5169" }}>
-                <span className="w-5 h-5 rounded flex items-center justify-center text-white font-bold" style={{ background: "#0A66C2", fontSize: "9px" }}>in</span>
-                LinkedIn
-              </a>
-              <a href="https://wa.me/447776842287" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm transition-colors" style={{ color: "#5A5169" }}>
-                <span className="w-5 h-5 rounded flex items-center justify-center text-white font-bold" style={{ background: "#25D366", fontSize: "9px" }}>W</span>
-                WhatsApp
-              </a>
-              <a href="https://www.instagram.com/meridianglobaltalent/" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm transition-colors" style={{ color: "#5A5169" }}>
-                <span className="w-5 h-5 rounded flex items-center justify-center text-white font-bold" style={{ background: "#E1306C", fontSize: "9px" }}>IG</span>
-                Instagram
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
-  )
-}
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
@@ -1717,7 +1612,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageFAQSchema) }}
       />
-      <Navbar />
+      <SiteNav />
       <Hero />
       <TrustBar />
       <WhoThisIsFor />

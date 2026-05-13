@@ -3,6 +3,7 @@ import { getAllPosts, CATEGORIES } from "@/lib/blog"
 import type { Metadata } from "next"
 import { SiteFooter } from "@/components/SiteFooter"
 import { NewsletterForm } from "@/components/NewsletterForm"
+import { SiteNav } from "@/components/SiteNav"
 
 type Props = { searchParams: Promise<{ category?: string }> }
 
@@ -57,31 +58,7 @@ export default async function BlogPage({ searchParams }: Props) {
   return (
     <div className="min-h-screen" style={{ background: "var(--color-canvas)" }}>
 
-      {/* ── Nav ─────────────────────────────────────────── */}
-      <nav style={{ borderBottom: "1px solid var(--color-line)", background: "rgba(246,241,231,0.9)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 40 }}>
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
-              <circle cx="24" cy="24" r="18" stroke="var(--color-violet)" strokeWidth="1.5"/>
-              <ellipse cx="24" cy="24" rx="7.5" ry="18" stroke="var(--color-violet)" strokeWidth="1.5"/>
-              <line x1="6" y1="24" x2="42" y2="24" stroke="var(--color-violet)" strokeWidth="1.5"/>
-              <circle cx="24" cy="6" r="2.3" fill="var(--color-violet)"/>
-            </svg>
-            <div>
-              <div className="font-display text-sm leading-none" style={{ color: "var(--color-ink)" }}>Meridian</div>
-              <div className="font-mono text-[9px] uppercase tracking-widest leading-none mt-0.5" style={{ color: "var(--color-ink-faint)" }}>Global Talent Advisory</div>
-            </div>
-          </Link>
-          <div className="hidden md:flex items-center gap-6">
-            {[["/#services","Services"],["/about","About"],["/#pricing","Pricing"],["/blog","Blog"]].map(([href, label]) => (
-              <Link key={label} href={href} className="text-sm font-medium transition-colors" style={{ color: "var(--color-ink-soft)" }}>{label}</Link>
-            ))}
-          </div>
-          <Link href="/readiness" className="btn-primary text-xs text-white px-4 py-2 rounded-full font-medium">
-            Check my readiness →
-          </Link>
-        </div>
-      </nav>
+      <SiteNav />
 
       {/* ── Hero ─────────────────────────────────────────── */}
       <section style={{ background: "radial-gradient(800px 500px at 22% 0%, rgba(91,33,182,.15), transparent 60%), radial-gradient(600px 400px at 85% 30%, rgba(184,137,59,.12), transparent 60%), var(--color-canvas)", padding: "80px 0 56px" }}>

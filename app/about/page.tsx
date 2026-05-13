@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { SiteFooter } from "@/components/SiteFooter"
+import { SiteNav } from "@/components/SiteNav"
 
 const STATS = [
   { value: "20+",  label: "Builders advised",       accent: "violet" },
@@ -61,55 +62,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen" style={{ background: "var(--color-canvas)" }}>
 
-      {/* ── Nav ────────────────────────────────────────────── */}
-      <nav
-        style={{
-          borderBottom: "1px solid var(--color-line)",
-          background: "rgba(246,241,231,0.85)",
-          backdropFilter: "blur(12px)",
-          position: "sticky",
-          top: 0,
-          zIndex: 40,
-        }}
-      >
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
-              <circle cx="24" cy="24" r="18" stroke="var(--color-violet)" strokeWidth="1.5"/>
-              <ellipse cx="24" cy="24" rx="7.5" ry="18" stroke="var(--color-violet)" strokeWidth="1.5"/>
-              <line x1="6" y1="24" x2="42" y2="24" stroke="var(--color-violet)" strokeWidth="1.5"/>
-              <circle cx="24" cy="6" r="2.3" fill="var(--color-violet)"/>
-            </svg>
-            <div>
-              <div className="font-display text-base leading-none" style={{ color: "var(--color-ink)" }}>Meridian</div>
-              <div className="font-mono text-[9px] uppercase tracking-widest leading-none mt-0.5" style={{ color: "var(--color-ink-faint)" }}>Global Talent Advisory</div>
-            </div>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-7">
-            {[["/#services","Services"],["#about","About"],["/#pricing","Pricing"],["/blog","Blog"]].map(([href, label]) => (
-              <Link key={label} href={href}
-                className="text-sm font-medium transition-colors"
-                style={{ color: "var(--color-ink-soft)" }}>
-                {label}
-              </Link>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <a href="https://www.linkedin.com/in/amitisb1tyagi/" target="_blank" rel="noopener noreferrer"
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold border transition-all"
-              style={{ background: "#0A66C208", border: "1px solid #0A66C230", color: "#0A66C2" }}>in</a>
-            <a href="https://wa.me/447776842287" target="_blank" rel="noopener noreferrer"
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold border transition-all"
-              style={{ background: "#25D36608", border: "1px solid #25D36630", color: "#25D366" }}>W</a>
-            <Link href="/scorecard"
-              className="btn-primary text-xs text-white px-4 py-2 rounded-full font-medium">
-              Check my readiness →
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       {/* ── Hero ───────────────────────────────────────────── */}
       <section
