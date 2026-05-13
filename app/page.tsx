@@ -1570,7 +1570,7 @@ function StickyNudge() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-5 left-1/2 z-40 flex items-center gap-3.5"
+          className="fixed bottom-20 sm:bottom-5 left-1/2 z-40 flex items-center gap-3.5"
           style={{
             transform: "translateX(-50%)",
             background: "#FFFFFF",
