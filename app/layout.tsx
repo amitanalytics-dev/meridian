@@ -1,25 +1,26 @@
 import type { Metadata } from "next"
-import { Inter, DM_Serif_Display, Geist_Mono } from "next/font/google"
+import { Instrument_Serif, Manrope, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { ChatWidget } from "@/components/ChatWidget"
 
 const SITE_URL = "https://meridiangtv.co.uk"
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-})
-
-const dmSerifDisplay = DM_Serif_Display({
-  variable: "--font-dm-serif",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
   weight: "400",
+  style: ["normal", "italic"],
   subsets: ["latin"],
   display: "swap",
 })
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  display: "swap",
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
 })
@@ -143,7 +144,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${dmSerifDisplay.variable} ${geistMono.variable}`}
+      className={`${instrumentSerif.variable} ${manrope.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <script
@@ -159,7 +160,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
       </head>
-      <body className="font-sans bg-void text-platinum antialiased">
+      <body className="font-body antialiased">
         {children}
         <ChatWidget />
       </body>
