@@ -8,7 +8,10 @@
  * @module
  */
 
+import type * as adminOps from "../adminOps.js";
+import type * as adminOpsActions from "../adminOpsActions.js";
 import type * as chat from "../chat.js";
+import type * as crons from "../crons.js";
 import type * as readiness from "../readiness.js";
 import type * as scheduledBlogs from "../scheduledBlogs.js";
 
@@ -19,7 +22,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  adminOps: typeof adminOps;
+  adminOpsActions: typeof adminOpsActions;
   chat: typeof chat;
+  crons: typeof crons;
   readiness: typeof readiness;
   scheduledBlogs: typeof scheduledBlogs;
 }>;

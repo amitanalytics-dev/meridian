@@ -160,4 +160,42 @@ export default defineSchema({
     strengthens:      v.boolean(),
     uploadedAt:       v.number(),
   }).index("by_assessment", ["assessmentId"]),
+
+  // Admin action items — per-client to-do list for Amit
+  adminActions: defineTable({
+    sessionId:  v.string(),
+    task:       v.string(),
+    dueAt:      v.optional(v.number()),
+    completed:  v.boolean(),
+    dismissed:  v.boolean(),
+    createdAt:  v.number(),
+  })
+    .index("by_session",   ["sessionId"])
+    .index("by_completed", ["completed"]),
+
+  // All emails sent from admin dashboard
+  emailLog: defineTable({
+    sessionId:   v.optional(v.string()),
+    to:          v.string(),
+    subject:     v.string(),
+    template:    v.string(),
+    bodyPreview: v.string(),
+    sentAt:      v.number(),
+  })
+    .index("by_session", ["sessionId"])
+    .index("by_sent",    ["sentAt"]),
+
+  // Amit's timestamped notes on clients
+  clientNotes: defineTable({
+    sessionId: v.string(),
+    note:      v.string(),
+    createdAt: v.number(),
+  }).index("by_session", ["sessionId"]),
+
+  // Pipeline stage history — every move is appended
+  clientStages: defineTable({
+    sessionId: v.string(),
+    stage:     v.string(),
+    movedAt:   v.number(),
+  }).index("by_session", ["sessionId"]),
 })

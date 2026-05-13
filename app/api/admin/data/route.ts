@@ -14,14 +14,25 @@ export async function GET(req: NextRequest) {
   try {
     const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!)
 
-    const [assessments, stats] = await Promise.all([
+    const [assessments, stats, stageData, allActions] = await Promise.all([
       convex.query(api.readiness.getAllAssessments),
       convex.query(api.readiness.getAdminStats),
+      convex.query(api.adminOps.getAllCurrentStages),
+      convex.query(api.adminOps.getAllPendingActions),
     ])
 
-    // assessments already sorted desc by createdAt via by_created index
+    // Map pending actions to { sessionId, pending } counts
+    const pendingMap = new Map<string, number>()
+    for (const action of allActions) {
+      const prev = pendingMap.get(action.sessionId) ?? 0
+      pendingMap.set(action.sessionId, prev + 1)
+    }
+    const pendingActionCounts = Array.from(pendingMap.entries()).map(
+      ([sessionId, pending]) => ({ sessionId, pending }),
+    )
+
     return new Response(
-      JSON.stringify({ stats, leads: assessments }),
+      JSON.stringify({ stats, leads: assessments, stageData, pendingActionCounts }),
       {
         status:  200,
         headers: { "Content-Type": "application/json" },
