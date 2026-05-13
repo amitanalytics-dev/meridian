@@ -118,4 +118,46 @@ export default defineSchema({
     pageContext:  v.optional(v.string()),    // URL where chat was open
     createdAt:    v.number(),
   }).index("by_session", ["sessionId"]),
+
+  // ── Visa Readiness Assessment tables ────────────────────────────────────────
+
+  readinessAssessments: defineTable({
+    sessionId:           v.string(),
+    answers:             v.any(),
+    overallScore:        v.number(),
+    readinessLevel:      v.string(),
+    recommendedTrack:    v.string(),
+    secondaryTrack:      v.optional(v.string()),
+    trackExplanation:    v.string(),
+    subScores:           v.any(),
+    insights:            v.array(v.string()),
+    documentChecklist:   v.any(),
+    leadQuality:         v.string(),
+    leadCaptured:        v.boolean(),
+    name:                v.optional(v.string()),
+    email:               v.optional(v.string()),
+    phone:               v.optional(v.string()),
+    linkedinUrl:         v.optional(v.string()),
+    emailSentToAmit:     v.boolean(),
+    reportEmailSent:     v.boolean(),
+    nurtureEmailsSent:   v.number(),
+    lastNurtureAt:       v.optional(v.number()),
+    consultationBooked:  v.boolean(),
+    createdAt:           v.number(),
+  })
+    .index("by_session",      ["sessionId"])
+    .index("by_email",        ["email"])
+    .index("by_lead_quality", ["leadQuality"])
+    .index("by_created",      ["createdAt"]),
+
+  documentUploads: defineTable({
+    assessmentId:     v.id("readinessAssessments"),
+    fileName:         v.string(),
+    fileType:         v.string(),
+    evidenceCategory: v.string(),
+    aiScore:          v.number(),
+    aiAnalysis:       v.string(),
+    strengthens:      v.boolean(),
+    uploadedAt:       v.number(),
+  }).index("by_assessment", ["assessmentId"]),
 })

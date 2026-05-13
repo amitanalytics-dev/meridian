@@ -9,6 +9,7 @@
  */
 
 import type * as chat from "../chat.js";
+import type * as readiness from "../readiness.js";
 import type * as scheduledBlogs from "../scheduledBlogs.js";
 
 import type {
@@ -19,6 +20,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   chat: typeof chat;
+  readiness: typeof readiness;
   scheduledBlogs: typeof scheduledBlogs;
 }>;
 

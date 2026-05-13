@@ -4,6 +4,174 @@ import { motion, useInView, AnimatePresence } from "framer-motion"
 import { useRef, useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
+
+// ── Document Checker ──────────────────────────────────────────────────────────
+function DocumentChecker() {
+  const [state, setState] = useState<"idle"|"dragging"|"loading"|"result"|"error">("idle")
+  const [result, setResult] = useState<{
+    evidenceType: string
+    strength: "strong"|"moderate"|"weak"
+    keySignal: string
+    improvementTip: string
+    score: number
+  } | null>(null)
+  const [errorMsg, setErrorMsg] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  async function analyzeFile(file: File) {
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg("File too large (max 5MB)")
+      setState("error")
+      return
+    }
+    setState("loading")
+    const fd = new FormData()
+    fd.append("file", file)
+    try {
+      const res = await fetch("/api/doc-check", { method: "POST", body: fd })
+      if (!res.ok) {
+        const err = await res.json()
+        setErrorMsg(err.error || "Analysis failed")
+        setState("error")
+        return
+      }
+      const data = await res.json()
+      setResult(data)
+      setState("result")
+    } catch {
+      setErrorMsg("Something went wrong. Please try again.")
+      setState("error")
+    }
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault()
+    setState("idle")
+    const file = e.dataTransfer.files[0]
+    if (file) analyzeFile(file)
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) analyzeFile(file)
+  }
+
+  function reset() { setState("idle"); setResult(null); setErrorMsg("") }
+
+  const strengthColor = result?.strength === "strong" ? "#10B981" : result?.strength === "moderate" ? "#F59E0B" : "#EF4444"
+  const strengthLabel = result?.strength === "strong" ? "Strong Evidence" : result?.strength === "moderate" ? "Moderate Evidence" : "Weak Evidence"
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.7, duration: 0.6 }}
+      className="w-full max-w-xl mx-auto mt-8 mb-2"
+    >
+      {/* Label */}
+      <div className="flex items-center justify-center gap-2 mb-3">
+        <div className="h-px flex-1 bg-void-border max-w-16" />
+        <span className="text-xs text-platinum-faint font-mono uppercase tracking-widest">Quick Evidence Check</span>
+        <div className="h-px flex-1 bg-void-border max-w-16" />
+      </div>
+
+      {state === "idle" && (
+        <div
+          onDragEnter={() => setState("dragging")}
+          onDragOver={(e) => e.preventDefault()}
+          onDragLeave={() => setState("idle")}
+          onDrop={handleDrop}
+          onClick={() => inputRef.current?.click()}
+          className="cursor-pointer border border-dashed border-void-border rounded-2xl p-6 flex flex-col items-center gap-3 hover:border-brand/40 hover:bg-brand/3 transition-all duration-200 bg-void-surface"
+        >
+          <div className="w-10 h-10 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="12" y1="18" x2="12" y2="12"/>
+              <line x1="9" y1="15" x2="15" y2="15"/>
+            </svg>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-platinum font-medium">Drop a document to check its evidence strength</p>
+            <p className="text-xs text-platinum-faint mt-1">Recommendation letter, CV, pay slip, publication — PDF or TXT · Max 5MB</p>
+          </div>
+          <input ref={inputRef} type="file" accept=".pdf,.txt,.md" className="hidden" onChange={handleFileChange} />
+        </div>
+      )}
+
+      {state === "dragging" && (
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
+          onDragLeave={() => setState("idle")}
+          className="border-2 border-brand rounded-2xl p-6 flex flex-col items-center gap-2 bg-brand/5 transition-all"
+        >
+          <div className="w-10 h-10 rounded-xl bg-brand/20 flex items-center justify-center">
+            <span className="text-brand text-lg">✦</span>
+          </div>
+          <p className="text-sm text-brand font-medium">Drop to analyze</p>
+        </div>
+      )}
+
+      {state === "loading" && (
+        <div className="border border-void-border rounded-2xl p-6 flex flex-col items-center gap-3 bg-void-surface">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-8 h-8 border-2 border-brand/20 border-t-brand rounded-full"
+          />
+          <p className="text-sm text-platinum font-medium">Analyzing your document...</p>
+          <p className="text-xs text-platinum-faint">AI is checking evidence type and strength</p>
+        </div>
+      )}
+
+      {state === "result" && result && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="border border-void-border rounded-2xl p-5 bg-void-surface"
+        >
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div>
+              <span className="text-xs font-mono text-platinum-faint uppercase tracking-wider">{result.evidenceType}</span>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: strengthColor }} />
+                <span className="font-semibold text-sm" style={{ color: strengthColor }}>{strengthLabel}</span>
+                <span className="font-mono text-sm text-platinum-dim ml-auto">{result.score}/100</span>
+              </div>
+            </div>
+            <button onClick={reset} className="text-platinum-faint hover:text-platinum text-xs transition-colors flex-shrink-0 mt-1">✕</button>
+          </div>
+          <div className="space-y-2 mb-4">
+            <div className="flex gap-2 text-xs">
+              <span className="text-platinum-faint w-20 flex-shrink-0 pt-0.5">Key signal</span>
+              <span className="text-platinum leading-relaxed">{result.keySignal}</span>
+            </div>
+            <div className="flex gap-2 text-xs">
+              <span className="text-platinum-faint w-20 flex-shrink-0 pt-0.5">Improve by</span>
+              <span className="text-platinum-dim leading-relaxed">{result.improvementTip}</span>
+            </div>
+          </div>
+          <Link href="/readiness" className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-medium w-full justify-center">
+            Take the full readiness assessment →
+          </Link>
+        </motion.div>
+      )}
+
+      {state === "error" && (
+        <div className="border border-[#EF4444]/30 rounded-2xl p-5 bg-[#EF4444]/5 flex items-center gap-4">
+          <span className="text-[#EF4444]">⚠</span>
+          <div className="flex-1">
+            <p className="text-sm text-platinum font-medium">{errorMsg || "Analysis failed"}</p>
+            <p className="text-xs text-platinum-faint mt-0.5">Only PDF and plain text files are supported</p>
+          </div>
+          <button onClick={reset} className="text-xs text-brand hover:underline">Try again</button>
+        </div>
+      )}
+    </motion.div>
+  )
+}
 // Spots remaining — hardcoded; update manually as needed
 const SPOTS_REMAINING = 67
 const SPOTS_TOTAL = 100
@@ -129,7 +297,7 @@ function Navbar() {
           <a href="https://www.instagram.com/meridianglobaltalent/"
             target="_blank" rel="noopener noreferrer" title="Instagram @meridianglobaltalent"
             className="w-8 h-8 rounded-lg border border-[#E1306C]/50 bg-[#E1306C]/15 flex items-center justify-center text-[#E1306C] hover:bg-[#E1306C]/30 transition-all font-black" style={{ fontSize: "10px" }}>IG</a>
-          <Link href="/scorecard"
+          <Link href="/readiness"
             className="text-sm text-white px-5 py-2.5 rounded-lg font-bold shadow-lg shadow-brand/30 hover:shadow-brand/50 transition-all"
             style={{ background: "linear-gradient(135deg, #7C3AED, #06B6D4)" }}>
             Check my readiness →
@@ -146,7 +314,7 @@ function Navbar() {
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden bg-void-surface border-t border-void-border px-6 py-5 flex flex-col gap-5">
-            {[["Check my readiness", "/scorecard"], ["Services", "#services"], ["About Amit", "#about"], ["Pricing", "#pricing"], ["Book a call", "/apply"]].map(([l, h]) => (
+            {[["Check my readiness", "/readiness"], ["Services", "#services"], ["About Amit", "#about"], ["Pricing", "#pricing"], ["Book a call", "/apply"]].map(([l, h]) => (
               <Link key={l} href={h} onClick={() => setOpen(false)}
                 className="text-sm text-platinum-dim hover:text-platinum transition-colors">{l}</Link>
             ))}
@@ -245,9 +413,12 @@ function Hero() {
 
         {/* Scarcity nudge under CTA */}
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}
-          className="text-xs text-[#EF4444] font-medium mb-10">
+          className="text-xs text-[#EF4444] font-medium mb-4">
           ⚡ Free · Takes 4 minutes · {SPOTS_REMAINING} spots left before this closes
         </motion.p>
+
+        {/* Document evidence checker */}
+        <DocumentChecker />
 
         {/* Proof strip */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
@@ -423,18 +594,18 @@ function ScorecardCTA() {
           <div className="grid md:grid-cols-2">
             {/* Left: copy */}
             <div className="p-10 md:p-14 flex flex-col justify-center">
-              <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-5">Free · 4 minutes</p>
+              <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-5">Free · 5 minutes</p>
               <h2 className="font-display text-4xl text-platinum mb-4 leading-tight">
                 Know exactly where your<br />
                 <span className="text-gradient-brand">application stands.</span>
               </h2>
               <p className="text-platinum-dim leading-relaxed mb-8">
-                Answer 12 questions. Get a scored readiness report across the 4 dimensions
+                Answer 20 questions. Get a scored readiness report across the 4 dimensions
                 Tech Nation evaluates — and a specific recommendation on what to fix first.
               </p>
-              <Link href="/scorecard"
+              <Link href="/readiness"
                 className="btn-primary inline-flex items-center gap-2.5 px-7 py-4 rounded-xl text-white font-semibold w-fit">
-                Take the free assessment
+                Take the free AI assessment
                 <span className="text-data-light">→</span>
               </Link>
               <p className="text-xs text-platinum-faint mt-4">No account. No email required to start.</p>
@@ -557,7 +728,7 @@ function Services() {
 // ── Process ───────────────────────────────────────────────────────────────────
 function Process() {
   const steps = [
-    { n: "01", title: "Take the free readiness assessment", desc: "12 questions. A scored report across 4 dimensions. Know exactly where your case stands before you invest anything.", tag: "Free · 4 min", col: "#7C3AED", href: "/scorecard" },
+    { n: "01", title: "Take the free readiness assessment", desc: "20 questions. A scored report across 4 dimensions. Know exactly where your case stands before you invest anything.", tag: "Free · 5 min", col: "#7C3AED", href: "/readiness" },
     { n: "02", title: "Apply for a Strategic Review", desc: "Amit reviews your application and responds personally within 48 hours with one specific observation about your case.", tag: "48-hr response", col: "#06B6D4", href: "/apply" },
     { n: "03", title: "Build the case together", desc: "Evidence mapping, personal statement, recommendation coaching — structured around the evaluator's framework, not a generic template.", tag: "£500 – £5,500", col: "#9F6EF5", href: "/apply" },
     { n: "04", title: "Submit with confidence", desc: "A submission-ready case where every component has been stress-tested against the criteria that determines approval.", tag: "No open-ended retainers", col: "#F59E0B", href: "/apply" },
