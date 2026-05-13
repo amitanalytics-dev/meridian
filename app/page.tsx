@@ -274,13 +274,13 @@ function FadeUp({ children, delay = 0, className = "" }: {
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16"
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden"
       style={{
         background: "radial-gradient(900px 600px at 22% 18%, rgba(91,33,182,.18), transparent 60%), radial-gradient(700px 500px at 85% 28%, rgba(184,137,59,.14), transparent 65%), #F6F1E7",
       }}>
       <div className="absolute inset-0 dot-grid opacity-40" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 text-center">
 
         {/* Two pills */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
@@ -360,11 +360,12 @@ function Hero() {
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.68 }}
           className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full mb-8"
-          style={{ background: "#FFFFFF", border: "1px solid #E2D9C4", fontSize: "13px", color: "#5A5169" }}>
+          style={{ background: "#FFFFFF", border: "1px solid #E2D9C4", fontSize: "13px", color: "#5A5169", maxWidth: "100%", overflow: "hidden" }}>
           <span className="w-1.5 h-1.5 rounded-full flex-shrink-0"
             style={{ background: "#5C7A5C", boxShadow: "0 0 0 3px rgba(92,122,92,.2)" }} />
-          <span>4 builders took the readiness check in the last 24 hours ·{" "}
-            <strong style={{ color: "#1A1530", fontWeight: 600 }}>Sanjay (Bengaluru)</strong>{" "}just scored 71/100
+          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            4 builders in the last 24h ·{" "}
+            <strong style={{ color: "#1A1530", fontWeight: 600 }}>Sanjay (Bengaluru)</strong>{" "}scored 71/100
           </span>
         </motion.div>
 
