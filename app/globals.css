@@ -108,6 +108,10 @@
 /* ── Base ────────────────────────────────────────────── */
 html { scroll-behavior: smooth; }
 
+@media (max-width: 639px) {
+  body { padding-bottom: 76px; }
+}
+
 body {
   background: #F6F1E7;
   color: #1A1530;

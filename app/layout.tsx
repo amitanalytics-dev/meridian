@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Instrument_Serif, Manrope, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
-import { ChatWidget } from "@/components/ChatWidget"
+import { GlobalUI } from "@/components/GlobalUI"
 
 const SITE_URL = "https://meridiangtv.co.uk"
 
@@ -162,7 +162,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         {children}
-        <ChatWidget />
+        <GlobalUI />
       </body>
     </html>
   )

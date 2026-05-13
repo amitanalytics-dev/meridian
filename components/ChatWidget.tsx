@@ -52,8 +52,20 @@ const QUICK_REPLIES = [
   "Just researching",
 ]
 
-export function ChatWidget() {
-  const [open, setOpen] = useState(false)
+export function ChatWidget({
+  open: controlledOpen,
+  onOpenChange,
+}: {
+  open?: boolean
+  onOpenChange?: (v: boolean) => void
+} = {}) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const isControlled = controlledOpen !== undefined
+  const open = isControlled ? controlledOpen : internalOpen
+  function setOpen(v: boolean) {
+    if (!isControlled) setInternalOpen(v)
+    onOpenChange?.(v)
+  }
   const [messages, setMessages] = useState<Message[]>([OPENING_MESSAGE])
   const [input, setInput] = useState("")
   const [streaming, setStreaming] = useState(false)
@@ -238,7 +250,7 @@ export function ChatWidget() {
           transition={{ delay: 1.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           onClick={() => setOpen(true)}
           aria-label="Open chat with Aria"
-          className={`fixed bottom-6 right-6 z-[60] flex items-center gap-3 px-5 py-3.5 rounded-full bg-gradient-to-br from-brand to-data text-white font-medium text-sm shadow-[0_8px_30px_rgba(124,58,237,0.45)] hover:shadow-[0_12px_40px_rgba(124,58,237,0.6)] transition-shadow ${pulse ? "animate-pulse" : ""}`}
+          className={`fixed bottom-6 right-6 z-[60] hidden sm:flex items-center gap-3 px-5 py-3.5 rounded-full bg-gradient-to-br from-brand to-data text-white font-medium text-sm shadow-[0_8px_30px_rgba(124,58,237,0.45)] hover:shadow-[0_12px_40px_rgba(124,58,237,0.6)] transition-shadow ${pulse ? "animate-pulse" : ""}`}
         >
           <span className="relative flex h-2.5 w-2.5">
             <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-60 animate-ping" />
@@ -256,7 +268,7 @@ export function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.96 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-6 right-6 z-[60] w-[min(96vw,400px)] h-[min(85vh,640px)] flex flex-col rounded-2xl overflow-hidden border border-void-border bg-void shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
+            className="fixed bottom-[72px] sm:bottom-6 right-2 sm:right-6 z-[60] w-[min(96vw,400px)] h-[min(78vh,640px)] sm:h-[min(85vh,640px)] flex flex-col rounded-2xl overflow-hidden border border-void-border bg-void shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
             role="dialog"
             aria-label="Chat with Aria"
           >
