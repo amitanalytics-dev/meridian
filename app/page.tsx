@@ -424,22 +424,22 @@ function TrustBar() {
 // ── Who This Is For ───────────────────────────────────────────────────────────
 function WhoThisIsFor() {
   const professions = [
-    { label: "Startup Founders",         col: "#5B21B6" },
-    { label: "Product Managers",         col: "#0F766E" },
-    { label: "Software Engineers",       col: "#B8893B" },
-    { label: "CTOs",                     col: "#86198F" },
-    { label: "AI / ML Engineers",        col: "#2BA89A" },
-    { label: "Data Engineers",           col: "#5B21B6" },
-    { label: "Fintech Professionals",    col: "#0F766E" },
-    { label: "SaaS Founders",            col: "#B8893B" },
-    { label: "Deep Tech Founders",       col: "#86198F" },
-    { label: "Climate Tech Founders",    col: "#2BA89A" },
-    { label: "Healthtech Founders",      col: "#5B21B6" },
-    { label: "Engineering Managers",     col: "#0F766E" },
-    { label: "Cybersecurity Engineers",  col: "#B8893B" },
-    { label: "Startup Operators",        col: "#86198F" },
-    { label: "Angel Investors",          col: "#2BA89A" },
-    { label: "Open Source Contributors", col: "#5B21B6" },
+    { label: "Startup Founders",         col: "#5B21B6", slug: "startup-founders" },
+    { label: "Product Managers",         col: "#0F766E", slug: "product-managers" },
+    { label: "Software Engineers",       col: "#B8893B", slug: "engineers" },
+    { label: "CTOs",                     col: "#86198F", slug: "ctos" },
+    { label: "AI / ML Engineers",        col: "#2BA89A", slug: "ai-ml-engineers" },
+    { label: "Data Engineers",           col: "#5B21B6", slug: "data-engineers" },
+    { label: "Fintech Professionals",    col: "#0F766E", slug: "fintech-professionals" },
+    { label: "SaaS Founders",            col: "#B8893B", slug: "saas-founders" },
+    { label: "Deep Tech Founders",       col: "#86198F", slug: "deep-tech-founders" },
+    { label: "Climate Tech Founders",    col: "#2BA89A", slug: "climate-tech-founders" },
+    { label: "Healthtech Founders",      col: "#5B21B6", slug: "healthtech-founders" },
+    { label: "Engineering Managers",     col: "#0F766E", slug: "engineering-managers" },
+    { label: "Cybersecurity Engineers",  col: "#B8893B", slug: "cybersecurity-engineers" },
+    { label: "Startup Operators",        col: "#86198F", slug: "startup-operators" },
+    { label: "Angel Investors",          col: "#2BA89A", slug: "angel-investors" },
+    { label: "Open Source Contributors", col: "#5B21B6", slug: "open-source-contributors" },
   ]
   return (
     <section id="who" className="py-20 px-6" style={{ background: "#F6F1E7", borderTop: "1px solid #E2D9C4" }}>
@@ -457,9 +457,10 @@ function WhoThisIsFor() {
         <FadeUp delay={0.1}>
           <div className="flex flex-wrap gap-2.5 justify-center mt-10">
             {professions.map((p) => (
-              <span
+              <Link
                 key={p.label}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all"
+                href={`/for/${p.slug}`}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all hover:shadow-md hover:-translate-y-px"
                 style={{
                   background: "#FFFFFF",
                   border: "1px solid #E2D9C4",
@@ -467,7 +468,7 @@ function WhoThisIsFor() {
                 }}>
                 <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: p.col }} />
                 {p.label}
-              </span>
+              </Link>
             ))}
           </div>
         </FadeUp>
