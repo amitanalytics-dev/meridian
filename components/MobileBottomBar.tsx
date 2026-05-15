@@ -5,13 +5,12 @@ import Link from "next/link"
 export function MobileBottomBar({ onOpenChat }: { onOpenChat: () => void }) {
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 sm:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 flex sm:hidden"
       style={{
         background: "#FFFFFF",
         borderTop: "1px solid #E2D9C4",
         padding: "10px 16px",
         paddingBottom: "max(10px, env(safe-area-inset-bottom))",
-        display: "flex",
         gap: 10,
       }}
     >

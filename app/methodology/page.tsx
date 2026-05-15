@@ -61,39 +61,39 @@ const DIMENSIONS = [
   {
     n: "01",
     label: "Evidence Architecture",
-    body: "We map your career against the Tech Nation Mandatory and Optional Criteria, identify gaps, and assemble dated, third-party-verifiable evidence in the order evaluators are trained to read. Generic role descriptions are replaced with specific, measurable, externally-recognised contributions.",
+    body: "Map your career against Tech Nation's criteria. Find the gaps. Sequence evidence the way evaluators read it. No generic role descriptions — specific, dated, measurable proof only.",
   },
   {
     n: "02",
     label: "Narrative Engineering",
-    body: "Most personal statements describe a career. Strong personal statements argue a case. We re-architect the narrative around the strongest evidence of impact, build a clear throughline, and remove CV-style chronology. The result reads the way evaluators expect.",
+    body: "Most statements describe a career. Strong ones argue a case. Restructure around impact. Remove CV chronology. Write what evaluators expect to read.",
   },
   {
     n: "03",
     label: "Recommendation Strategy",
-    body: "Three recommendation letters are required. Most letters describe a working relationship. Strong letters demonstrate sector-level impact in the language of the criteria. We help you select the right recommenders, brief them on the framework, and structure each letter to address specific criteria.",
+    body: "Three letters required. Most describe a relationship. Strong letters prove sector impact. Pick the right recommenders. Brief each one. Structure every letter against specific criteria.",
   },
   {
     n: "04",
     label: "External Validation",
-    body: "Tech Nation evaluators look for evidence of recognition that is not self-generated. Speaking, writing, awards, citations, peer endorsement. Where validation is thin, we build a 12-week plan to add credible signals before submission.",
+    body: "Evaluators want proof you didn't generate yourself. Speaking, awards, citations, peer endorsements. Thin validation gets a 12-week build plan before submission.",
   },
 ]
 
 const PROCESS = [
   {
     name: "Readiness Diagnostic",
-    desc: "A scored assessment of your profile against the four dimensions. Delivered as a written document within 5–7 business days. Output: an evidence gap analysis and the top three areas to address before applying.",
+    desc: "Scored against the four dimensions. Written document in 5–7 days. Output: evidence gaps and top three fixes before applying.",
     price: "£500",
   },
   {
     name: "Application Advisory",
-    desc: "Two focused advisory sessions, written feedback on personal statement drafts, recommendation strategy, and 30 days of async support. Runs 3–6 weeks.",
+    desc: "Two sessions. Written feedback on drafts. Recommendation strategy. 30 days async support. 3–6 weeks total.",
     price: "£2,500",
   },
   {
     name: "Full Case Build",
-    desc: "Everything in Application Advisory plus full personal statement drafting, per-recommender coaching briefs, and a final readiness review call. 90 days of async support. Runs 4–8 weeks.",
+    desc: "Everything in Advisory plus full statement drafting, per-recommender briefs, and final review call. 90 days async. 4–8 weeks.",
     price: "£5,500",
   },
 ]
@@ -124,10 +124,9 @@ export default function MethodologyPage() {
             How Meridian builds UK Global Talent Visa cases.
           </h1>
           <p className="text-platinum-dim text-lg leading-relaxed">
-            Meridian is built on a single observation: most UK Global Talent Visa rejections are not about
-            under-qualified profiles. They are about evidence presented in the wrong language. The Meridian method
-            re-engineers a case to speak the Tech Nation assessment framework's language — directly, specifically,
-            and in the order evaluators are trained to read.
+            Most rejections are not about weak profiles.<br />
+            They&apos;re about evidence in the wrong language.<br />
+            Meridian re-engineers the case to speak Tech Nation&apos;s language — in the order evaluators read it.
           </p>
         </header>
 
@@ -155,21 +154,23 @@ export default function MethodologyPage() {
         <section className="mb-14" aria-label="Why this method works">
           <h2 className="font-display text-3xl text-platinum mb-3 leading-tight">Why this works</h2>
           <p className="text-platinum-dim mb-4 leading-relaxed">
-            Tech Nation evaluators follow a structured assessment framework. They look for specific signals — scope
-            of influence, independence of contribution, recognition by peers — presented in a defined order. The
-            framework is not a secret. It is published. But applicants who treat the application as a CV exercise
-            instead of an evidence-and-argument exercise consistently fail.
+            Evaluators follow a structured framework. They look for specific signals:
+          </p>
+          <ul className="text-platinum-dim mb-4 space-y-1 ml-4">
+            <li>— Scope of influence</li>
+            <li>— Independence of contribution</li>
+            <li>— Peer recognition</li>
+          </ul>
+          <p className="text-platinum-dim mb-4 leading-relaxed">
+            The framework is published. Most people treat it as a CV exercise. They fail consistently.
           </p>
           <p className="text-platinum-dim mb-4 leading-relaxed">
-            Amit Tyagi went through this process and received UK Global Talent recognition under the{" "}
-            <strong className="text-platinum">Exceptional Talent</strong> category. He did not hire an immigration
-            consultancy. He read the framework, understood what evaluators were trained to look for, and built a case
-            that spoke directly to it. Meridian is the methodology he developed, applied to other people's cases.
+            Amit read the framework. Understood how evaluators think. Built a case that matched exactly. Got approved under{" "}
+            <strong className="text-platinum">Exceptional Talent</strong>. Meridian is that method, applied to your case.
           </p>
           <p className="text-platinum-dim leading-relaxed">
-            What Meridian provides is structural — narrative architecture, evidence ordering, recommendation
-            briefing. What you provide is the underlying work. Meridian does not invent credentials. It surfaces and
-            structures the credentials you already have.
+            Meridian provides structure: narrative architecture, evidence ordering, recommendation briefing.<br />
+            You provide the work. Meridian doesn&apos;t invent credentials. It surfaces the ones you already have.
           </p>
         </section>
 
@@ -177,8 +178,7 @@ export default function MethodologyPage() {
         <section className="mb-14" aria-label="Engagement model and pricing">
           <h2 className="font-display text-3xl text-platinum mb-3 leading-tight">How engagements work</h2>
           <p className="text-platinum-dim mb-6 leading-relaxed">
-            Three fixed-price tiers. No retainers. No outcome guarantees. Acceptance is by application — Amit
-            reviews each one personally before confirming.
+            Three fixed-price tiers. No retainers. No outcome guarantees. Amit reviews every application personally.
           </p>
           <div className="space-y-4">
             {PROCESS.map((p) => (
@@ -216,7 +216,7 @@ export default function MethodologyPage() {
           <p className="text-xs font-mono text-platinum-faint tracking-widest uppercase mb-3">Start with the diagnostic</p>
           <h2 className="font-display text-2xl text-platinum mb-4">Take the free 4-minute readiness assessment.</h2>
           <p className="text-platinum-dim mb-7 max-w-md mx-auto text-sm leading-relaxed">
-            See your scored breakdown across the four dimensions before deciding whether to engage.
+            Know your score before committing. Free. 4 minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/scorecard"

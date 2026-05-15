@@ -71,8 +71,7 @@ export default async function BlogPage({ searchParams }: Props) {
             <span className="text-gradient-brand italic">inside the framework.</span>
           </h1>
           <p className="text-lg max-w-2xl mb-10 leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
-            Specific, useful writing about what evaluators actually look for, why strong applicants get
-            rejected, and how to architect a case that lands. By Amit Tyagi.
+            What evaluators actually look for. Why strong applicants get rejected. How to build a case that lands. By Amit Tyagi.
           </p>
 
           {/* Filter chips */}

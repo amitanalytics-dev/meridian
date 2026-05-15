@@ -11,16 +11,16 @@ const PILLARS = [
   {
     name: "Evidence strength",
     insights: {
-      high: "Strong proof points — focus on sequencing for maximum impact.",
-      mid: "Several signals are in place. The gap is making them visible and quantified.",
-      low: "Your most impactful work needs to be surfaced before assessors can evaluate it.",
+      high: "Strong proof points. Focus on sequencing for maximum impact.",
+      mid: "Signals are there. Make them visible and quantified.",
+      low: "Surface your most impactful work. Assessors can't evaluate what's hidden.",
     },
   },
   {
     name: "Narrative clarity",
     insights: {
-      high: "Your career arc reads cleanly. Now sharpen sector-level framing.",
-      mid: "The story is there, but it reads like a CV. It needs to argue, not list.",
+      high: "Career arc reads cleanly. Sharpen sector-level framing.",
+      mid: "Story is there, but reads like a CV. It needs to argue, not list.",
       low: "Without a clear personal statement, even strong evidence gets discounted.",
     },
   },
@@ -28,15 +28,15 @@ const PILLARS = [
     name: "Recommendation quality",
     insights: {
       high: "Recommenders look strong. Make sure each covers a different dimension.",
-      mid: "Brief them — even strong recommenders write generic letters without one.",
-      low: "Most likely the easiest pillar to improve quickly with the right approach.",
+      mid: "Brief them. Even strong recommenders write generic letters without one.",
+      low: "Easiest pillar to fix. Right approach makes a fast difference.",
     },
   },
   {
     name: "External validation",
     insights: {
       high: "External signals are clear. Make them legible to evaluators.",
-      mid: "Some external proof, but more is needed for a clean Talent-route case.",
+      mid: "Some external proof. More needed for a clean Talent-route case.",
       low: "External visibility is your biggest gap. Build it before applying.",
     },
   },
@@ -259,17 +259,17 @@ export default function ReadinessResultPage() {
   let verdict = ""
   let verdictSub = ""
   if (overall >= 75) {
-    verdict = "You're submission-ready — almost."
-    verdictSub = "Your case has strong foundations. Polish and packaging will unlock it."
+    verdict = "Submission-ready — almost."
+    verdictSub = "Strong foundations. Polish and packaging will unlock it."
   } else if (overall >= 55) {
     verdict = "Strong case, weak presentation."
-    verdictSub = "Underlying work is there. Re-framing your evidence and narrative is where the gain is."
+    verdictSub = "Work is there. The framing is not."
   } else if (overall >= 35) {
     verdict = "Workable, but needs structure."
-    verdictSub = "A diagnostic will clarify what to build first before you spend time on a full application."
+    verdictSub = "Get a diagnostic before spending time on a full application."
   } else {
     verdict = "Build the case before applying."
-    verdictSub = "You may need to develop external evidence and recognition first. Amit can map a path."
+    verdictSub = "Build external evidence first. Amit can map the path."
   }
 
   // ── Top 3 recommendations ──
@@ -302,28 +302,28 @@ export default function ReadinessResultPage() {
     planTname = "Tier 02 · Advisory"
     planPrice = "£2,500"
     planRationale =
-      "Your underlying case looks strong — what you need is sharper packaging and a recommendation strategy, not a full rebuild. Advisory is built exactly for this case."
+      "Underlying case is strong. You need sharper packaging and a recommendation strategy. Not a full rebuild."
   } else if (overall >= 45) {
     planName = "Application Advisory."
     planTitle = "Application Advisory"
     planTname = "Tier 02 · Advisory"
     planPrice = "£2,500"
     planRationale =
-      "Solid underlying work but the case needs restructuring across narrative and recommendations. Advisory covers all three pillars in a focused engagement."
+      "Solid work. Case needs restructuring on narrative and recommendations. Advisory covers all three pillars."
   } else if (overall >= 30) {
     planName = "Readiness Diagnostic."
     planTitle = "Readiness Diagnostic"
     planTname = "Tier 01 · Diagnostic"
     planPrice = "£500"
     planRationale =
-      "Start small. A written diagnostic will tell you whether to build evidence first or move straight into the case. No reason to commit further until that's clear."
+      "Start small. A diagnostic tells you whether to build evidence first. No reason to commit further until that's clear."
   } else {
     planName = "Readiness Diagnostic."
     planTitle = "Readiness Diagnostic"
     planTname = "Tier 01 · Diagnostic"
     planPrice = "£500"
     planRationale =
-      "There's work to do before you apply — and a £500 diagnostic will save you from spending months on the wrong things. Amit will tell you the path."
+      "Work to do before applying. A £500 diagnostic saves months on the wrong path. Amit will show you what's next."
   }
 
   return (
@@ -446,7 +446,7 @@ export default function ReadinessResultPage() {
               marginBottom: 22,
             }}
           >
-            Your case is{" "}
+            Closer than you think.{" "}
             <span
               style={{
                 fontStyle: "italic",
@@ -456,9 +456,8 @@ export default function ReadinessResultPage() {
                 color: "transparent",
               }}
             >
-              closer than you think
-            </span>{" "}
-            — and clearer about what to fix next.
+              Clearer on what to fix.
+            </span>
           </h1>
 
           <p
@@ -470,8 +469,7 @@ export default function ReadinessResultPage() {
               margin: 0,
             }}
           >
-            A structured snapshot across the four dimensions Tech Nation evaluates.
-            Indicative — not a guarantee — but a useful starting point.
+            Four dimensions. Indicative score. Not a guarantee — but a real starting point.
           </p>
         </div>
 
@@ -864,9 +862,7 @@ export default function ReadinessResultPage() {
                     lineHeight: 1.6,
                   }}
                 >
-                  Amit reviews your application personally within 48 hours, then either confirms
-                  this tier or recommends a different one. No pressure, no auto-charge — pricing is
-                  only confirmed after he's seen your case.
+                  Amit reviews within 48 hours. Confirms this tier or recommends another. No charge until he&apos;s seen your case.
                 </p>
                 <div
                   style={{
@@ -1052,23 +1048,23 @@ export default function ReadinessResultPage() {
                   marginTop: 14,
                 }}
               >
-                Want a written diagnostic, not just a score?
+                Want a written diagnostic — not just a score?
               </h3>
-              <p
+              <ul
                 style={{
                   margin: "14px 0 0",
                   color: "var(--ink-soft)",
                   maxWidth: 560,
                   fontSize: 14.5,
-                  lineHeight: 1.6,
+                  lineHeight: 1.8,
+                  listStyle: "none",
+                  padding: 0,
                 }}
               >
-                A £500 Diagnostic returns a written, role-specific gap analysis from Amit.{" "}
-                <strong style={{ color: "var(--violet)" }}>
-                  If you book Advisory or Full Build within 60 days, the £500 is credited.
-                </strong>{" "}
-                There's no reason not to start here.
-              </p>
+                <li>— £500 Diagnostic: written gap analysis from Amit.</li>
+                <li>— Book Advisory or Full Build within 60 days — the <strong style={{ color: "var(--violet)" }}>£500 is credited</strong>.</li>
+                <li>— No reason not to start here.</li>
+              </ul>
             </div>
 
             <Link

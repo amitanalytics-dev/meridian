@@ -57,8 +57,8 @@ export function SiteFooter() {
               </span>
             </Link>
             <p className="text-platinum-dim text-sm leading-relaxed max-w-xs mb-5">
-              Strategic advisory for builders applying for UK Global Talent recognition.
-              Evidence architecture, narrative engineering, recommendation strategy.
+              Advisory for builders applying for UK Global Talent.<br />
+              Evidence architecture, narrative, recommendations.
             </p>
             <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest mb-3">Reach out directly</p>
             <div className="flex flex-col gap-2.5">
@@ -118,10 +118,7 @@ export function SiteFooter() {
         <div className="pt-8 border-t border-void-border">
           <p className="text-xs text-platinum-faint leading-relaxed max-w-3xl">
             <strong className="text-platinum-dim">Advisory only — not immigration legal advice.</strong>{" "}
-            Meridian is an independent advisory service. Amit Tyagi is not an immigration lawyer,
-            is not OISC-registered, and does not provide regulated immigration advice. We are not affiliated
-            with the UK Government, the Home Office, Tech Nation, or any visa body. For regulated immigration
-            legal advice, consult an accredited immigration solicitor.
+            Amit Tyagi is not an immigration lawyer. Not OISC-registered. Not affiliated with UK Government, Home Office, or Tech Nation. Consult an accredited solicitor for legal advice.
           </p>
           <p className="text-xs text-platinum-faint mt-3">© {new Date().getFullYear()} Meridian. All rights reserved.</p>
         </div>

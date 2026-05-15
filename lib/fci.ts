@@ -125,12 +125,12 @@ const GAP_LABELS: Record<FCIGap, string> = {
 
 function insightFor(gap: FCIGap, score: number): string {
   if (gap === "narrative")
-    return "Your substance is real — the gap is in how your story is structured for external evaluation."
+    return "Substance is real. The gap: how your story reads to external evaluators."
   if (gap === "validation")
-    return "Strong builders without third-party proof are invisible to global evaluators. That is the gap to close."
+    return "No third-party proof means invisible to evaluators. That's the gap to close."
   if (gap === "evidence")
-    return "You likely have more to offer than your current evidence architecture communicates."
-  return "Your work exists — the problem is it hasn't found its global signal yet."
+    return "Your evidence isn't capturing what you've actually built."
+  return "Your work exists. The problem: no global signal yet."
 }
 
 function advisoryPath(score: number): FCIOutput["advisoryPath"] {
@@ -187,15 +187,15 @@ export function computeFCI(input: FCIInput): FCIOutput {
   if (score >= 85) {
     tier = 1
     tierLabel = "Exceptional Talent Ready"
-    tierDescription = "Your credibility architecture is strong. The work now is in sequencing, framing, and final presentation."
+    tierDescription = "Strong case. Focus on sequencing, framing, and final presentation."
   } else if (score >= 65) {
     tier = 2
     tierLabel = "Strong Foundation"
-    tierDescription = "Your substance is there. The gap is signal design — how you are being read versus what you have actually built."
+    tierDescription = "Substance is there. The gap: how evaluators read you vs. what you've actually built."
   } else {
     tier = 3
     tierLabel = "Needs Narrative Build"
-    tierDescription = "This is a positioning challenge, not a capability challenge. You likely have more to offer than your current architecture communicates."
+    tierDescription = "Positioning challenge — not a capability gap. You likely have more than your case currently shows."
   }
 
   let confidence: "High" | "Medium" | "Low"

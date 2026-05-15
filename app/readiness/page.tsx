@@ -457,8 +457,7 @@ export default function ReadinessPage() {
               margin: 0,
             }}
           >
-            Twenty questions across the four dimensions Tech Nation evaluates.
-            Honest answers give you an honest score.
+            20 questions. Four dimensions. Honest answers give honest scores.
           </p>
 
           {/* Pillars */}

@@ -16,17 +16,17 @@ const METHODS = [
   {
     num: "01",
     title: "Evidence Architecture",
-    body: "Map every proof point in your career against the specific signals evaluators are trained to look for. Identify what's missing, what's weak, and what to lead with — before you write a word of the statement.",
+    body: "Map your career against evaluator signals. Find what's weak. Find what's missing. Lead with the strongest proof before writing a word.",
   },
   {
     num: "02",
     title: "Narrative Engineering",
-    body: "Build the career story that creates a coherent, compelling case — not a job history. Structure it so evaluators can read your trajectory in 90 seconds and walk away with the right conclusion.",
+    body: "Turn your career history into an argument. One clear through-line. Evaluators decide in 90 seconds — make sure they reach the right conclusion.",
   },
   {
     num: "03",
     title: "Recommendation Architecture",
-    body: "Identify the right recommenders, coach them on what to write, and structure a three-letter portfolio where each letter covers a different dimension of your credibility. The most under-invested pillar.",
+    body: "Three recommenders. Each covers a different credibility dimension. Brief them on what to write. Most people leave this to chance.",
   },
 ]
 
@@ -34,27 +34,27 @@ const PRINCIPLES = [
   {
     n: "i.",
     title: "The case is yours, not a template.",
-    body: "Two builders with similar profiles will end up with very different cases. Every engagement starts from your specific situation — your evidence, your career, your sector — and builds outward. No filled-in templates.",
+    body: "Two similar profiles produce different cases. Your evidence. Your sector. Your career arc. No templates.",
   },
   {
     n: "ii.",
-    title: "Strong work doesn't speak for itself.",
-    body: "The most common mistake is assuming your work is self-evidently exceptional. It rarely is to a stranger reading 40 applications a day. The job of the case is to make the argument the work cannot make on its own.",
+    title: "Strong work doesn't sell itself.",
+    body: "Evaluators read 40 applications a day. They don't know you. The case makes the argument. The work alone doesn't.",
   },
   {
     n: "iii.",
     title: "Honesty over hype.",
-    body: "If your case isn't ready, Amit will say so. The most valuable advice is sometimes \"build more evidence before applying\" — and a £500 diagnostic is enough to find that out cheaply.",
+    body: "If your case isn't ready, Amit will say so. Sometimes the right move is to build evidence first. A £500 diagnostic finds that out cheaply.",
   },
   {
     n: "iv.",
     title: "Fixed scope. Fixed price.",
-    body: "No open-ended retainers. No hourly billing. No surprise scope creep. Three tiers, three prices, every engagement defined before it begins.",
+    body: "No retainers. No hourly billing. No scope creep. Three tiers, three prices, every engagement defined upfront.",
   },
   {
     n: "v.",
     title: "Advisory, not legal advice.",
-    body: "Amit is not an immigration lawyer and is not OISC-regulated. He helps with case architecture and narrative — not with regulated immigration advice. If you need legal advice, you should consult an accredited immigration solicitor in parallel.",
+    body: "Not an immigration lawyer. Not OISC-regulated. Case architecture and narrative only. Consult a solicitor for legal advice.",
   },
 ]
 
@@ -82,18 +82,17 @@ export default function AboutPage() {
               <span className="text-gradient-brand italic">He went through it.</span>
             </h1>
             <p className="text-lg max-w-2xl mb-14 leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
-              Amit Tyagi is a UK Global Talent visa holder under{" "}
-              <strong style={{ color: "var(--color-ink)" }}>Exceptional Talent</strong> — and the strategic advisor
-              behind Meridian. Every engagement starts with one principle: the case is yours, not a template.
+              UK Global Talent holder under{" "}
+              <strong style={{ color: "var(--color-ink)" }}>Exceptional Talent</strong>. Strategic advisor behind Meridian. Every case starts from scratch — no templates.
             </p>
 
             {/* Two-column: text + portrait */}
             <div className="grid md:grid-cols-[1.5fr_1fr] gap-16 items-center mb-0">
               <div>
                 {[
-                  "Amit applied for UK Global Talent under the Exceptional Talent category through a strategically engineered, evidence-led application. Not by luck. By understanding exactly how the assessment framework evaluates applicants — and building a case that spoke directly to that framework.",
-                  "His background is in fintech and startups — founder, operator, product builder. He knows how exceptional work actually looks from the inside, and more importantly, how to translate that into the language evaluators recognise.",
-                  "His advisory is not built on a template. Every engagement starts from your specific situation, your evidence, your career — and builds toward a case that is uniquely yours.",
+                  "Amit got UK Global Talent under Exceptional Talent. Not by luck. He read the framework. Understood how evaluators think. Built a case that matched it exactly.",
+                  "Fintech founder, operator, builder. He knows what exceptional work looks like from the inside. More importantly — how to translate it into the language evaluators recognise.",
+                  "No templates. Every engagement starts from your situation. Your evidence. Your career. Your sector.",
                 ].map((p, i) => (
                   <motion.p key={i} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 + i * 0.07 }}
@@ -167,7 +166,7 @@ export default function AboutPage() {
             Three pillars of <span className="text-gradient-brand italic">a strong case.</span>
           </h2>
           <p className="max-w-xl mb-12 leading-relaxed" style={{ color: "var(--color-ink-soft)", fontSize: 16 }}>
-            Every engagement, whatever the tier, is structured around the same three architectural questions.
+            Every engagement. Every tier. Three questions.
           </p>
 
           <div className="grid md:grid-cols-3 gap-5">
@@ -221,7 +220,7 @@ export default function AboutPage() {
           Start with a <span className="text-gradient-brand italic">free 4-minute check.</span>
         </h2>
         <p className="max-w-xl mx-auto mb-10 text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
-          Or skip the check and apply directly — Amit will respond personally within 48 hours.
+          Skip the check. Apply directly. Amit replies within 48 hours.
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
           <Link href="/scorecard"

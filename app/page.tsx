@@ -327,10 +327,10 @@ function Hero() {
           transition={{ duration: 0.7, delay: 0.38 }}
           className="text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
           style={{ color: "#5A5169" }}>
-          Tech Nation rejects strong applications every month — not because the builder isn&apos;t exceptional,
-          but because their evidence doesn&apos;t speak the evaluator&apos;s language. Amit was approved under{" "}
-          <strong style={{ color: "#1A1530" }}>Exceptional Talent</strong>. He knows exactly what that language
-          sounds like — and exactly where most applicants lose the decision.
+          Tech Nation rejects strong applications every month. Not because the builder isn&apos;t exceptional.
+          Because the evidence doesn&apos;t speak the evaluator&apos;s language. Amit was approved under{" "}
+          <strong style={{ color: "#1A1530" }}>Exceptional Talent</strong>. He knows what that language
+          sounds like — and where most applicants lose the decision.
         </motion.p>
 
         {/* CTA buttons */}
@@ -450,8 +450,7 @@ function WhoThisIsFor() {
             Built for every kind of <span className="text-gradient-brand italic-accent">exceptional builder.</span>
           </h2>
           <p className="text-base max-w-2xl mx-auto leading-relaxed" style={{ color: "#5A5169" }}>
-            The UK Global Talent Visa is open to any digital technology professional with evidence of
-            exceptional work. Here are the profiles Meridian has worked with most.
+            Open to any digital tech professional with evidence of exceptional work. These are the profiles Meridian has worked with most.
           </p>
         </FadeUp>
         <FadeUp delay={0.1}>
@@ -510,7 +509,7 @@ function Pain() {
             </div>
             <h3 className="font-bold text-lg mb-3" style={{ color: "#1A1530" }}>of strong applications are rejected</h3>
             <p className="text-sm leading-relaxed" style={{ color: "#5A5169" }}>
-              Not because the builder isn&apos;t exceptional — because their case doesn&apos;t demonstrate it the way the assessment panel expects.
+              Not because the builder isn&apos;t exceptional. Because the case doesn&apos;t demonstrate it the way evaluators expect.
             </p>
           </motion.div>
 
@@ -526,7 +525,7 @@ function Pain() {
             </div>
             <h3 className="font-bold text-lg mb-3" style={{ color: "white" }}>rejection reason: generic evidence</h3>
             <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.78)" }}>
-              Most applicants describe what they did. Evaluators need to see scope, independence, and influence — in that order.
+              Most applicants describe what they did. Evaluators want scope, independence, and influence — in that order.
             </p>
           </motion.div>
 
@@ -542,7 +541,7 @@ function Pain() {
             </div>
             <h3 className="font-bold text-lg mb-3" style={{ color: "#1A1530" }}>recommendation letters need to be specific</h3>
             <p className="text-sm leading-relaxed" style={{ color: "#5A5169" }}>
-              One weak letter — even with two strong ones — significantly weakens the submission. Most applicants don&apos;t know how to brief recommenders.
+              One weak letter undermines two strong ones. Most applicants never brief their recommenders.
             </p>
           </motion.div>
         </div>
@@ -553,7 +552,7 @@ function Pain() {
             style={{ background: "linear-gradient(120deg, rgba(91,33,182,0.05), rgba(184,137,59,0.04))", border: "1px solid rgba(91,33,182,.15)" }}>
             <p className="font-display text-2xl leading-snug" style={{ color: "#1A1530", letterSpacing: "-0.01em" }}>
               <strong style={{ fontWeight: 400, color: "#5B21B6" }}>Amit was in your position.</strong>{" "}
-              He was approved under Exceptional Talent — and spent time understanding exactly why the case worked, what evaluators actually look for, and where most applicants lose the decision before they&apos;ve started.
+              Approved under Exceptional Talent. He knows exactly why cases work — and where most applicants lose before they&apos;ve started.
             </p>
           </div>
         </FadeUp>
@@ -582,7 +581,7 @@ function CostOfWrong() {
             <span className="text-gradient-brand italic-accent">more than £500.</span>
           </h2>
           <p className="mt-5 max-w-2xl leading-relaxed" style={{ color: "#5A5169", fontSize: "17px", lineHeight: "1.55" }}>
-            Most applicants think the gamble is between £0 (DIY) and £5,500 (full advisory). The real cost of a rejection — money, time, momentum — is the number nobody runs the math on.
+            Most think the choice is £0 (DIY) vs £5,500. Nobody runs the math on what a rejection actually costs.
           </p>
         </FadeUp>
 
@@ -630,10 +629,10 @@ function CostOfWrong() {
               to get the case right the first time.
             </h3>
             <p className="leading-relaxed mb-5" style={{ color: "#5A5169", fontSize: "16px", lineHeight: "1.6" }}>
-              A rejection isn&apos;t a setback — it&apos;s a 12-month delay with sunk costs, a burned recommender list, and a Plan B that locks you into employer sponsorship.
+              A rejection is a 12-month delay. Sunk costs. Burned recommenders. A Plan B that locks you into employer sponsorship.
             </p>
             <p className="leading-relaxed mb-8" style={{ color: "#5A5169", fontSize: "16px", lineHeight: "1.6" }}>
-              Advisory is not an expense; it&apos;s a way to compress the variance. Amit&apos;s job is to make sure your case is the best version of itself before it goes anywhere near a panel.
+              Advisory compresses the variance. Amit&apos;s job: make sure your case is the strongest it can be before it reaches a panel.
             </p>
             <Link href="/readiness"
               className="btn-primary inline-flex items-center gap-2 px-7 py-4 text-white font-semibold"
@@ -674,7 +673,7 @@ function ScorecardCTA() {
               <span className="text-gradient-brand italic-accent">application stands.</span>
             </h2>
             <p className="leading-relaxed mb-6" style={{ color: "#5A5169" }}>
-              Answer 20 questions. Get a scored readiness report across the 4 dimensions Tech Nation evaluates — and a specific recommendation on what to fix first.
+              20 questions. Scored report across 4 dimensions. Specific recommendation on what to fix first.
             </p>
             <ul className="space-y-3 mb-8">
               {[
@@ -757,21 +756,21 @@ function Services() {
     {
       n: "01",
       title: "Evidence Architecture",
-      desc: "Map every proof point in your career against the specific signals evaluators are trained to look for. Identify what's missing, what's weak, and what to lead with.",
+      desc: "Map your career against evaluator signals. Find gaps. Lead with the strongest proof before writing a word.",
       items: ["Proof point audit", "Signal gap analysis", "Evidence sequencing strategy"],
       col: "#5B21B6",
     },
     {
       n: "02",
       title: "Narrative Engineering",
-      desc: "Build the career story that creates a coherent, compelling case — not a job history. Structure it so evaluators can read your trajectory in 90 seconds.",
+      desc: "Turn your career history into an argument. One clear through-line. Evaluators decide in 90 seconds.",
       items: ["Personal statement drafting", "Career arc positioning", "Role-by-role framing"],
       col: "#0F766E",
     },
     {
       n: "03",
       title: "Recommendation Architecture",
-      desc: "Identify the right recommenders, coach them on what to write, and structure a three-letter portfolio where each letter covers a different dimension of your credibility.",
+      desc: "Three recommenders. Each covers a different credibility dimension. Brief them. Most people leave this to chance.",
       items: ["Recommender selection strategy", "Brief templates per recommender", "Letter review and strengthening"],
       col: "#B8893B",
     },
@@ -821,10 +820,10 @@ function Services() {
 // ── Process ───────────────────────────────────────────────────────────────────
 function Process() {
   const steps = [
-    { n: "01", title: "Take the free readiness check", desc: "20 questions. A scored report across 4 dimensions. Know exactly where your case stands before you invest anything.", tag: "FREE · 4 MIN", col: "#5B21B6", href: "/readiness" },
-    { n: "02", title: "Apply for a Strategic Review", desc: "Amit reviews your application and responds personally within 48 hours with one specific observation about your case.", tag: "48-HR RESPONSE", col: "#0F766E", href: "/apply" },
-    { n: "03", title: "Build the case together", desc: "Evidence mapping, personal statement, recommendation coaching — structured around the evaluator's framework, not a template.", tag: "£500 – £5,500", col: "#86198F", href: "/apply" },
-    { n: "04", title: "Submit with confidence", desc: "A submission-ready case where every component has been stress-tested against the criteria that determines approval.", tag: "NO OPEN RETAINERS", col: "#B8893B", href: "/apply" },
+    { n: "01", title: "Take the free readiness check", desc: "20 questions. Scored report across 4 dimensions. Know where your case stands before spending anything.", tag: "FREE · 4 MIN", col: "#5B21B6", href: "/readiness" },
+    { n: "02", title: "Apply to work with Amit", desc: "He reads every application. Responds within 48 hours with one specific observation — before any payment.", tag: "48-HR RESPONSE", col: "#0F766E", href: "/apply" },
+    { n: "03", title: "Build the case together", desc: "Evidence mapping, personal statement, recommendation coaching — structured around what evaluators actually look for.", tag: "£500 – £5,500", col: "#86198F", href: "/apply" },
+    { n: "04", title: "Submit knowing it's ready", desc: "Every component stress-tested against the criteria. No surprises. No template shortcuts.", tag: "NO RETAINERS", col: "#B8893B", href: "/apply" },
   ]
   return (
     <section id="process" className="py-24 px-6" style={{ background: "#F6F1E7", borderTop: "1px solid #E2D9C4" }}>
@@ -891,15 +890,14 @@ function AboutAmit() {
           {/* Left: copy */}
           <FadeUp delay={0.05}>
             <p className="leading-relaxed mb-5" style={{ color: "#5A5169", fontSize: "17.5px", lineHeight: "1.62" }}>
-              Amit Tyagi received UK Global Talent recognition under the{" "}
-              <strong style={{ color: "#1A1530", fontWeight: 600 }}>Exceptional Talent</strong>{" "}
-              category through a strategically engineered, evidence-led application. Not by luck. By understanding exactly how the assessment framework evaluates applicants — and building a case that spoke directly to that framework.
+              Amit got UK Global Talent under{" "}
+              <strong style={{ color: "#1A1530", fontWeight: 600 }}>Exceptional Talent</strong>. Not by luck. He read the framework. Understood how evaluators think. Built a case that matched exactly.
             </p>
             <p className="leading-relaxed mb-5" style={{ color: "#5A5169", fontSize: "17.5px", lineHeight: "1.62" }}>
-              His background is in fintech and startups, as a founder, operator, and product builder. He knows how exceptional work actually looks from the inside — and more importantly, how to translate that into the language evaluators recognise.
+              Fintech founder, operator, builder. He knows what exceptional work looks like from the inside. He knows how to translate it for evaluators.
             </p>
             <p className="leading-relaxed mb-8" style={{ color: "#5A5169", fontSize: "17.5px", lineHeight: "1.62" }}>
-              His advisory is not built on a template. Every engagement starts from your specific situation, your evidence, your career — and builds toward a case that is uniquely yours.
+              No templates. Every engagement starts from your situation. Your evidence. Your career.
             </p>
             <div className="flex gap-3 flex-wrap">
               <Link href="/apply"
@@ -963,17 +961,17 @@ function AboutAmit() {
 
 // ── Testimonials ──────────────────────────────────────────────────────────────
 const TESTIMONIALS = [
-  { quote: "I had strong work behind me but no idea how to present it the way assessors look for. Amit restructured my evidence portfolio and personal statement in three weeks. Approved on first attempt.", name: "S", title: "Founder, B2B SaaS", badge: "Exceptional Talent", badgeType: "talent" },
-  { quote: "As a PM my impact was always embedded in team outcomes. Amit helped me reframe five years of product work into a case that made my individual contribution undeniable to the assessors.", name: "P", title: "Senior Product Manager", badge: "Exceptional Promise", badgeType: "promise" },
-  { quote: "I'd been in ML for eight years but all my evidence was internal. Amit helped me identify the external signals I'd been ignoring — papers, deployment impact, open source — and build a real case.", name: "R", title: "ML Engineer, Series B", badge: "Exceptional Talent", badgeType: "talent" },
-  { quote: "My first attempt was rejected. Amit read the feedback letter and immediately identified what was missing. My second application was completely different — and approved in under two weeks.", name: "K", title: "CTO, Fintech startup", badge: "Reapplication approved", badgeType: "reapp" },
-  { quote: "Coming from Singapore, I wasn't sure my profile would translate. Amit knew exactly how to frame the scale of what I'd built in Southeast Asia in terms a UK panel would recognise.", name: "J", title: "Co-founder, Consumer App", badge: "Exceptional Talent", badgeType: "talent" },
-  { quote: "Three of my recommendation letters were describing our working relationship instead of my impact. Amit coached me on what they should say — and coached my recommenders too. The difference was stark.", name: "M", title: "Engineering Manager", badge: "Exceptional Promise", badgeType: "promise" },
-  { quote: "I thought listing my GitHub stats was strong evidence. Amit showed me they weren't framed as evidence at all — just facts. Learning to make the argument rather than present the data changed everything.", name: "A", title: "Senior Software Engineer", badge: "Exceptional Talent", badgeType: "talent" },
-  { quote: "My personal statement before working with Amit was a CV in paragraph form. He helped me understand the difference between describing what I did and arguing what it meant for the sector.", name: "N", title: "Growth Lead, VC-backed", badge: "Exceptional Promise", badgeType: "promise" },
-  { quote: "What I valued most was that Amit had done it himself. He wasn't reading from a playbook — he was telling me what actually worked, what assessors genuinely respond to, and what to cut.", name: "D", title: "Startup Operator, UAE", badge: "Exceptional Talent", badgeType: "talent" },
-  { quote: "I was going to apply under Promise because I didn't think I qualified for Talent. Amit looked at my profile and told me I was underselling myself significantly. I submitted Talent and was approved.", name: "V", title: "Data Scientist, Series A", badge: "Exceptional Talent", badgeType: "talent" },
-  { quote: "I had two failed attempts before finding Amit. He identified the exact pattern in my evidence that wasn't landing — I wasn't showing sector influence, only personal impact. Third attempt approved.", name: "T", title: "Founder & Angel Investor", badge: "Exceptional Talent", badgeType: "talent" },
+  { quote: "Strong work, no idea how to present it. Amit restructured my evidence and statement in three weeks. Approved first attempt.", name: "S", title: "Founder, B2B SaaS", badge: "Exceptional Talent", badgeType: "talent" },
+  { quote: "My impact was buried in team outcomes. Amit reframed five years of product work into a case that made my individual contribution undeniable.", name: "P", title: "Senior Product Manager", badge: "Exceptional Promise", badgeType: "promise" },
+  { quote: "Eight years in ML, all internal. Amit found the external signals I'd been ignoring — papers, deployment impact, open source. Built a real case.", name: "R", title: "ML Engineer, Series B", badge: "Exceptional Talent", badgeType: "talent" },
+  { quote: "First attempt rejected. Amit read the rejection letter. Found the gap immediately. Second application approved in two weeks.", name: "K", title: "CTO, Fintech startup", badge: "Reapplication approved", badgeType: "reapp" },
+  { quote: "Wasn't sure my Southeast Asia work would translate. Amit knew exactly how to frame scale for a UK panel.", name: "J", title: "Co-founder, Consumer App", badge: "Exceptional Talent", badgeType: "talent" },
+  { quote: "All three recommendation letters described our relationship, not my impact. Amit briefed me and my recommenders. The difference was stark.", name: "M", title: "Engineering Manager", badge: "Exceptional Promise", badgeType: "promise" },
+  { quote: "I thought GitHub stats were evidence. Amit showed me they were just facts. Making the argument — not presenting data — changed everything.", name: "A", title: "Senior Software Engineer", badge: "Exceptional Talent", badgeType: "talent" },
+  { quote: "My personal statement was a CV in paragraphs. Amit showed me the difference between describing what I did and arguing what it meant for the sector.", name: "N", title: "Growth Lead, VC-backed", badge: "Exceptional Promise", badgeType: "promise" },
+  { quote: "Amit had done it himself. Not reading a playbook — telling me what actually works, what evaluators respond to, and what to cut.", name: "D", title: "Startup Operator, UAE", badge: "Exceptional Talent", badgeType: "talent" },
+  { quote: "Was going to apply under Promise. Amit said I was underselling myself. Submitted Talent. Approved.", name: "V", title: "Data Scientist, Series A", badge: "Exceptional Talent", badgeType: "talent" },
+  { quote: "Two failed attempts before Amit. He found the pattern: I was showing personal impact, not sector influence. Third attempt approved.", name: "T", title: "Founder & Angel Investor", badge: "Exceptional Talent", badgeType: "talent" },
 ]
 
 function Testimonials() {
@@ -1064,7 +1062,7 @@ function Pricing() {
       best: "Ready to build and submit",
       price: "£2,500",
       perq: "FIXED · NO RETAINER · NO SURPRISES",
-      desc: "The full advisory engagement. Amit works through your evidence, personal statement, and recommendation strategy with you — sessions, written feedback, and async support.",
+      desc: "Amit works through your evidence, statement, and recommendation strategy. Sessions, written feedback, and 30-day async support.",
       items: [
         "Everything in Diagnostic",
         "2 × focused sessions with Amit",
@@ -1083,7 +1081,7 @@ function Pricing() {
       best: "Want the case built end-to-end",
       price: "£5,500",
       perq: "LIMITED — 2 SLOTS PER MONTH",
-      desc: "Amit builds the full submission with you — every component reviewed, every letter coached, personal statement iteration, and a final readiness check before you submit.",
+      desc: "Every component reviewed. Every letter coached. Statement iterated. Final readiness check before submission.",
       items: [
         "Everything in Application Advisory",
         "Submission-ready personal statement",
@@ -1118,7 +1116,7 @@ function Pricing() {
             </div>
           </div>
           <p className="mt-5 max-w-2xl leading-relaxed" style={{ color: "#5A5169", fontSize: "16px" }}>
-            Fixed prices. No open-ended retainers. No surprises. Amit recommends the right tier after reviewing your application — you don&apos;t pay until that&apos;s confirmed.
+            Fixed prices. No retainers. No surprises. Amit confirms the right tier after reviewing your application. No payment until that&apos;s done.
           </p>
         </FadeUp>
 
@@ -1238,11 +1236,11 @@ function VisaExplainer() {
         <div className="grid md:grid-cols-3 gap-5 mb-6">
           {[
             { icon: "◇", col: "#5B21B6", bg: "rgba(91,33,182,.08)", label: "Who it is for",
-              body: "Leaders and exceptional practitioners in digital technology, arts, research, and academia. In tech, it covers founders, engineers, product leaders, data scientists, AI researchers, and operators who have demonstrably shaped their sector." },
+              body: "Exceptional practitioners in digital technology: founders, engineers, product leaders, data scientists, AI researchers, and operators who have demonstrably shaped their sector." },
             { icon: "↻", col: "#0F766E", bg: "rgba(15,118,110,.1)", label: "How it works",
-              body: "You apply to an endorsement body, which assesses your profile against a published criteria framework. Endorsement unlocks the visa application itself. Unlike Skilled Worker, no employer sponsor is required — you are endorsed on personal merit alone." },
+              body: "Apply to an endorsement body. They assess your profile against a published criteria framework. Endorsement unlocks the visa. No employer sponsor required — endorsed on personal merit alone." },
             { icon: "★", col: "#8C6428", bg: "rgba(184,137,59,.12)", label: "Why it matters",
-              body: "Global Talent holders can work for any employer, switch freely between roles, work freelance or found a company, and fast-track to Indefinite Leave to Remain (ILR) in 3 years. The most flexible UK visa route for senior tech professionals." },
+              body: "Work for any employer. Switch roles freely. Found a company. Fast-track to ILR in 3 years. The most flexible UK visa route for senior tech professionals." },
           ].map((card, i) => (
             <motion.div key={card.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.1 }}
@@ -1263,12 +1261,11 @@ function VisaExplainer() {
               <p className="text-xs font-mono tracking-widest uppercase mb-2.5" style={{ color: "#8B8499" }}>Sub-categories</p>
               <h4 className="font-display text-2xl mb-4 leading-tight" style={{ color: "#1A1530", letterSpacing: "-0.02em" }}>Exceptional Talent vs Exceptional Promise</h4>
               <p className="text-sm leading-relaxed mb-4" style={{ color: "#5A5169" }}>
-                The digital technology route has two sub-categories.{" "}
-                <strong style={{ color: "#1A1530" }}>Exceptional Talent</strong> is for established leaders with a proven, externally-recognised track record.{" "}
-                <strong style={{ color: "#1A1530" }}>Exceptional Promise</strong> is for those earlier in their career who show clear potential for future leadership.
+                <strong style={{ color: "#1A1530" }}>Exceptional Talent</strong>: established leaders with an externally-recognised track record.<br />
+                <strong style={{ color: "#1A1530" }}>Exceptional Promise</strong>: earlier career, clear trajectory upward.
               </p>
               <p className="text-sm leading-relaxed mb-4" style={{ color: "#5A5169" }}>
-                The distinction is widely misunderstood. It is not about years of experience. It is about the type of evidence available to you.
+                The distinction is misunderstood. Not about years of experience. About the type of evidence you have.
               </p>
               <a href="/blog/exceptional-talent-vs-exceptional-promise" className="text-sm font-semibold underline underline-offset-2 hover:opacity-80 transition-opacity" style={{ color: "#5B21B6" }}>
                 Read the full breakdown →
@@ -1280,10 +1277,15 @@ function VisaExplainer() {
               <p className="text-xs font-mono tracking-widest uppercase mb-2.5" style={{ color: "#8B8499" }}>Why applications fail</p>
               <h4 className="font-display text-2xl mb-4 leading-tight" style={{ color: "#1A1530", letterSpacing: "-0.02em" }}>What makes applications fail</h4>
               <p className="text-sm leading-relaxed mb-4" style={{ color: "#5A5169" }}>
-                Most rejections are not caused by an under-qualified profile. They are caused by evidence that is generic, a personal statement that describes a career instead of arguing a case, and recommendation letters that talk about a working relationship instead of demonstrating sector-level impact.
+                Most rejections are not about an under-qualified profile. They come from:
               </p>
+              <ul className="text-sm leading-relaxed mb-4 space-y-1 ml-4" style={{ color: "#5A5169" }}>
+                <li>— Generic evidence</li>
+                <li>— A statement that describes a career, not argues a case</li>
+                <li>— Recommendation letters about a relationship, not sector impact</li>
+              </ul>
               <p className="text-sm leading-relaxed mb-4" style={{ color: "#5A5169" }}>
-                The assessment framework is structured and consistent. Applicants who don&apos;t know the structure fail regardless of how strong their underlying work is.
+                The framework is structured. Applicants who don&apos;t know it fail — regardless of how strong the underlying work is.
               </p>
               <a href="/blog/why-tech-nation-applications-fail" className="text-sm font-semibold underline underline-offset-2 hover:opacity-80 transition-opacity" style={{ color: "#5B21B6" }}>
                 Why most applications fail →
@@ -1324,31 +1326,31 @@ function FAQ() {
   const faqs = [
     {
       q: "Is this an immigration service or legal advice?",
-      a: "No. Meridian is an advisory service only. Amit helps you structure your evidence portfolio and narrative — he is not an immigration lawyer, is not OISC-regulated, and does not provide immigration legal advice. For legal immigration advice, consult an accredited immigration solicitor.",
+      a: "No. Advisory only. Amit structures your evidence and narrative. Not an immigration lawyer. Not OISC-regulated. For legal advice, consult an accredited solicitor.",
     },
     {
       q: "Do you guarantee approval?",
-      a: "No, and anyone who does is misleading you. What Amit does is ensure your case is as strong as it can be — that your evidence is specific, your narrative coherent, and your recommendations are structured to address what evaluators actually look for. That is what moves the odds.",
+      a: "No. Anyone who does is misleading you. Amit makes your case as strong as possible. Specific evidence. Coherent narrative. Recommendations that address what evaluators look for. That moves the odds.",
     },
     {
       q: "Can I just do this myself?",
-      a: "Yes, absolutely. Many people do. But the most common mistake is not knowing what evaluators actually prioritise — which means applicants spend time on the wrong things and miss what would have made the difference. Amit's value is knowing what strong looks like from the inside.",
+      a: "Yes. Many do. The mistake: not knowing what evaluators prioritise. Most spend time on the wrong things. Amit's value is knowing what strong looks like from the inside.",
     },
     {
       q: "What is the difference between Exceptional Talent and Exceptional Promise?",
-      a: "Exceptional Talent is for those with an established track record of innovation in the digital tech sector. Exceptional Promise is for those earlier in their career who show clear potential. The evidence requirements differ significantly. Amit can help you understand which category fits your profile before you apply.",
+      a: "Exceptional Talent: established track record. Exceptional Promise: earlier career, clear trajectory. The evidence requirements differ significantly. Amit helps you identify which fits before you apply.",
     },
     {
       q: "How long does the engagement take?",
-      a: "A Readiness Diagnostic is typically completed within 5–7 days of payment. An Application Advisory engagement runs 3–6 weeks depending on how quickly you can produce materials. A Full Case Build runs 4–8 weeks. Amit does not rush the work — the timeline reflects what's needed to do it properly.",
+      a: "Diagnostic: 5–7 days. Advisory: 3–6 weeks. Full Build: 4–8 weeks. Amit doesn't rush. The timeline reflects what the work actually takes.",
     },
     {
       q: "What if I've already had an application rejected?",
-      a: "A previous rejection is not disqualifying — many people get approved on a second application after strengthening their case. Amit specifically helps with understanding what a rejection feedback letter is pointing to and how to address it. This is some of his most valuable advisory work.",
+      a: "Not disqualifying. Many get approved on a second attempt after fixing the case. Amit reads rejection letters and finds the gap. That's some of his most useful work.",
     },
     {
       q: "How many clients does Amit take per month?",
-      a: "Full Case Build is limited to 2 engagements per month so each receives proper attention. Application Advisory is limited to 4. Diagnostics have more availability. If you are considering applying, the assessment is the right first step regardless of timing.",
+      a: "Full Build: 2 per month. Advisory: 4 per month. Diagnostics have more slots. Start with the free assessment regardless of timing.",
     },
   ]
   return (
@@ -1416,7 +1418,7 @@ function FinalCTA() {
             <span className="text-gradient-brand italic-accent">free 4-minute check.</span>
           </h2>
           <p className="max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: "rgba(255,255,255,0.75)", fontSize: "18px" }}>
-            Take the readiness assessment, see where your case stands, and decide if you want Amit to help you build from there. No payment, no commitment, no auto-charge.
+            See where your case stands. Decide from there. No payment. No commitment.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/readiness"

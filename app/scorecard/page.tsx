@@ -219,8 +219,7 @@ function EmailGate({ onSubmit }: { onSubmit: (email: string) => void }) {
           </div>
           <h1 className="font-display text-3xl text-platinum mb-3">Your score is ready.</h1>
           <p className="text-platinum-dim leading-relaxed mb-8">
-            Enter your email to see your Founder Credibility Index™ score and
-            a personalised breakdown of where your case stands.
+            Enter your email to see your FCI score and where your case stands.
           </p>
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -256,7 +255,7 @@ function EmailGate({ onSubmit }: { onSubmit: (email: string) => void }) {
             </motion.button>
           </form>
           <p className="text-xs text-platinum-faint mt-4 leading-relaxed">
-            No spam. Amit may follow up with a short observation based on your answers.
+            No spam. Amit may follow up with one specific observation.
           </p>
         </motion.div>
       </div>

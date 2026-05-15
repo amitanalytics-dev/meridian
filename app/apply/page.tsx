@@ -10,10 +10,10 @@ type Tier = "diagnostic" | "advisory" | "full" | "unsure"
 type Step = 1 | 2 | 3
 
 const TIERS: { id: Tier; name: string; desc: string; price: string; tag?: string; unsure?: boolean }[] = [
-  { id: "diagnostic", name: "Readiness Diagnostic",    desc: "A written diagnostic — where you're strong, weak, and what to fix.", price: "£500" },
-  { id: "advisory",   name: "Application Advisory",    desc: "Full advisory engagement — sessions, written feedback, 30-day support.", price: "£2,500", tag: "Most chosen" },
-  { id: "full",       name: "Full Case Build",          desc: "End-to-end submission build — every component reviewed and coached.", price: "£5,500" },
-  { id: "unsure",     name: "Not sure yet — let Amit recommend", desc: "He'll suggest the right tier after seeing your case.", price: "Recommended", unsure: true },
+  { id: "diagnostic", name: "Readiness Diagnostic",    desc: "Written diagnostic — where you're strong, where you're weak, what to fix.", price: "£500" },
+  { id: "advisory",   name: "Application Advisory",    desc: "Sessions, written feedback, recommendation strategy, 30-day support.", price: "£2,500", tag: "Most chosen" },
+  { id: "full",       name: "Full Case Build",          desc: "Full build. Every component reviewed and coached end-to-end.", price: "£5,500" },
+  { id: "unsure",     name: "Not sure yet — let Amit recommend", desc: "He'll confirm the right tier after reading your application.", price: "Recommended", unsure: true },
 ]
 
 interface ApplyForm {
@@ -81,8 +81,7 @@ export default function ApplyPage() {
             <span className="text-gradient-brand italic">A 48-hour personal response.</span>
           </h1>
           <p className="text-lg max-w-xl leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
-            Tell Amit what you&apos;re working on and what stage you&apos;re at. He reads every application personally
-            and replies within 48 hours with one specific observation about your case — before any payment.
+            Tell Amit where you are. He reads every application. Replies within 48 hours with one specific observation — before any payment.
           </p>
         </div>
       </section>
@@ -121,7 +120,7 @@ export default function ApplyPage() {
                         Which tier are you considering?
                       </h2>
                       <p className="text-sm mb-7" style={{ color: "var(--color-ink-soft)" }}>
-                        No commitment — Amit confirms the right tier after reading your application.
+                        No commitment. Amit confirms the tier after reading.
                       </p>
                       <div className="space-y-3 mb-7">
                         {TIERS.map(t => (
@@ -199,7 +198,7 @@ export default function ApplyPage() {
                         Your case in your own words.
                       </h2>
                       <p className="text-sm mb-7" style={{ color: "var(--color-ink-soft)" }}>
-                        Three short prompts. Amit&apos;s first reply will reference one of these directly.
+                        Three prompts. Amit&apos;s reply will reference one directly.
                       </p>
                       <Field label="What have you built that you'd describe as exceptional?">
                         <textarea rows={3} placeholder="A few sentences. Specific is better than impressive." value={form.built} onChange={e => upd("built", e.target.value)} className={`${inputCls} resize-none`} />
@@ -259,10 +258,9 @@ export default function ApplyPage() {
                   Your application is on Amit&apos;s desk.
                 </h2>
                 <p className="max-w-md mx-auto mb-8 leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
-                  He reads every one personally. You&apos;ll hear back within{" "}
+                  He reads every one personally. Reply in{" "}
                   <strong style={{ color: "var(--color-ink)" }}>48 hours</strong> from{" "}
-                  <strong style={{ color: "var(--color-ink)" }}>amit@meridian.advisory</strong> with one specific
-                  observation about your case.
+                  <strong style={{ color: "var(--color-ink)" }}>amit@meridian.advisory</strong>. One specific observation. No template.
                 </p>
 
                 {/* Timeline */}
@@ -315,7 +313,7 @@ export default function ApplyPage() {
                 48 hrs
               </div>
               <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.8)" }}>
-                Personal response from Amit. Not an auto-reply. Not a template. One specific observation about your case.
+                Personal response. Not an auto-reply. One specific observation.
               </p>
             </div>
           </div>
@@ -325,8 +323,7 @@ export default function ApplyPage() {
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] mb-4" style={{ color: "var(--color-ink-faint)" }}>Recently advised</p>
             <p className="font-display text-lg leading-snug mb-4" style={{ color: "var(--color-ink)" }}>
               <span style={{ fontSize: 28, color: "var(--color-violet)", lineHeight: 0, verticalAlign: -8, marginRight: 2 }}>&ldquo;</span>
-              My first attempt was rejected. Amit read the feedback letter and immediately identified what was
-              missing. Second attempt approved in under two weeks.
+              First attempt rejected. Amit read the rejection letter and found the gap immediately. Second attempt approved in two weeks.
             </p>
             <div className="flex items-center justify-between pt-3" style={{ borderTop: "1px solid var(--color-line)" }}>
               <span className="text-xs" style={{ color: "var(--color-ink-faint)" }}>K · CTO, Fintech startup</span>

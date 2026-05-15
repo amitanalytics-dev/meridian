@@ -117,7 +117,7 @@ function ResultInner() {
             Your Founder Credibility Index™
           </p>
           <h1 className="font-display text-4xl text-platinum mb-2">Your score is ready.</h1>
-          <p className="text-platinum-dim">Here is how global evaluators currently read your credibility.</p>
+          <p className="text-platinum-dim">This is how evaluators read your case right now.</p>
         </motion.div>
 
         {/* Score card */}
@@ -194,7 +194,7 @@ function ResultInner() {
               <p className="text-xs font-mono text-platinum-faint uppercase tracking-widest">
                 Dimension Breakdown
               </p>
-              <span className="text-xs text-platinum-faint">Full breakdown unlocked in Strategic Review</span>
+              <span className="text-xs text-platinum-faint">Full breakdown in Advisory Review</span>
             </div>
             <div className="space-y-4 relative">
               {(Object.entries(result.subScores) as [keyof SubScores, number][]).map(([key, val], i) => {
@@ -227,12 +227,12 @@ function ResultInner() {
                   <div className="w-10 h-10 rounded-full bg-brand/20 flex items-center justify-center mb-3">
                     <span className="text-brand text-lg">⚲</span>
                   </div>
-                  <p className="text-sm text-platinum font-medium mb-1">Full breakdown in Strategic Review</p>
+                  <p className="text-sm text-platinum font-medium mb-1">Full breakdown in Advisory Review</p>
                   <p className="text-xs text-platinum-dim mb-4">
-                    Dimension breakdown, evidence mapping, gap analysis, and your recommended advisory path.
+                    Dimension scores, evidence gaps, and your advisory path — in one review.
                   </p>
                   <Link href="/apply" className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm text-white font-medium">
-                    Apply for Strategic Review →
+                    Apply for Advisory Review →
                   </Link>
                 </div>
               </div>
@@ -253,8 +253,7 @@ function ResultInner() {
                 {ADVISORY_LABELS[result.advisoryPath]}
               </p>
               <p className="text-sm text-platinum-dim leading-relaxed">
-                Based on your score of {result.score} and your identified gap in {result.primaryGap},
-                this is the most appropriate starting point for your credibility architecture work.
+                Score: {result.score}. Primary gap: {result.primaryGap}. This is the right starting point.
               </p>
             </div>
           </div>
@@ -271,9 +270,7 @@ function ResultInner() {
         {/* Legal note */}
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
           className="text-xs text-platinum-faint text-center leading-relaxed max-w-2xl mx-auto">
-          This score is an advisory intelligence tool only. It does not constitute a legal assessment,
-          immigration advice, or guarantee of any recognition outcome. Meridian is independent and not
-          affiliated with the UK Government or any visa body.
+          Advisory tool only. Not legal advice. Not a guarantee. Meridian is independent of UK Government and visa bodies.
         </motion.p>
       </div>
     </div>
